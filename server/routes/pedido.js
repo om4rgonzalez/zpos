@@ -73,6 +73,7 @@ app.get('/pedido/todos', async function(req, res) {
     Pedido.find()
         .populate('proveedor')
         .populate('detallePedido')
+        .populate('comercio')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .populate({ path: 'detallePedido', populate: { path: 'unidadMedida' } })
         .populate('estado')
