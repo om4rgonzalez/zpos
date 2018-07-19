@@ -9,10 +9,10 @@ let historiaCambioEstadoPedidoSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Estado'
     },
-    nuevoEstado: [{
+    nuevoEstado: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Estado'
-    }],
+    },
     fechaAlta: {
         type: Date,
         default: Date.now

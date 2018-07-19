@@ -131,6 +131,46 @@ app.get('/pedido/todos', async function(req, res) {
         });
 })
 
+app.put('/pedido/aceptar', function(req, res) {
 
+    let id = req.body.pedido;
+    // let usuario = req.usuario;
+    let body = _.pick(req.body, ['estadoAnterior', 'estado']);
+    body.estado = '5b4faa1d3c9da933c9cc2fb2';
+
+    Pedido.findByIdAndUpdate(id, body, { new: true }, (err, PedidoDB) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                message: 'No se pudo realizar la actualizacion'
+            });
+        }
+
+        let historia = new historiaCambioEstado({
+            pedido: id,
+            estadoAnterior: body.estadoAnterior,
+            nuevoEstado: body.estado
+        });
+
+        historia.save((err, HistoriaDB) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'El pedido fue aceptado'
+            });
+        })
+
+
+
+    });
+
+});
 
 module.exports = app;
