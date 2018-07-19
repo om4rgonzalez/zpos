@@ -131,6 +131,52 @@ app.get('/pedido/todos', async function(req, res) {
         });
 })
 
+app.get('/pedido/pedidos_de_proveedor', async function(req, res) {
+    // let comercio = req.query.comercio;
+    // console.log(`El proveedor a buscar es ${proveedor}`);
+    Pedido.find()
+        .populate('proveedor')
+        .populate('detallePedido')
+        .populate('comercio')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'unidadMedida' } })
+        .populate('estado')
+        .where({ 'proveedor': req.query.proveedor })
+        .sort({ "estado.precedencia": 1 })
+        .exec((err, pedidos) => {
+
+            // console.log(usuarios.length);
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            if (!pedidos) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: 'No hay pedidos para ese comercio'
+                    }
+                });
+            }
+
+            // clientes = clientes.filter(function(clientes) {
+            //     return clientes.titular != null;
+            // })
+
+            return res.json({
+                ok: true,
+                recordsTotal: pedidos.length,
+                // recordsFiltered: clientes.length,
+                pedidos
+            });
+
+        });
+})
+
 app.put('/pedido/aceptar', function(req, res) {
 
     let id = req.body.pedido;
