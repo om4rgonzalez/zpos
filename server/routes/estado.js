@@ -35,7 +35,43 @@ app.post('/conf/inicializar_estados', function(req, res) {
     }
 })
 
+app.get('/conf/obtener_estados', async function(req, res) {
+    // let comercio = req.query.comercio;
+    // console.log(`El proveedor a buscar es ${proveedor}`);
+    Estado.find()
+        .exec((err, estados) => {
 
+            // console.log(usuarios.length);
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            if (!estados) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: 'No hay estados'
+                    }
+                });
+            }
+
+            // clientes = clientes.filter(function(clientes) {
+            //     return clientes.titular != null;
+            // })
+
+            return res.json({
+                ok: true,
+                recordsTotal: proveedores.length,
+                // recordsFiltered: clientes.length,
+                estados
+            });
+
+        });
+})
 
 
 
