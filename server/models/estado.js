@@ -5,6 +5,9 @@ let Schema = mongoose.Schema;
 let estadoSchema = new Schema({
     nombre: {
         type: String
+    },
+    precedencia: {
+        type: Number
     }
 });
 

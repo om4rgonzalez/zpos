@@ -4,6 +4,7 @@ const _ = require('underscore');
 const Pedido = require('../models/pedido');
 const Detalle = require('../models/detallePedido');
 const funciones = require('../middlewares/funciones');
+const historiaCambioEstado = require('../models/historiaCambioEstadoPedido');
 // const { verificaToken } = require('../middlewares/autenticacion');
 
 var detalles = [];
@@ -40,7 +41,7 @@ app.post('/pedido/nuevo', async function(req, res) {
         let pedido = new Pedido({
             proveedor: req.body.pedido.proveedor,
             comercio: req.body.pedido.comercio,
-            estado: req.body.pedido.estado
+            estado: '5b4faa1d3c9da933c9cc2fb0'
         });
 
         for (var i in detalles) {
@@ -56,11 +57,29 @@ app.post('/pedido/nuevo', async function(req, res) {
                 });
             }
 
-
-            res.json({
-                ok: true,
-                pedidoDB
+            //ahora guardo la historia de cambio de estado del pedido
+            let historia = new historiaCambioEstado({
+                pedido: pedido._id,
+                estadoAnterior: '5b4faa1d3c9da933c9cc2faf',
+                nuevoEstado: '5b4faa1d3c9da933c9cc2fb0'
             });
+
+            historia.save((err, HistoriaDB) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+                res.json({
+                    ok: true,
+                    pedidoDB
+                });
+            })
+
+
+
         });
     }
 
