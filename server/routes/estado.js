@@ -65,7 +65,7 @@ app.get('/conf/obtener_estados', async function(req, res) {
 
             return res.json({
                 ok: true,
-                recordsTotal: proveedores.length,
+                recordsTotal: estados.length,
                 // recordsFiltered: clientes.length,
                 estados
             });
