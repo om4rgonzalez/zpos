@@ -7,15 +7,17 @@ const funciones = require('../middlewares/funciones');
 const historiaCambioEstado = require('../models/historiaCambioEstadoPedido');
 // const { verificaToken } = require('../middlewares/autenticacion');
 
-var detalles = [];
+
 
 
 app.post('/pedido/nuevo', async function(req, res) {
     // let pedido = req.body.pedido;
+    let detalles = [];
     let detalleGuardado = true;
 
 
     //doy de alta el detalle del pedido
+    // console.log('Tamaño del array: ' + req.body.detalle.length);
     for (var i in req.body.detalle) {
         // console.log(req.body.detalle[i]);
         let detalle = new Detalle({
