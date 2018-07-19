@@ -134,9 +134,19 @@ app.get('/pedido/todos', async function(req, res) {
 app.put('/pedido/aceptar', function(req, res) {
 
     let id = req.body.pedido;
+    let mensaje;
     // let usuario = req.usuario;
     let body = _.pick(req.body, ['estadoAnterior', 'estado']);
-    body.estado = '5b4faa1d3c9da933c9cc2fb2';
+    if (req.body.aceptado == 1) {
+        //el pedido fue aceptado
+        body.estado = '5b4faa1d3c9da933c9cc2fb2';
+        mensaje = 'El pedido fue aceptado';
+    } else {
+        //el pedido fue rechazado
+        body.estado = '5b4faa1d3c9da933c9cc2fb3';
+        mensaje = 'El pedido fue rechazado';
+    }
+
 
     Pedido.findByIdAndUpdate(id, body, { new: true }, (err, PedidoDB) => {
 
@@ -163,7 +173,7 @@ app.put('/pedido/aceptar', function(req, res) {
 
             res.json({
                 ok: true,
-                message: 'El pedido fue aceptado'
+                message: mensaje
             });
         })
 
