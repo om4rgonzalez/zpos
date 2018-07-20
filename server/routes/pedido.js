@@ -98,6 +98,7 @@ app.get('/pedido/todos', async function(req, res) {
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .populate({ path: 'detallePedido', populate: { path: 'unidadMedida' } })
         .populate('estado')
+        .sort({ "fechaAlta": -1 })
         .where({ 'comercio': req.query.comercio })
         .exec((err, pedidos) => {
 
@@ -144,7 +145,7 @@ app.get('/pedido/pedidos_de_proveedor', async function(req, res) {
         .populate({ path: 'detallePedido', populate: { path: 'unidadMedida' } })
         .populate('estado')
         .where({ 'proveedor': req.query.proveedor })
-        .sort({ "estado.precedencia": 1 })
+        .sort({ "fechaAlta": -1 }) //, { "estado.precedencia": 1 }
         .exec((err, pedidos) => {
 
             // console.log(usuarios.length);
