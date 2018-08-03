@@ -6,10 +6,13 @@ const Comercio = require('../models/comercio');
 
 
 
-app.post('/comercio/inicializar_comercios', function(req, res) {
+app.post('/comercio/inicializar_comercios/', function(req, res) {
 
 
-    let valores = [{ cuit: '11111111111', razonSocial: "KIOSKO DON PABLO" }];
+    let valores = [
+        //{ cuit: '11111111111', razonSocial: "KIOSCO DON PABLO" }, 
+        { cuit: '22222222222', razonSocial: "DESPENSA EL CHAPO" }
+    ];
 
     let respuesta = [];
     for (var i = 0; i < valores.length; i++) {
