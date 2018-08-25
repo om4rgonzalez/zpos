@@ -31,16 +31,16 @@ app.post('/proveedor/nuevo/', async function(req, res) {
     let entidad = Entidad({
         cuit: req.body.entidad.cuit,
         razonSocial: req.body.entidad.razonSocial,
-        actividadPricipal: req.body.entidad.actividadPricipal,
+        actividadPrincipal: req.body.entidad.actividadPrincipal,
         tipoPersoneria: req.body.entidad.tipoPersoneria
     });
 
-    console.log('Entidad antes de ser enviada a la funcion');
+    // console.log('Entidad antes de ser enviada a la funcion');
 
-    console.log(entidad);
+    // console.log(entidad);
     try {
         let respuestaEntidad = await funciones.nuevaEntidad(entidad, domicilio);
-        console.log('Entidad creada');
+        // console.log('Entidad creada');
         if (respuestaEntidad.ok) {
             //doy de alta al punto de venta
             let puntoVenta = new PuntoVenta({

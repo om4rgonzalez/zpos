@@ -30,7 +30,7 @@ app.post('/entidad/nueva/', async function(req, res) {
                 cuit: req.body.entidad.cuit,
                 razonSocial: req.body.entidad.razonSocial,
                 domicilio: domicilio._id,
-                actividadPricipal: req.body.entidad.actividadPricipal,
+                actividadPrincipal: req.body.entidad.actividadPrincipal,
                 tipoPersoneria: req.body.entidad.tipoPersoneria
             });
 
@@ -91,7 +91,7 @@ app.post('/entidad/nueva_/', async function(req, res) {
                 cuit: req.body.cuit,
                 razonSocial: req.body.razonSocial,
                 domicilio: domicilio._id,
-                actividadPricipal: req.body.actividadPricipal,
+                actividadPrincipal: req.body.actividadPrincipal,
                 tipoPersoneria: req.body.tipoPersoneria
             });
 

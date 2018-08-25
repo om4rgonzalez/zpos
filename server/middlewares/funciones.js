@@ -4,8 +4,8 @@ const axios = require('axios');
 
 let nuevaEntidad = async(entidad, domicilio) => {
 
-    console.log('Entidad recibida');
-    console.log(entidad);
+    // console.log('Entidad recibida');
+    // console.log(entidad);
 
     let URL = process.env.URL_SERVICE + process.env.PORT + '/entidad/nueva_/';
     // console.log('URL a conectarse: ' + URL);
@@ -25,7 +25,7 @@ let nuevaEntidad = async(entidad, domicilio) => {
         idEntidad: entidad._id,
         cuit: entidad.cuit,
         razonSocial: entidad.razonSocial,
-        actividadPricipal: entidad.actividadPricipal,
+        actividadPrincipal: entidad.actividadPrincipal,
         tipoPersoneria: entidad.tipoPersoneria
 
     });

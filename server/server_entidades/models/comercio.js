@@ -19,7 +19,11 @@ let comercioSchema = new Schema({
         fechaAlta: {
             type: Date,
             default: Date.now
-        }
+        },
+        usuarios: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Usuario'
+        }]
     }
 
 );

@@ -6,7 +6,7 @@ app.use(require('./tipoPersoneria'));
 app.use(require('./entidad'));
 app.use(require('./proveedor'));
 app.use(require('./puntoVenta'));
-// app.use(require('./tipoReferencia'));
+app.use(require('./comercio'));
 
 
 
