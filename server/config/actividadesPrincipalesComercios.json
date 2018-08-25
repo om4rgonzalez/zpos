@@ -1,0 +1,45 @@
+[{
+        "nombre": "DESPENSA",
+        "orden": 1
+    },
+    {
+        "nombre": "KIOSCO",
+        "orden": 2
+    },
+    {
+        "nombre": "MINISUPER",
+        "orden": 3
+    },
+    {
+        "nombre": "DRUGSTORE",
+        "orden": 4
+    },
+    {
+        "nombre": "ROTISERIA",
+        "orden": 6
+    },
+    {
+        "nombre": "SANDWICHERIA",
+        "orden": 5
+    },
+    {
+        "nombre": "CARNICERIA",
+        "orden": 8
+    },
+    {
+        "nombre": "RESTAURANT",
+        "orden": 7
+    },
+    {
+        "nombre": "PANADERIA",
+        "orden": 9
+    },
+    {
+        "nombre": "OTRO",
+        "orden": 1000
+    },
+    {
+        "nombre": "HELADERIA",
+        "orden": 10
+    }
+]

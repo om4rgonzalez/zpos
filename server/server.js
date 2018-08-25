@@ -11,12 +11,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 //indice de rutas
-app.use(require('./routes/index'));
-// app.use(require('./server_direccion/server_direccion'));
-// app.use(require('./server_contacto/server_contacto'));
-// app.use(require('./server_persona/server_persona'));
-// app.use(require('./server_usuario/server_usuario'));
-// app.use(require('./server_cliente/server_cliente'));
+// app.use(require('./routes/index'));
+app.use(require('./server_direccion/server_direccion'));
+app.use(require('./server_entidades/server_entidades'));
+app.use(require('./server_persona/server_persona'));
+app.use(require('./server_usuario/server_usuario'));
+app.use(require('./server_contacto/server_contacto'));
+app.use(require('./server_configuracion/server-configuracion'));
 
 
 mongoose.connect(process.env.URLDB, (err, res) => {

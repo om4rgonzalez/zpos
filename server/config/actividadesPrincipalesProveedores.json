@@ -1,0 +1,61 @@
+[{
+        "nombre": "PROVEEDOR DE PRODUCTOS COMESTIBLES",
+        "orden": 1
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS PANADERIA",
+        "orden": 2
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS BEBIDAS",
+        "orden": 3
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS AVICOLAS",
+        "orden": 4
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS FIAMBRES",
+        "orden": 6
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS CARNES",
+        "orden": 5
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS GOLOSINAS",
+        "orden": 8
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS LACTEOS",
+        "orden": 7
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS PAPELERÍA Y DESCARTABLES",
+        "orden": 9
+    },
+    {
+        "nombre": "OTRO",
+        "orden": 1001
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS FRUTAS Y VERDURAS",
+        "orden": 10
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS GAS",
+        "orden": 11
+    },
+    {
+        "nombre": "PROVEEDOR DE PRODUCTOS LIMPIEZA E HIGIENE",
+        "orden": 12
+    },
+    {
+        "nombre": "PROVEEDOR DE SERVICIOS DESINFECCION",
+        "orden": 13
+    },
+    {
+        "nombre": "PROVEEDOR DE SERVICIOS LIMPIEZA",
+        "orden": 14
+    }
+]
