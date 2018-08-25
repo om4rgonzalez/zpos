@@ -182,8 +182,10 @@ const nuevoUsuario = async(usuario) => {
 const combosNuevoProveedor = async() => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/domicilio/provincias';
     let provincias_ = await axios.get(URL);
-    URL = process.env.URL_SERVICE + process.env.PORT + '/conf/actividades_principales/';
-    let actividades = await axios.get(URL);
+    URL = process.env.URL_SERVICE + process.env.PORT + '/conf/actividades_principales_proveedor/';
+    let actividadesProveedor = await axios.get(URL);
+    URL = process.env.URL_SERVICE + process.env.PORT + '/conf/actividades_principales_comercio/';
+    let actividadesComercio = await axios.get(URL);
     URL = process.env.URL_SERVICE + process.env.PORT + '/conf/tipos_personeria/';
     let tiposPersoneria = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/domicilio/estadosCasa';
@@ -200,7 +202,8 @@ const combosNuevoProveedor = async() => {
 
     let respuesta = new Object({
         provincias: provincias_.data,
-        actividadesPrincipalesComercio: actividades.data,
+        actividadesPrincipalesComercio: actividadesComercio.data,
+        actividadesPrincipalesProveedor: actividadesProveedor.data,
         tiposPersoneria: tiposPersoneria.data,
         // estadosCasa: estadosCasa.data.estadosCasaDB,
         // tiposContacto: tiposContacto_.data.tiposContactoDB,
