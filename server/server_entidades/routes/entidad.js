@@ -27,7 +27,7 @@ app.post('/entidad/nueva/', async function(req, res) {
             //doy de alta la entidad
             let entidad = new Entidad({
                 _id: req.body.entidad._id,
-                cuit: req.body.entidad.cui,
+                cuit: req.body.entidad.cuit,
                 razonSocial: req.body.entidad.razonSocial,
                 domicilio: domicilio._id,
                 actividadPricipal: req.body.entidad.actividadPricipal,
@@ -64,35 +64,65 @@ app.post('/entidad/nueva/', async function(req, res) {
 });
 
 
-// app.get('/conf/actividades/', async function(req, res) {
-//     ActividadPrincipal.find()
-//         .sort({ "orden": 1 })
-//         .where({ 'activo': true })
-//         .exec((err, actividades) => {
-//             if (err) {
-//                 return res.status(500).json({
-//                     ok: false,
-//                     err
-//                 });
-//             }
+app.post('/entidad/nueva_/', async function(req, res) {
+    // console.log('Comienzo dando de alta el domicilio')
+    let domicilio = Domicilio({
+        pais: req.body.pais,
+        provincia: req.body.provincia,
+        localidad: req.body.localidad,
+        barrio: req.body.barrio,
+        calle: req.body.calle,
+        numeroCasa: req.body.numeroCasa,
+        piso: req.body.piso,
+        numeroDepartamento: req.body.numeroDepartamento,
+        latitud: req.body.latitud,
+        longitud: req.body.longitud,
+        codigoPostal: req.body.codigoPostal
+    });
 
-//             if (!actividades) {
-//                 return res.status(400).json({
-//                     ok: false,
-//                     err: {
-//                         message: 'Error en la conexion a la base de datos'
-//                     }
-//                 });
-//             }
-//             return res.json({
-//                 ok: true,
-//                 recordsTotal: actividades.length,
-//                 recordsFiltered: actividades.length,
-//                 actividades
-//             });
+    try {
+        let respuestaDomicilio = await funciones.nuevoDomicilio(domicilio);
+        console.log('cuit: ' + req.body.cuit);
 
-//         });
-// })
+        if (respuestaDomicilio.ok) {
+            //doy de alta la entidad
+            let entidad = new Entidad({
+                _id: req.body.idEntidad,
+                cuit: req.body.cuit,
+                razonSocial: req.body.razonSocial,
+                domicilio: domicilio._id,
+                actividadPricipal: req.body.actividadPricipal,
+                tipoPersoneria: req.body.tipoPersoneria
+            });
+
+            entidad.save((err, entidadDB) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+
+                res.json({
+                    ok: true,
+                    entidadDB
+                });
+            });
+        } else {
+            return res.status(412).json({
+                ok: false,
+                message: 'Fallo la carga del domicilio'
+            });
+        }
+    } catch (e) {
+        return res.status(500).json({
+            ok: false,
+            message: 'Fallo la ejecucion de una funcion: ' + e.message
+        });
+    }
+
+});
 
 
 

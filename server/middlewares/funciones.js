@@ -4,29 +4,30 @@ const axios = require('axios');
 
 let nuevaEntidad = async(entidad, domicilio) => {
 
-    let URL = process.env.URL_SERVICE + process.env.PORT + '/entidad/nueva/';
+    console.log('Entidad recibida');
+    console.log(entidad);
+
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/entidad/nueva_/';
     // console.log('URL a conectarse: ' + URL);
     let resp = await axios.post(URL, {
-        domicilio: {
-            pais: domicilio.pais,
-            provincia: domicilio.provincia,
-            localidad: domicilio.localidad,
-            barrio: domicilio.barrio,
-            calle: domicilio.calle,
-            numeroCasa: domicilio.numeroCasa,
-            piso: domicilio.piso,
-            numeroDepartamento: domicilio.numeroDepartamento,
-            latitud: domicilio.latitud,
-            longitud: domicilio.longitud,
-            codigoPostal: domicilio.codigoPostal
-        },
-        entidad: {
-            _id: entidad._id,
-            cuit: entidad.cui,
-            razonSocial: entidad.razonSocial,
-            actividadPricipal: entidad.actividadPricipal,
-            tipoPersoneria: entidad.tipoPersoneria
-        }
+
+        pais: domicilio.pais,
+        provincia: domicilio.provincia,
+        localidad: domicilio.localidad,
+        barrio: domicilio.barrio,
+        calle: domicilio.calle,
+        numeroCasa: domicilio.numeroCasa,
+        piso: domicilio.piso,
+        numeroDepartamento: domicilio.numeroDepartamento,
+        latitud: domicilio.latitud,
+        longitud: domicilio.longitud,
+        codigoPostal: domicilio.codigoPostal,
+        idEntidad: entidad._id,
+        cuit: entidad.cuit,
+        razonSocial: entidad.razonSocial,
+        actividadPricipal: entidad.actividadPricipal,
+        tipoPersoneria: entidad.tipoPersoneria
+
     });
 
 
@@ -183,8 +184,8 @@ const combosNuevoProveedor = async() => {
     let provincias_ = await axios.get(URL);
     URL = process.env.URL_SERVICE + process.env.PORT + '/conf/actividades_principales/';
     let actividades = await axios.get(URL);
-    // URL = process.env.URL_SERVICE + process.env.PORT + '/conf/obtener_items_referencia/';
-    // let itemsReferencia = await axios.get(URL);
+    URL = process.env.URL_SERVICE + process.env.PORT + '/conf/tipos_personeria/';
+    let tiposPersoneria = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/domicilio/estadosCasa';
     // let estadosCasa = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/contacto/tipos';
@@ -200,7 +201,7 @@ const combosNuevoProveedor = async() => {
     let respuesta = new Object({
         provincias: provincias_.data,
         actividadesPrincipalesComercio: actividades.data,
-        // itemsReferencia: itemsReferencia.data.itemReferencia,
+        tiposPersoneria: tiposPersoneria.data,
         // estadosCasa: estadosCasa.data.estadosCasaDB,
         // tiposContacto: tiposContacto_.data.tiposContactoDB,
         // tiposDni: tiposDni.data.tiposDni,

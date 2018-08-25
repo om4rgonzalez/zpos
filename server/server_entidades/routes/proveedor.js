@@ -34,8 +34,12 @@ app.post('/proveedor/nuevo/', async function(req, res) {
         actividadPricipal: req.body.entidad.actividadPricipal,
         tipoPersoneria: req.body.entidad.tipoPersoneria
     });
+
+    console.log('Entidad antes de ser enviada a la funcion');
+
+    console.log(entidad);
     try {
-        let respuestaEntidad = await funciones.nuevaEntidad(domicilio, entidad);
+        let respuestaEntidad = await funciones.nuevaEntidad(entidad, domicilio);
         console.log('Entidad creada');
         if (respuestaEntidad.ok) {
             //doy de alta al punto de venta
