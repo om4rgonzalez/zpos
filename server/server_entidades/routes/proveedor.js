@@ -137,9 +137,10 @@ app.get('/proveedor/obtener_productos/', async function(req, res) {
                     }
                 });
             }
+            let productos = proveedorDB[0].productos;
             return res.json({
                 ok: true,
-                proveedorDB
+                productos
             });
 
         });
