@@ -5,6 +5,7 @@ let Schema = mongoose.Schema;
 let entidadSchema = new Schema({
         cuit: {
             type: String,
+            unique: true
         },
         razonSocial: {
             type: String,

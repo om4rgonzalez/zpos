@@ -204,7 +204,7 @@ app.post('/usuario/buscar_por_dni/', async function(req, res) {
 
 
 
-app.post('/usuario/ingresar', function(req, res) {
+app.post('/usuario/ingresar/', function(req, res) {
     let parametros = req.body;
 
 

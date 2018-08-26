@@ -118,35 +118,32 @@ app.post('/proveedor/nuevo/', async function(req, res) {
 });
 
 
-// app.get('/conf/actividades/', async function(req, res) {
-//     ActividadPrincipal.find()
-//         .sort({ "orden": 1 })
-//         .where({ 'activo': true })
-//         .exec((err, actividades) => {
-//             if (err) {
-//                 return res.status(500).json({
-//                     ok: false,
-//                     err
-//                 });
-//             }
+app.get('/proveedor/obtener_productos/', async function(req, res) {
+    Proveedor.find({ '_id': req.query.idProveedor })
+        .populate('productos')
+        .exec((err, proveedorDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
 
-//             if (!actividades) {
-//                 return res.status(400).json({
-//                     ok: false,
-//                     err: {
-//                         message: 'Error en la conexion a la base de datos'
-//                     }
-//                 });
-//             }
-//             return res.json({
-//                 ok: true,
-//                 recordsTotal: actividades.length,
-//                 recordsFiltered: actividades.length,
-//                 actividades
-//             });
+            if (!proveedorDB) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: 'Error en la conexion a la base de datos'
+                    }
+                });
+            }
+            return res.json({
+                ok: true,
+                proveedorDB
+            });
 
-//         });
-// })
+        });
+})
 
 
 
