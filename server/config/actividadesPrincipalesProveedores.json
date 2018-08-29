@@ -11,27 +11,27 @@
         "orden": 3
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS AVICOLAS",
+        "nombre": "PRODUCTOS AVICOLAS",
         "orden": 4
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS FIAMBRES",
+        "nombre": "FIAMBRES",
         "orden": 6
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS CARNES",
+        "nombre": "CARNES",
         "orden": 5
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS GOLOSINAS",
+        "nombre": "GOLOSINAS",
         "orden": 8
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS LACTEOS",
+        "nombre": "LACTEOS",
         "orden": 7
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS PAPELERÍA Y DESCARTABLES",
+        "nombre": "PAPELERÍA Y DESCARTABLES",
         "orden": 9
     },
     {
@@ -39,23 +39,23 @@
         "orden": 1001
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS FRUTAS Y VERDURAS",
+        "nombre": "FRUTAS Y VERDURAS",
         "orden": 10
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS GAS",
+        "nombre": "GAS",
         "orden": 11
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS LIMPIEZA E HIGIENE",
+        "nombre": "LIMPIEZA E HIGIENE",
         "orden": 12
     },
     {
-        "nombre": "PROVEEDOR DE SERVICIOS DESINFECCION",
+        "nombre": "SERVICIOS DESINFECCION",
         "orden": 13
     },
     {
-        "nombre": "PROVEEDOR DE SERVICIOS LIMPIEZA",
+        "nombre": "SERVICIOS LIMPIEZA",
         "orden": 14
     }
 ]
