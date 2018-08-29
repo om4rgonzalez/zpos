@@ -1,13 +1,13 @@
 [{
-        "nombre": "PROVEEDOR DE PRODUCTOS COMESTIBLES",
+        "nombre": "COMESTIBLES",
         "orden": 1
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS PANADERIA",
+        "nombre": "PANADERIA",
         "orden": 2
     },
     {
-        "nombre": "PROVEEDOR DE PRODUCTOS BEBIDAS",
+        "nombre": "BEBIDAS",
         "orden": 3
     },
     {

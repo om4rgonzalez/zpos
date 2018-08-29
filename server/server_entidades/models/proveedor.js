@@ -17,8 +17,7 @@ let proveedorSchema = new Schema({
             ref: 'Producto'
         }],
         tiposEntrega: [{
-            type: String,
-            required: true
+            type: String
         }],
         usuarios: [{
             type: mongoose.Schema.Types.ObjectId,

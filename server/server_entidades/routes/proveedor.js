@@ -117,6 +117,43 @@ app.post('/proveedor/nuevo/', async function(req, res) {
 
 });
 
+app.post('/proveedor/agregar_tipos_entrega/', async function(req, res) {
+    let avanzar = true;
+    Proveedor.find({ id_: req.body.idProveedor })
+    exec((err, proveedorDB) => {
+        if (err) {
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!proveedorDB) {
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Error en la conexion a la base de datos'
+                }
+            });
+        }
+
+        for (var i in proveedorDB[0].tiposEntrega) {
+            for (var j in req.body.tiposEntrega) {
+                if (proveedorDB[0].tiposEntrega[i] == req.body.tiposEntrega[j].item) {
+                    avanzar = false;
+                }
+            }
+        }
+
+        if (avanzar) {
+            for (var j in req.body.tiposEntrega) {
+                Proveedor.findOneAndUpdate({ _id: proveedorDB[0]._id }, { $push: { tiposEntrega: req.body.tiposEntrega[j].item } },
+                    function(err, success) {});
+            }
+        }
+    });
+});
+
 
 app.get('/proveedor/obtener_productos/', async function(req, res) {
     Proveedor.find({ '_id': req.query.idProveedor })
