@@ -49,19 +49,22 @@ app.post('/proveedor/nuevo/', async function(req, res) {
             });
             let respuestaPunto = await funciones.nuevoPuntoVenta(puntoVenta);
             if (respuestaPunto.ok) {
-                console.log('Punto de venta creado');
-                let proveedor = new Proveedor();
+                // console.log('Punto de venta creado');
+                let proveedor = new Proveedor({
+                    entidad: entidad._id
+                });
+
                 proveedor.puntosVenta.push(puntoVenta._id);
                 if (req.body.tiposEntrega) {
                     for (var i in req.body.tiposEntrega) {
                         proveedor.tiposEntrega.push(req.body.tiposEntrega[i].nombreTipo);
                     }
-                    console.log('tipos de entrega cargados');
+                    // console.log('tipos de entrega cargados');
                 }
                 if (req.body.usuarios) {
-                    console.log('usuarios');
+                    // console.log('usuarios');
                     for (var i in req.body.usuarios) {
-                        console.log(req.body.usuarios[i]);
+                        // console.log(req.body.usuarios[i]);
                         let persona = new Persona({
                             tipoDni: req.body.usuarios[i].persona.tipoDni,
                             dni: req.body.usuarios[i].persona.dni,
@@ -76,7 +79,7 @@ app.post('/proveedor/nuevo/', async function(req, res) {
                         });
                         let respuestaUsuario = await funciones.nuevoUsuario(usuario);
                         if (respuestaUsuario.ok) {
-                            console.log('Usuario creado');
+                            // console.log('Usuario creado');
                             usuarios.push(usuario._id);
                         } else
                             avanzar = false;
