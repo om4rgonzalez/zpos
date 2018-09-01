@@ -145,9 +145,9 @@ const nuevoContacto = async(contacto) => {
 
 const nuevoUsuario = async(usuario) => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/usuario/nuevo_usuario_arranque/';
-    console.log(usuario);
+    // console.log(usuario);
     let resp = await axios.post(URL, {
-
+        _id: usuario._id,
         idPersona: 0,
         tipoDni: usuario.persona.tipoDni,
         dni: usuario.persona.dni,
@@ -218,6 +218,34 @@ const combosNuevoProveedor = async() => {
 };
 
 
+let login = async(usuario) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/usuario/ingresar/';
+    // console.log(usuario);
+    let resp = await axios.post(URL, {
+
+        nombreUsuario: usuario.nombreUsuario,
+        clave: usuario.clave
+    });
+    console.log('termino la ejecucion del axios');
+    console.log('respondio ok? - ' + resp.data.ok);
+    // // console.log()
+    // console.log('Respuesta del servicio: ' + resp.data.token);
+    // console.log('el id del usuario es: ' + resp.data.usuario._id);
+
+    if (resp.data.ok) {
+        return {
+            ok: true,
+            _id: resp.data.usuario._id,
+            token: resp.data.token
+        };
+    } else {
+        return {
+            ok: false,
+            message: 'Usuario o clave incorrecta'
+        };
+    }
+};
+
 
 
 
@@ -229,5 +257,6 @@ module.exports = {
     nuevaPersona,
     nuevoContacto,
     nuevoUsuario,
-    combosNuevoProveedor
+    combosNuevoProveedor,
+    login
 }

@@ -214,14 +214,16 @@ app.post('/usuario/ingresar/', function(req, res) {
         .exec((err, usuarioDb) => {
 
             if (err) {
-                return res.status(500).json({
+                console.log('Error: ' + err.message);
+                return res.json({
                     ok: false,
                     err
                 });
             }
 
             if (!usuarioDb) {
-                return res.status(400).json({
+                console.log('No se encontro el usuario');
+                return res.json({
                     ok: false,
                     err: {
                         message: 'Nombre de usuario o clave incorrecta'
@@ -231,7 +233,8 @@ app.post('/usuario/ingresar/', function(req, res) {
 
 
             if (!bcrypt.compareSync(parametros.clave, usuarioDb.clave)) {
-                return res.status(400).json({
+                console.log('La clave no coincide');
+                return res.json({
                     ok: false,
                     err: {
                         message: 'Nombre de usuario o clave incorrecta'
@@ -420,7 +423,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
             });
 
             let respPersona = await funciones.nuevaPersona(persona);
-            console.log("Ya se dio de alta la persona");
+            // console.log("Ya se dio de alta la persona");
             if (respPersona.ok)
                 idPersona = persona._id;
             else
@@ -428,7 +431,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
 
 
         } catch (e) {
-            console.log('Error al generar la persona ' + e.message);
+            // console.log('Error al generar la persona ' + e.message);
             avanzar = false;
         }
     }
@@ -470,6 +473,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
             // console.log(contactos);
             // console.log("Ahora genero el usuario");
             let usuario = new Usuario({
+                _id: req.body._id,
                 persona: idPersona,
                 nombreUsuario: objeto.nombreUsuario,
                 clave: bcrypt.hashSync(objeto.clave, 10),

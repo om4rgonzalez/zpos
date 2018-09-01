@@ -184,8 +184,98 @@ app.get('/proveedor/obtener_productos/', async function(req, res) {
             });
 
         });
-})
+});
 
+app.get('/proveedor/listar_todos/', async function(req, res) {
+
+    Proveedor.find({}, 'tiposEntrega entidad _id')
+        .populate('entidad')
+        .exec((err, proveedorDB) => {
+
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'Error al realizar la consulta. Error: ' + err.message
+                });
+            }
+
+            if (!proveedorDB) {
+                return res.json({
+                    ok: false,
+                    err: {
+                        message: 'No hay proveedores para mostrar'
+                    }
+                });
+            }
+
+
+            return res.json({
+                ok: true,
+                proveedorDB
+            })
+
+        });
+});
+
+
+app.post('/proveedor/ingresar/', async function(req, res) {
+
+    let usuario_ = new Object({
+        nombreUsuario: req.body.nombreUsuario,
+        clave: req.body.clave
+    });
+    let resp = await funciones.login(usuario_);
+
+    console.log(resp);
+
+    if (resp.ok) {
+        console.log(resp);
+        let usuario = new Object({
+            _id: resp._id,
+            token: resp.token
+        });
+
+        console.log(usuario);
+
+        Proveedor.find({}, 'tiposEntrega entidad _id')
+            .populate('entidad')
+            .where('usuarios').in(usuario._id)
+            .exec((err, proveedorDB) => {
+
+                if (err) {
+                    console.log('Error al realizar la consulta. Error: ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'Error al realizar la consulta. Error: ' + err.message
+                    });
+                }
+
+                if (!proveedorDB) {
+                    console.log('No hay proveedores para mostrar')
+                    return res.json({
+                        ok: false,
+                        err: {
+                            message: 'No hay proveedores para mostrar'
+                        }
+                    });
+                }
+
+
+                return res.json({
+                    ok: true,
+                    proveedorDB,
+                    usuario
+                });
+
+            });
+    } else {
+        return res.json({
+            ok: false,
+            message: 'Usuario o clave incorrecta'
+        });
+
+    }
+});
 
 
 
