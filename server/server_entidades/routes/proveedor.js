@@ -226,16 +226,16 @@ app.post('/proveedor/ingresar/', async function(req, res) {
     });
     let resp = await funciones.login(usuario_);
 
-    console.log(resp);
+    // console.log(resp);
 
     if (resp.ok) {
-        console.log(resp);
+        // console.log(resp);
         let usuario = new Object({
             _id: resp._id,
             token: resp.token
         });
 
-        console.log(usuario);
+        // console.log(usuario);
 
         Proveedor.find({}, 'tiposEntrega entidad _id')
             .populate('entidad')
@@ -243,7 +243,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
             .exec((err, proveedorDB) => {
 
                 if (err) {
-                    console.log('Error al realizar la consulta. Error: ' + err.message);
+                    // console.log('Error al realizar la consulta. Error: ' + err.message);
                     return res.json({
                         ok: false,
                         message: 'Error al realizar la consulta. Error: ' + err.message
@@ -251,7 +251,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                 }
 
                 if (!proveedorDB) {
-                    console.log('No hay proveedores para mostrar')
+                    // console.log('No hay proveedores para mostrar')
                     return res.json({
                         ok: false,
                         err: {

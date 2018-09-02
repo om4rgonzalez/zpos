@@ -102,4 +102,67 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
 
 
+app.post('/comercio/ingresar/', async function(req, res) {
+
+    let usuario_ = new Object({
+        nombreUsuario: req.body.nombreUsuario,
+        clave: req.body.clave
+    });
+    let resp = await funciones.login(usuario_);
+
+    console.log(resp);
+
+    if (resp.ok) {
+        console.log(resp);
+        let usuario = new Object({
+            _id: resp._id,
+            token: resp.token
+        });
+
+        console.log(usuario);
+
+        Comercio.find({}, 'proveedores entidad _id')
+            .populate('entidad')
+            .populate('proveedores')
+            .populate({ path: 'proveedores', populate: { path: 'entidad' } })
+            .where('usuarios').in(usuario._id)
+            .exec((err, comercioDB) => {
+
+                if (err) {
+                    console.log('Error al realizar la consulta. Error: ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'Error al realizar la consulta. Error: ' + err.message
+                    });
+                }
+
+                if (!comercioDB) {
+                    console.log('No hay proveedores para mostrar')
+                    return res.json({
+                        ok: false,
+                        err: {
+                            message: 'No hay proveedores para mostrar'
+                        }
+                    });
+                }
+
+
+                return res.json({
+                    ok: true,
+                    comercioDB,
+                    usuario
+                });
+
+            });
+    } else {
+        return res.json({
+            ok: false,
+            message: 'Usuario o clave incorrecta'
+        });
+
+    }
+});
+
+
+
 module.exports = app;
