@@ -110,21 +110,21 @@ app.post('/comercio/ingresar/', async function(req, res) {
     });
     let resp = await funciones.login(usuario_);
 
-    console.log(resp);
+    // console.log(resp);
 
     if (resp.ok) {
-        console.log(resp);
+        // console.log(resp);
         let usuario = new Object({
             _id: resp._id,
             token: resp.token
         });
 
-        console.log(usuario);
+        // console.log(usuario);
 
-        Comercio.find({}, 'proveedores entidad _id')
+        Comercio.find({})
             .populate('entidad')
-            .populate('proveedores')
-            .populate({ path: 'proveedores', populate: { path: 'entidad' } })
+            .populate('proveedores', 'entidad tiposEntrega')
+            .populate({ path: 'proveedores', select: 'entidad tiposEntrega', populate: { path: 'entidad' } })
             .where('usuarios').in(usuario._id)
             .exec((err, comercioDB) => {
 

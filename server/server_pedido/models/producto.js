@@ -25,7 +25,13 @@ let productoSchema = new Schema({
         },
         unidadesMedida: [{
             type: String
-        }]
+        }],
+        categoria: {
+            type: String
+        },
+        subcategoria: {
+            type: String
+        }
     }
 
 );

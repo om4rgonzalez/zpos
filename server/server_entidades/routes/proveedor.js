@@ -177,6 +177,14 @@ app.get('/proveedor/obtener_productos/', async function(req, res) {
                     }
                 });
             }
+            // console.log(proveedorDB);
+            // console.log(proveedorDB.productos);
+            if (!proveedorDB[0].productos)
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no tiene productos asociados'
+                });
+
             let productos = proveedorDB[0].productos;
             return res.json({
                 ok: true,

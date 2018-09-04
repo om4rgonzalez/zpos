@@ -1,20 +1,20 @@
 [{
-        "unidad": "Kg"
+        "unidad": "KG"
     },
     {
-        "unidad": "Gramo"
+        "unidad": "GRAMO"
     },
     {
-        "unidad": "Litro"
+        "unidad": "LITRO"
     },
     {
-        "unidad": "Unidad"
+        "unidad": "UNIDAD"
     },
     {
-        "unidad": "Docena"
+        "unidad": "DOCENA"
     },
     {
-        "unidad": "Fardo"
+        "unidad": "PAQUETE"
     }
 
 ]
