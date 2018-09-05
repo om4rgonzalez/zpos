@@ -30,7 +30,11 @@ let proveedorSchema = new Schema({
         fechaAlta: {
             type: Date,
             default: Date.now
-        }
+        },
+        comercios: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Comercio"
+        }]
     }
 
 );

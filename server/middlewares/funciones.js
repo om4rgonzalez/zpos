@@ -1,4 +1,5 @@
 const axios = require('axios');
+const EstadosPedido = require('../server_pedido/src/estados_pedido.json');
 
 
 
@@ -206,13 +207,14 @@ const combosNuevoProveedor = async() => {
         actividadesPrincipalesComercio: actividadesComercio.data,
         actividadesPrincipalesProveedor: actividadesProveedor.data,
         tiposPersoneria: tiposPersoneria.data,
-        // estadosCasa: estadosCasa.data.estadosCasaDB,
-        // tiposContacto: tiposContacto_.data.tiposContactoDB,
-        // tiposDni: tiposDni.data.tiposDni,
-        // tiposCliente: tiposCliente.data.tipoCliente,
-        // tiposPlanes: tiposPlanes.data.tipoPlan,
-        // documentos: documentos_,
-        // itemAnalisis: ItemAnalisis
+        estadosPedido: EstadosPedido
+            // estadosCasa: estadosCasa.data.estadosCasaDB,
+            // tiposContacto: tiposContacto_.data.tiposContactoDB,
+            // tiposDni: tiposDni.data.tiposDni,
+            // tiposCliente: tiposCliente.data.tipoCliente,
+            // tiposPlanes: tiposPlanes.data.tipoPlan,
+            // documentos: documentos_,
+            // itemAnalisis: ItemAnalisis
     });
     return respuesta;
 };
@@ -226,8 +228,8 @@ let login = async(usuario) => {
         nombreUsuario: usuario.nombreUsuario,
         clave: usuario.clave
     });
-    console.log('termino la ejecucion del axios');
-    console.log('respondio ok? - ' + resp.data.ok);
+    // console.log('termino la ejecucion del axios');
+    // console.log('respondio ok? - ' + resp.data.ok);
     // // console.log()
     // console.log('Respuesta del servicio: ' + resp.data.token);
     // console.log('el id del usuario es: ' + resp.data.usuario._id);
@@ -244,6 +246,10 @@ let login = async(usuario) => {
             message: 'Usuario o clave incorrecta'
         };
     }
+};
+
+let buscarComercioUsuario = (usuario) => {
+
 };
 
 

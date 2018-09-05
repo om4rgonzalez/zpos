@@ -33,8 +33,10 @@ let pedidoSchema = new Schema({
             default: Date.now
         },
         estadoPedido: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'EstadoPedido'
+            type: String
+        },
+        estadoTerminal: {
+            type: Boolean
         },
         comentario: {
             type: String
