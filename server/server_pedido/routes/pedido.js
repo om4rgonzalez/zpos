@@ -145,6 +145,13 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
 });
 
 
+app.post('/pedido/aprobar/', async function(req, res) {
+
+    //cambiar el estado al pedido
+    Pedido.findOneAndUpdate()
+
+});
+
 
 
 

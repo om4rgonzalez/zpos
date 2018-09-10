@@ -7,6 +7,7 @@ app.use(require('./entidad'));
 app.use(require('./proveedor'));
 app.use(require('./puntoVenta'));
 app.use(require('./comercio'));
+app.use(require('./invitacion'));
 
 
 

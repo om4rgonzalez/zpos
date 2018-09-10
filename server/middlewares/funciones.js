@@ -228,12 +228,6 @@ let login = async(usuario) => {
         nombreUsuario: usuario.nombreUsuario,
         clave: usuario.clave
     });
-    // console.log('termino la ejecucion del axios');
-    // console.log('respondio ok? - ' + resp.data.ok);
-    // // console.log()
-    // console.log('Respuesta del servicio: ' + resp.data.token);
-    // console.log('el id del usuario es: ' + resp.data.usuario._id);
-
     if (resp.data.ok) {
         return {
             ok: true,
@@ -253,6 +247,30 @@ let buscarComercioUsuario = (usuario) => {
 };
 
 
+let verificarExistenciaProveedorEnRedComercio = async(proveedor, comercio) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/comercio/buscar_proveedor/';
+    let resp = await axios.post(URL, {
+        proveedor: proveedor,
+        comercio: comercio
+    });
+
+    // console.log('la funcion devolvio ' + resp.data.ok);
+    // console.log(resp.data.message);
+
+    if (resp.data.ok) {
+        return {
+            ok: false,
+            message: 'El proveedor ya es parte de la red'
+        };
+    }
+    return {
+        ok: true,
+        message: 'El proveedor no es parte de la red'
+    };
+
+};
+
+
 
 
 module.exports = {
@@ -264,5 +282,6 @@ module.exports = {
     nuevoContacto,
     nuevoUsuario,
     combosNuevoProveedor,
-    login
+    login,
+    verificarExistenciaProveedorEnRedComercio
 }
