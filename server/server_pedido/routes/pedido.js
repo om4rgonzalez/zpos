@@ -145,10 +145,55 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
 });
 
 
-app.post('/pedido/aprobar/', async function(req, res) {
+app.post('/pedido/aceptar/', async function(req, res) {
 
     //cambiar el estado al pedido
-    Pedido.findOneAndUpdate()
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO' } }, function(err, exito) {
+        if (err) {
+            return res.json({
+                ok: false,
+                message: 'La actualizacion produjo un error. Error: ' + err.message
+            });
+        }
+
+        if (exito == null) {
+            return res.json({
+                ok: false,
+                message: 'No se puede modificar el estado de un pedido finalizado'
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'El pedido fue aceptado'
+        });
+    });
+
+});
+
+app.post('/pedido/rechazar/', async function(req, res) {
+
+    //cambiar el estado al pedido
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true } }, function(err, exito) {
+        if (err) {
+            return res.json({
+                ok: false,
+                message: 'La actualizacion produjo un error. Error: ' + err.message
+            });
+        }
+
+        if (exito == null) {
+            return res.json({
+                ok: false,
+                message: 'No se puede modificar el estado de un pedido finalizado'
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'El pedido fue rechazado'
+        });
+    });
 
 });
 

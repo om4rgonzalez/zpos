@@ -49,7 +49,7 @@ app.post('/invitacion/nueva/', async function(req, res) {
 
 
 app.get('/invitacion/consultar_pendientes/', async function(req, res) {
-    console.log('El proveedor que consulta es: ' + req.query.proveedor);
+    // console.log('El proveedor que consulta es: ' + req.query.proveedor);
     Invitacion.find({ proveedor: req.query.proveedor })
         .populate('comercio')
         .populate({ path: 'comercio', populate: { path: 'entidad' } })
