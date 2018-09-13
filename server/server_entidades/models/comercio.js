@@ -12,6 +12,13 @@ let comercioSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Proveedor'
         }],
+        productos: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Producto'
+        }],
+        tiposEntrega: [{
+            type: String
+        }],
         activo: {
             type: Boolean,
             default: true

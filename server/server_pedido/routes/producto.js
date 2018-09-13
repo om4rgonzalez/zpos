@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Producto = require('../models/producto');
 const ProductosNorPan = require('../src/productos-norpan.json');
+const Helados = require('../src/productos-helado.json');
 const Proveedor = require('../../server_entidades/models/proveedor');
 
 
@@ -75,6 +76,48 @@ app.post('/conf/cargar_productos_norpan/', function(req, res) {
     });
 });
 
+
+app.post('/conf/cargar_productos_helado/', function(req, res) {
+
+    for (var i in Helados) {
+        for (var j in Helados[i].productos) {
+            let item = new Producto({
+                categoria: Helados[i].categoria,
+                subcategoria: Helados[i].subcategoria,
+                nombreProducto: Helados[i].productos[j].nombreProducto,
+                precioProveedor: Helados[i].productos[j].precioProveedor,
+                precioSugerido: Helados[i].productos[j].precioSugerido
+            });
+            // console.log('producto a guardar');
+            // console.log(item);
+            item.unidadesMedida.push(Helados[i].productos[j].unidadMedida);
+            item.save((err, exito) => {
+                if (err) {
+                    console.log("salto un error en el alta del producto");
+                    console.log(err.message);
+                }
+
+                Proveedor.findOneAndUpdate({ _id: '5b8d0f26b4727d0014175510' }, { $push: { productos: item._id } },
+                    function(err2, success) {
+                        if (err2) {
+                            console.log('Salto un error en el push del producto al proveedor');
+                            console.log(err2.message);
+                        }
+
+                    });
+            });
+        }
+
+    }
+
+
+
+
+    return res.json({
+        ok: true,
+        message: 'Los valores se cargaron correctamente'
+    });
+});
 
 
 
