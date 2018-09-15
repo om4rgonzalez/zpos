@@ -7,7 +7,7 @@ process.env.URL_SERVICE = process.env.URL_SERVICE || 'http://localhost:'
 //Entorno
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev;'
 
-//base de datos
+
 //base de datos
 let urlDB;
 if (process.env.NODE_ENV == 'prod') {
