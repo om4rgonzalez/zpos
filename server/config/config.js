@@ -8,11 +8,15 @@ process.env.URL_SERVICE = process.env.URL_SERVICE || 'http://localhost:'
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev;'
 
 //base de datos
+//base de datos
 let urlDB;
-//if (process.env.NODE_ENV === 'dev') {
-//    urlDB = 'mongodb://localhost:27017/db_sur_creditos';
-//} else {
-urlDB = 'mongodb://sa:Bintech123@ds139331.mlab.com:39331/zpos'
+if (process.env.NODE_ENV == 'prod') {
+    urlDB = 'mongodb://localhost:27017/zpos';
+} else {
+    urlDB = 'mongodb://sa:Bintech123@ds139331.mlab.com:39331/zpos'
+}
+
+
 
 
 
