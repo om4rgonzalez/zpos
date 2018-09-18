@@ -6,6 +6,7 @@ const funciones = require('../../middlewares/funciones');
 const Comercio = require('../models/comercio');
 const Usuario = require('../../server_usuario/models/usuario');
 const Persona = require('../../server_persona/models/persona');
+const HorarioAtencion = require('../models/horarioAtencion');
 
 
 app.post('/comercio/nuevo/', async function(req, res) {
@@ -198,6 +199,160 @@ app.post('/comercio/buscar_proveedor/', async function(req, res) {
             res.json({
                 ok: false,
                 message: 'El comercio no tiene al proveedor en su red'
+            });
+
+        });
+});
+
+
+app.post('/comercio/cargar_conf_domicilio/', async function(req, res) {
+
+
+
+    let domicilio = {
+        pais: req.body.domicilio.pais,
+        provincia: req.body.domicilio.provincia,
+        localidad: req.body.domicilio.localidad,
+        barrio: req.body.domicilio.barrio,
+        calle: req.body.domicilio.calle,
+        numeroCasa: req.body.domicilio.numeroCasa,
+        piso: req.body.domicilio.piso,
+        numeroDepartamento: req.body.domicilio.numeroDepartamento,
+        latitud: req.body.domicilio.latitud,
+        longitud: req.body.domicilio.longitud,
+        codigoPostal: req.body.domicilio.codigoPostal
+    };
+
+    try {
+        domicilio.save();
+        //debo actualizar el domicilio en la entidad
+
+
+    } catch (e) {
+
+    }
+
+
+
+    // Comercio.find({ '_id': req.body.comercio })
+    //     // .where('proveedores').in(req.body.proveedor)
+    //     .exec((err, comerciosDB) => {
+    //         if (err) {
+    //             return res.json({
+    //                 ok: false,
+    //                 message: 'La busqueda arrojo un error: Error: ' + err.message
+    //             });
+    //         }
+
+    //         if (!comerciosDB) {
+    //             return res.json({
+    //                 ok: false,
+    //                 message: 'El comercio no tiene al proveedor en su red'
+    //             });
+    //         }
+    //         for (var i in comerciosDB[0].proveedores) {
+    //             if (comerciosDB[0].proveedores[i] == req.body.proveedor)
+    //                 return res.json({
+    //                     ok: true,
+    //                     message: 'El proveedor forma parte de la red del comercio'
+    //                 });
+
+    //         }
+    //         // console.log('proveedores:');
+    //         // console.log(comerciosDB);
+    //         // // console.log('_id comercio: ' + comerciosDB[0]._id);
+    //         // // console.log(comerciosDB[0].proveedores)
+
+    //         res.json({
+    //             ok: false,
+    //             message: 'El comercio no tiene al proveedor en su red'
+    //         });
+
+    //     });
+});
+
+app.post('/comercio/buscar_por_nombre/', async function(req, res) {
+
+    var x = req.body.nombreComercio.trim().split(" ");
+    var regex = x.join("|");
+    var entidades = [];
+
+
+
+    Entidad.find({ "razonSocial": { "$regex": regex, "$options": "i" } },
+        function(err, docs) {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda produjo un error. Err: ' + err.message
+                });
+            }
+            if (docs.length == 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay un comercio con ese nombre'
+                });
+            }
+            let hasta = docs.length;
+            let i = 0;
+            while (i < hasta) {
+                entidades.push(docs[i]._id);
+                i++;
+            }
+            Comercio.find({ entidad: { $in: entidades } })
+                .populate('entidad')
+                .exec((err2, comercios) => {
+                    if (err2) {
+                        return res.json({
+                            ok: false,
+                            message: 'La busqueda de comercio provoco un error: ' + err2.message
+                        });
+                    }
+                    if (comercios.length == 0) {
+                        return res.json({
+                            ok: false,
+                            message: 'No se encontraron coincidencias'
+                        });
+                    }
+                    res.json({
+                        ok: true,
+                        comercios
+                    });
+                });
+        });
+});
+
+app.get('/comercio/obtener_productos/', async function(req, res) {
+    Comercio.find({ '_id': req.query.idComercio })
+        .populate('productos')
+        .exec((err, proveedorDB) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            if (!proveedorDB) {
+                return res.status(400).json({
+                    ok: false,
+                    err: {
+                        message: 'Error en la conexion a la base de datos'
+                    }
+                });
+            }
+            // console.log(proveedorDB);
+            // console.log(proveedorDB.productos);
+            if (!proveedorDB[0].productos)
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no tiene productos asociados'
+                });
+
+            let productos = proveedorDB[0].productos;
+            return res.json({
+                ok: true,
+                productos
             });
 
         });

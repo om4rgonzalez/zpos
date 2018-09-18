@@ -30,6 +30,26 @@ let comercioSchema = new Schema({
         usuarios: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Usuario'
+        }],
+        vende: {
+            type: Boolean,
+            default: false
+        },
+        primerLogin: {
+            type: Boolean,
+            default: true
+        },
+        aceptoTerminoProveedor: {
+            type: Boolean,
+            default: false
+        },
+        aceptoTerminosVendedor: {
+            type: Boolean,
+            default: false
+        },
+        horarioAtencion: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'HorarioAtencion'
         }]
     }
 
