@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 // parse application/json
 app.use(bodyParser.json());
-console.log('Llego la peticion');
+// console.log('Llego la peticion');
 
 
 
