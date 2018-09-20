@@ -7,6 +7,10 @@ let clienteSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Persona'
         },
+        contactos: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Contacto'
+        }],
         // tipoCliente: {
         //     type: mongoose.Schema.Types.ObjectId,
         //     require: [true, 'Todo cliente debe pertenecer a un tipo'],

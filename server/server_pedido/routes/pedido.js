@@ -203,41 +203,41 @@ app.post('/pedido/rechazar/', async function(req, res) {
 //////////// REGION COMERCIO ///////////////
 app.post('/pedido/nuevo_pedido_comercio/', async function(req, res) {
 
-    let usuario = aut.validarToken(req.body.token);
-    if (!usuario) {
-        return res.json({
-            ok: false,
-            message: 'Usuario no valido'
+    // let usuario = aut.validarToken(req.body.token);
+    // if (!usuario) {
+    //     return res.json({
+    //         ok: false,
+    //         message: 'Usuario no valido'
+    //     });
+    // } else {
+    let detalles = [];
+    for (var i in req.body.productos) {
+        let detallePedido = new DetallePedido({
+            producto: req.body.productos[i]._id,
+            unidadMedida: req.body.productos[i].unidadMedida,
+            cantidadPedido: req.body.productos[i].cantidad,
         });
-    } else {
-        let detalles = [];
-        for (var i in req.body.productos) {
-            let detallePedido = new DetallePedido({
-                producto: req.body.productos[i]._id,
-                unidadMedida: req.body.productos[i].unidadMedida,
-                cantidadPedido: req.body.productos[i].cantidad,
-            });
-            detallePedido.save();
-            detalles.push(detallePedido._id);
-        }
-
-        let pedido = new Pedido({
-            proveedor: req.body.proveedor,
-            comercio: req.body.comercio,
-            tipoEntrega: req.body.tipoEntrega,
-            fechaEntrega: req.body.fechaEntrega,
-            detallePedido: detalles,
-            estadoPedido: 'PEDIDO INFORMADO',
-            estadoTerminal: false,
-            comentario: req.body.comentario
-        });
-
-        pedido.save();
-        return res.json({
-            ok: true,
-            message: 'El pedido ha sido registrado'
-        });
+        detallePedido.save();
+        detalles.push(detallePedido._id);
     }
+
+    let pedido = new Pedido({
+        proveedor: req.body.proveedor,
+        comercio: req.body.comercio,
+        tipoEntrega: req.body.tipoEntrega,
+        fechaEntrega: req.body.fechaEntrega,
+        detallePedido: detalles,
+        estadoPedido: 'PEDIDO INFORMADO',
+        estadoTerminal: false,
+        comentario: req.body.comentario
+    });
+
+    pedido.save();
+    return res.json({
+        ok: true,
+        message: 'El pedido ha sido registrado'
+    });
+    // }
 });
 
 
