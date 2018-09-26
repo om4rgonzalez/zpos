@@ -10,7 +10,8 @@ let productoSchema = new Schema({
         },
         precioProveedor: {
             type: Number,
-            required: true
+            required: true,
+            default: 0
         },
         precioSugerido: {
             type: Number

@@ -51,8 +51,10 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
     // console.log('comercio: ' + req.query.idComercio);
 
     Pedido.find({ comercio: req.query.idComercio })
-        .populate('proveedor', 'entidad')
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .sort({ fecha: -1 })
         .exec((err, pedidos) => {
             if (err) {
@@ -69,9 +71,44 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                 });
             }
 
+            if (pedidos.length <= 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let pedido = new Object({
+                    proveedor: pedidos[cursor].proveedor,
+                    comercio: pedidos[cursor].comercio,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido
+                });
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
             res.json({
                 ok: true,
-                pedidos
+                pedidos_array
             })
 
         });
@@ -84,8 +121,10 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
     // console.log('comercio: ' + req.query.idComercio);
 
     Pedido.find({ proveedor: req.query.idProveedor })
-        .populate('comercio', 'entidad')
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .sort({ fecha: -1 })
         .exec((err, pedidos) => {
             if (err) {
@@ -102,9 +141,44 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 });
             }
 
+            if (pedidos.length <= 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let pedido = new Object({
+                    proveedor: pedidos[cursor].proveedor,
+                    comercio: pedidos[cursor].comercio,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido
+                });
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
             res.json({
                 ok: true,
-                pedidos
+                pedidos_array
             })
 
         });
@@ -116,8 +190,10 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
     // console.log('comercio: ' + req.query.idComercio);
 
     Pedido.find({ proveedor: req.query.idProveedor })
-        .populate('comercio', 'entidad')
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .where({ estadoPedido: 'PEDIDO INFORMADO' })
         .sort({ fecha: -1 })
         .exec((err, pedidos) => {
@@ -135,9 +211,37 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                 });
             }
 
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let pedido = new Object({
+                    proveedor: pedidos[cursor].proveedor,
+                    comercio: pedidos[cursor].comercio,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido
+                });
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
             res.json({
                 ok: true,
-                pedidos
+                pedidos_array
             })
 
         });
