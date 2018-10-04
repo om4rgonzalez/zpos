@@ -307,13 +307,7 @@ app.post('/pedido/rechazar/', async function(req, res) {
 //////////// REGION COMERCIO ///////////////
 app.post('/pedido/nuevo_pedido_comercio/', async function(req, res) {
 
-    // let usuario = aut.validarToken(req.body.token);
-    // if (!usuario) {
-    //     return res.json({
-    //         ok: false,
-    //         message: 'Usuario no valido'
-    //     });
-    // } else {
+
     let detalles = [];
     for (var i in req.body.productos) {
         let detallePedido = new DetallePedido({
