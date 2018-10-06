@@ -55,7 +55,7 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
-        .sort({ fecha: -1 })
+        .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
             if (err) {
                 return res.json({
@@ -125,7 +125,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
-        .sort({ fecha: -1 })
+        .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
             if (err) {
                 return res.json({
@@ -195,7 +195,7 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .where({ estadoPedido: 'PEDIDO INFORMADO' })
-        .sort({ fecha: -1 })
+        .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
             if (err) {
                 return res.json({
