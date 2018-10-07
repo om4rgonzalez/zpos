@@ -90,6 +90,7 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                     cursorDetalle++;
                 }
                 let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
                     proveedor: pedidos[cursor].proveedor,
                     comercio: pedidos[cursor].comercio,
                     tipoEntrega: pedidos[cursor].tipoEntrega,
@@ -160,6 +161,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                     cursorDetalle++;
                 }
                 let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
                     proveedor: pedidos[cursor].proveedor,
                     comercio: pedidos[cursor].comercio,
                     tipoEntrega: pedidos[cursor].tipoEntrega,
@@ -223,6 +225,7 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                     cursorDetalle++;
                 }
                 let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
                     proveedor: pedidos[cursor].proveedor,
                     comercio: pedidos[cursor].comercio,
                     tipoEntrega: pedidos[cursor].tipoEntrega,
