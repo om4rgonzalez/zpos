@@ -1,5 +1,6 @@
 const axios = require('axios');
 const EstadosPedido = require('../server_pedido/src/estados_pedido.json');
+const fs = require('fs');
 
 
 
@@ -272,6 +273,35 @@ let verificarExistenciaProveedorEnRedComercio = async(proveedor, comercio) => {
 };
 
 
+let cargarImagenPublicidad = async(imagen, nombre) => {
+    var tmp_path = imagen.path; //ruta del archivo
+    var tipo = imagen.type; //tipo del archivo
+
+    if (tipo == 'image/png' || tipo == 'image/jpg' || tipo == 'image/jpeg') {
+        var target_path = process.env.UrlImagen + nombre + '.' + imagen.name.split(".").pop(); // hacia donde subiremos nuestro archivo dentro de nuestro servidor
+        // console.log('Path Destino: ' + target_path);
+        await fs.rename(tmp_path, target_path, async function(err) {
+            //Escribimos el archivo
+
+            if (err) {
+                console.log('La subida del archivo produjo un error: ' + err.message);
+                return {
+                    ok: false
+                };
+            }
+
+            return {
+                ok: true
+            };
+        });
+    } else {
+        return {
+            ok: false
+        };
+    }
+};
+
+
 
 
 module.exports = {
@@ -284,5 +314,6 @@ module.exports = {
     nuevoUsuario,
     combosNuevoProveedor,
     login,
-    verificarExistenciaProveedorEnRedComercio
+    verificarExistenciaProveedorEnRedComercio,
+    cargarImagenPublicidad
 }

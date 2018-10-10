@@ -16,6 +16,15 @@ if (process.env.NODE_ENV == 'prod') {
     urlDB = 'mongodb://sa:Bintech123@ds139331.mlab.com:39331/zpos'
 }
 
+let urlImagen;
+
+if (process.env.NODE_ENV == 'prod') {
+    urlImagen = 'C:\\xampp\\htdocs\\imagenes_publicidad\\';
+} else {
+    urlImagen = '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
+}
+
+process.env.UrlImagen = urlImagen;
 
 
 

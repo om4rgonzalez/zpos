@@ -2,11 +2,19 @@ require('./config/config');
 
 const mongoose = require('mongoose');
 const express = require('express');
+const formidable = require('express-formidable');
+
 
 const app = express();
+// const bodyParser = require(express.bodyParser());
 const bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(formidable({
+    keepExtensions: true
+        // ,
+        // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
+}));
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -32,6 +40,7 @@ app.use(require('./server_contacto/server_contacto'));
 app.use(require('./server_configuracion/server-configuracion'));
 app.use(require('./server_pedido/server_pedido'));
 app.use(require('./server_cliente/server_cliente'));
+app.use(require('./server_publicidad/server_publicidad'));
 
 
 mongoose.connect(process.env.URLDB, (err, res) => {

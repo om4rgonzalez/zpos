@@ -57,5 +57,9 @@
     {
         "nombre": "SERVICIOS LIMPIEZA",
         "orden": 14
+    },
+    {
+        "nombre": "HELADOS",
+        "orden": 15
     }
 ]
