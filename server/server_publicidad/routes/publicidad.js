@@ -2,10 +2,17 @@ const express = require('express');
 const app = express();
 const Publicidad = require('../models/publicidad');
 const fs = require('fs');
+const formidable = require('express-formidable');
 // const Domicilio = require('../../server_direccion/models/domicilio');
 // const Persona = require('../../server_persona/models/persona');
 const funciones = require('../../middlewares/funciones');
 const aut = require('../../middlewares/autenticacion');
+
+app.use(formidable({
+    keepExtensions: true
+        // ,
+        // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
+}));
 
 app.post('/publicidad/subir_foto/', async function(req, res) {
     // console.log(req.fields.cuerpo);
