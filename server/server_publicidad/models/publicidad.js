@@ -14,6 +14,9 @@ let publicidadSchema = new Schema({
     imagen: {
         type: String
     },
+    titulo: {
+        type: String
+    },
     cuerpo: {
         type: String
     },

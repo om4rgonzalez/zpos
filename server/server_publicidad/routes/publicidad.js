@@ -18,6 +18,7 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
             cuerpo: req.fields.cuerpo,
             fechaInicio: req.fields.fechaInicio,
             fechaFin: req.fields.fechaFin,
+            titulo: req.fields.titulo,
             tieneImagen: false
         });
 
@@ -96,6 +97,45 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
 });
 
 
+
+app.post('/publicidad/obtener_publicidad/', async(req, res) => {
+    // Publicidad.find({
+    //     $and: [
+    //         { $or: [{a: 1}, {b: 1}] },
+    //         { $or: [{c: 1}, {d: 1}] }
+    //     ]
+    // }, function (err, results) {
+    //     ...
+    // }
+
+
+
+
+    Publicidad.find()
+        .where({ disponibilidad: 'TODA LA RED' })
+        .exec((err, publicaciones) => {
+            if (err) {
+                console.log('La busqueda produjo un error: ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda produjo un error: ' + err.message
+                });
+            }
+
+            if (publicaciones.length == 0) {
+                console.log('La consulta no arrojo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La consulta no arrojo resultados'
+                });
+            }
+
+            res.json({
+                ok: true,
+                publicaciones
+            });
+        });
+});
 
 
 
