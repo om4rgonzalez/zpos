@@ -109,11 +109,12 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
     // }
 
 
-
+    let publicaciones = [];
+    let fecha = new Date();
 
     Publicidad.find()
         .where({ disponibilidad: 'TODA LA RED' })
-        .exec((err, publicaciones) => {
+        .exec((err, publicidades) => {
             if (err) {
                 console.log('La busqueda produjo un error: ' + err.message);
                 return res.json({
@@ -122,11 +123,31 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
                 });
             }
 
-            if (publicaciones.length == 0) {
+            if (publicidades.length == 0) {
                 console.log('La consulta no arrojo resultados');
                 return res.json({
                     ok: false,
                     message: 'La consulta no arrojo resultados'
+                });
+            }
+
+            let hasta = publicidades.length;
+            let i = 0;
+            while (i < hasta) {
+                // console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
+                // console.log('Fecha fin: ' + publicidades[i].fechaFin);
+                // console.log('Fecha actual: ' + fecha);
+                if ((publicidades[i].fechaInicio <= fecha) && (publicidades[i].fechaFin >= fecha)) {
+                    // console.log('Se agrega un elemento a la coleccion');
+                    publicaciones.push(publicidades[i]);
+                }
+                i++;
+            }
+
+            if (publicaciones.length == 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay publicaciones para mostrar'
                 });
             }
 

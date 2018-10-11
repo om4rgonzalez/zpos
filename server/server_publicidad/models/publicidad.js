@@ -28,6 +28,10 @@ let publicidadSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    fechaAlta: {
+        type: Date,
+        default: Date.now
+    },
     disponibilidad: {
         type: String,
         default: 'TODA LA RED'
