@@ -21,7 +21,7 @@ let urlImagen;
 if (process.env.NODE_ENV == 'prod') {
     urlImagen = 'C:\\xampp\\htdocs\\imagenes_publicidad\\';
 } else {
-    urlImagen = '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
+    urlImagen = '/home/marcelo/img/'
 }
 
 process.env.UrlImagen = urlImagen;

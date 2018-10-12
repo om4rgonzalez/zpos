@@ -2,24 +2,18 @@ require('./config/config');
 
 const mongoose = require('mongoose');
 const express = require('express');
-const formidable = require('express-formidable');
 const bodyParser = require('body-parser');
 
 const app = express();
-// const bodyParser = require(express.bodyParser());
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
-// parse application/json
-app.use(bodyParser.json());
-// console.log('Llego la peticion');
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-// app.use(formidable({
-//     keepExtensions: true
-//         // ,
-//         // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
-// }));
-// console.log('Paso la definicion de formidable');
+// // parse application/x-www-form-urlencoded
+// app.use(bodyParser.urlencoded({ extended: false }));
+// // parse application/json
+// app.use(bodyParser.json());
+
 let f = new Date();
 console.log('Fecha y hora de reinicio de servidor: ' + f);
 

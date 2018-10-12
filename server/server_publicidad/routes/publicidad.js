@@ -2,84 +2,86 @@ const express = require('express');
 const app = express();
 const Publicidad = require('../models/publicidad');
 const fs = require('fs');
-const formidable = require('express-formidable');
+// const formidable = require('express-formidable');
 // const Domicilio = require('../../server_direccion/models/domicilio');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const funciones = require('../../middlewares/funciones');
 const aut = require('../../middlewares/autenticacion');
 
 
-app.use(formidable({
-    keepExtensions: true
-        // ,
-        // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
-}));
+// app.use(formidable({
+//     keepExtensions: true
+//         // ,
+//         // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
+// }));
 
-let usarBodyParser = () => {
-    app.use(bodyParser.urlencoded({ extended: false }));
-    // parse application/json
-    app.use(bodyParser.json());
-};
+// let () => {
+//     app.use(bodyParser.urlencoded({ extended: false }));
+//     // parse application/json
+//     app.use(bodyParser.json());
+// };
 
 app.post('/publicidad/subir_foto/', async function(req, res) {
-    console.log(req.fields.cuerpo);
-    console.log(req.fields.proveedor);
-    console.log(req.fields.fechaInicio);
-    console.log(req.fields.fechaFin);
-    console.log(req.fields.titulo);
-    if ((req.fields.cuerpo != undefined) && (req.fields.proveedor != undefined) && (req.fields.fechaInicio != undefined) && (req.fields.fechaFin != undefined)) {
+    console.log(req.body.cuerpo);
+    console.log(req.body.proveedor);
+    console.log(req.body.fechaInicio);
+    console.log(req.body.fechaFin);
+    console.log(req.body.titulo);
+    if ((req.body.cuerpo != undefined) && (req.body.proveedor != undefined) && (req.body.fechaInicio != undefined) && (req.body.fechaFin != undefined)) {
         let publicidad = new Publicidad({
-            proveedor: req.fields.proveedor,
-            cuerpo: req.fields.cuerpo,
-            fechaInicio: req.fields.fechaInicio,
-            fechaFin: req.fields.fechaFin,
-            titulo: req.fields.titulo,
+            proveedor: req.body.proveedor,
+            cuerpo: req.body.cuerpo,
+            fechaInicio: req.body.fechaInicio,
+            fechaFin: req.body.fechaFin,
+            titulo: req.body.titulo,
             tieneImagen: false
         });
 
-        if (req.files.imagen) {
+        if (req.body.imagen) {
             console.log('Hay imagen');
-            var tmp_path = req.files.imagen.path; //ruta del archivo
-            var tipo = req.files.imagen.type; //tipo del archivo
-            if (tipo == 'image/png' || tipo == 'image/jpg' || tipo == 'image/jpeg') {
+            if (req.body.extension == 'png' || req.body.extension == 'jpg' || req.body.extension == 'jpeg') {
                 console.log('Paso la validacion de formato de imagen');
-                var target_path = process.env.UrlImagen + publicidad._id + '.' + req.files.imagen.name.split(".").pop(); // hacia donde subiremos nuestro archivo dentro de nuestro servidor
+                var target_path = process.env.UrlImagen + publicidad._id + '.' + req.body.extension; // hacia donde subiremos nuestro archivo dentro de nuestro servidor
                 // console.log('Path Destino: ' + target_path);
-                await fs.rename(tmp_path, target_path, async function(err) {
+                await fs.writeFile(target_path, new Buffer(req.body.imagen, "base64"), async function(err) {
                     //Escribimos el archivo
 
                     if (err) {
                         console.log('La subida del archivo produjo un error: ' + err.message);
-                        usarBodyParser();
                         return {
                             ok: false
                         };
                     }
                     console.log('La imagen se termino de mover');
                     publicidad.tieneImagen = true;
-                    publicidad.imagen = 'http://www.bintelligence.net/imagenes_publicidad/' + publicidad._id + '.' + req.files.imagen.name.split(".").pop();
+                    publicidad.imagen = 'http://www.bintelligence.net/imagenes_publicidad/' + publicidad._id + '.' + req.body.extension;
 
                     console.log('Se esta por guardar la publicidad');
-                    publicidad.save((error, publicidad_) => {
-                        if (error) {
-                            console.log('El alta de la publicidad produjo un error: ' + error.message);
-                            usarBodyParser();
-                            return res.json({
-                                ok: false,
-                                message: 'El alta de la publicidad produjo un error: ' + error.message
+                    try {
+                        publicidad.save((error, publicidad_) => {
+                            if (error) {
+                                console.log('El alta de la publicidad produjo un error: ' + error.message);
+
+                                return res.json({
+                                    ok: false,
+                                    message: 'El alta de la publicidad produjo un error: ' + error.message
+                                });
+                            }
+                            console.log('Publicidad guardada');
+
+                            res.json({
+                                ok: true,
+                                message: 'La publicidad se cargo correctamente'
                             });
-                        }
-                        console.log('Publicidad guardada');
-                        usarBodyParser();
-                        res.json({
-                            ok: true,
-                            message: 'La publicidad se cargo correctamente'
                         });
-                    });
+                    } catch (e) {
+                        console.log('Salida por el catch: ' + e.message);
+                    }
 
                 });
+
             } else {
-                usarBodyParser();
+
                 return {
                     ok: false,
                     message: 'Formato de archivo no soportado'
@@ -90,13 +92,13 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
             publicidad.save((error, publicidad_) => {
                 if (error) {
                     console.log('El alta de la publicidad produjo un error: ' + error.message);
-                    usarBodyParser();
+
                     return res.json({
                         ok: false,
                         message: 'El alta de la publicidad produjo un error: ' + error.message
                     });
                 }
-                usarBodyParser();
+
                 console.log('Publicidad guardada');
                 res.json({
                     ok: true,
@@ -107,7 +109,7 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
 
 
     } else {
-        usarBodyParser();
+
         res.json({
             ok: false,
             message: 'Se deben cargar todos los campos obligatorios'
