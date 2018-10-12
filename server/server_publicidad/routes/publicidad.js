@@ -156,11 +156,11 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
             let hasta = publicidades.length;
             let i = 0;
             while (i < hasta) {
-                console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
-                console.log('Fecha fin: ' + publicidades[i].fechaFin);
-                console.log('Fecha actual: ' + fecha);
+                // console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
+                // console.log('Fecha fin: ' + publicidades[i].fechaFin);
+                // console.log('Fecha actual: ' + fecha);
                 if ((publicidades[i].fechaInicio <= fecha) && (publicidades[i].fechaFin >= fecha)) {
-                    console.log('Se agrega un elemento a la coleccion');
+                    // console.log('Se agrega un elemento a la coleccion');
                     publicaciones.push(publicidades[i]);
                 }
                 i++;
