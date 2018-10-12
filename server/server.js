@@ -12,14 +12,16 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-console.log('Llego la peticion');
+// console.log('Llego la peticion');
 
 // app.use(formidable({
 //     keepExtensions: true
 //         // ,
 //         // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
 // }));
-console.log('Paso la definicion de formidable');
+// console.log('Paso la definicion de formidable');
+let f = new Date();
+console.log('Fecha y hora de reinicio de servidor: ' + f);
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
