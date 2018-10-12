@@ -4,9 +4,10 @@ const Publicidad = require('../models/publicidad');
 const fs = require('fs');
 const formidable = require('express-formidable');
 // const Domicilio = require('../../server_direccion/models/domicilio');
-// const Persona = require('../../server_persona/models/persona');
+const bodyParser = require('body-parser');
 const funciones = require('../../middlewares/funciones');
 const aut = require('../../middlewares/autenticacion');
+
 
 app.use(formidable({
     keepExtensions: true
@@ -14,11 +15,18 @@ app.use(formidable({
         // uploadDir: '/home/marcelo/Source/zpos/server/server_publicidad/imagenes/'
 }));
 
+let usarBodyParser = () => {
+    app.use(bodyParser.urlencoded({ extended: false }));
+    // parse application/json
+    app.use(bodyParser.json());
+};
+
 app.post('/publicidad/subir_foto/', async function(req, res) {
-    // console.log(req.fields.cuerpo);
-    // console.log(req.fields.proveedor);
-    // console.log(req.fields.fechaInicio);
-    // console.log(req.fields.fechaFin);
+    console.log(req.fields.cuerpo);
+    console.log(req.fields.proveedor);
+    console.log(req.fields.fechaInicio);
+    console.log(req.fields.fechaFin);
+    console.log(req.fields.titulo);
     if ((req.fields.cuerpo != undefined) && (req.fields.proveedor != undefined) && (req.fields.fechaInicio != undefined) && (req.fields.fechaFin != undefined)) {
         let publicidad = new Publicidad({
             proveedor: req.fields.proveedor,
@@ -42,6 +50,7 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
 
                     if (err) {
                         console.log('La subida del archivo produjo un error: ' + err.message);
+                        usarBodyParser();
                         return {
                             ok: false
                         };
@@ -54,12 +63,14 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
                     publicidad.save((error, publicidad_) => {
                         if (error) {
                             console.log('El alta de la publicidad produjo un error: ' + error.message);
+                            usarBodyParser();
                             return res.json({
                                 ok: false,
                                 message: 'El alta de la publicidad produjo un error: ' + error.message
                             });
                         }
                         console.log('Publicidad guardada');
+                        usarBodyParser();
                         res.json({
                             ok: true,
                             message: 'La publicidad se cargo correctamente'
@@ -68,6 +79,7 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
 
                 });
             } else {
+                usarBodyParser();
                 return {
                     ok: false,
                     message: 'Formato de archivo no soportado'
@@ -78,11 +90,13 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
             publicidad.save((error, publicidad_) => {
                 if (error) {
                     console.log('El alta de la publicidad produjo un error: ' + error.message);
+                    usarBodyParser();
                     return res.json({
                         ok: false,
                         message: 'El alta de la publicidad produjo un error: ' + error.message
                     });
                 }
+                usarBodyParser();
                 console.log('Publicidad guardada');
                 res.json({
                     ok: true,
@@ -93,6 +107,7 @@ app.post('/publicidad/subir_foto/', async function(req, res) {
 
 
     } else {
+        usarBodyParser();
         res.json({
             ok: false,
             message: 'Se deben cargar todos los campos obligatorios'
@@ -141,11 +156,11 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
             let hasta = publicidades.length;
             let i = 0;
             while (i < hasta) {
-                // console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
-                // console.log('Fecha fin: ' + publicidades[i].fechaFin);
-                // console.log('Fecha actual: ' + fecha);
+                console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
+                console.log('Fecha fin: ' + publicidades[i].fechaFin);
+                console.log('Fecha actual: ' + fecha);
                 if ((publicidades[i].fechaInicio <= fecha) && (publicidades[i].fechaFin >= fecha)) {
-                    // console.log('Se agrega un elemento a la coleccion');
+                    console.log('Se agrega un elemento a la coleccion');
                     publicaciones.push(publicidades[i]);
                 }
                 i++;
