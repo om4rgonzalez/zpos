@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Producto = require('../models/producto');
 const ProductosNorPan = require('../src/productos-norpan.json');
+const ProductosPongo = require('../src/productos-EL_PONGO_COOPERATIVA_AGRICOLA.json');
 const Helados = require('../src/productos-helado.json');
 const Proveedor = require('../../server_entidades/models/proveedor');
 
@@ -120,7 +121,47 @@ app.post('/conf/cargar_productos_helado/', function(req, res) {
 });
 
 
+app.post('/conf/cargar_productos_pongo/', function(req, res) {
 
+    for (var i in ProductosPongo) {
+        for (var j in ProductosPongo[i].productos) {
+            let item = new Producto({
+                categoria: ProductosPongo[i].categoria,
+                subcategoria: ProductosPongo[i].subcategoria,
+                nombreProducto: ProductosPongo[i].productos[j].nombreProducto,
+                precioProveedor: ProductosPongo[i].productos[j].precioProveedor,
+                precioSugerido: ProductosPongo[i].productos[j].precioSugerido
+            });
+            // console.log('producto a guardar');
+            // console.log(item);
+            item.unidadesMedida.push(ProductosPongo[i].productos[j].unidadMedida);
+            item.save((err, exito) => {
+                if (err) {
+                    console.log("salto un error en el alta del producto");
+                    console.log(err.message);
+                }
+
+                Proveedor.findOneAndUpdate({ _id: '5bbdf4bd39f9bf12605c6ba9' }, { $push: { productos: item._id } },
+                    function(err2, success) {
+                        if (err2) {
+                            console.log('Salto un error en el push del producto al proveedor');
+                            console.log(err2.message);
+                        }
+
+                    });
+            });
+        }
+
+    }
+
+
+
+
+    return res.json({
+        ok: true,
+        message: 'Los valores se cargaron correctamente'
+    });
+});
 
 
 
