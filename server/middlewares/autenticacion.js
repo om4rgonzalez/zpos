@@ -43,7 +43,7 @@ const validarToken = async(token) => {
             usuario = null;
         } else {
             usuario._id = decoded.usuario._id;
-            usuario.precedencia = decoded.usuario.rol.precedencia;
+            // usuario.precedencia = decoded.usuario.rol.precedencia;
             usuario.clave = decoded.usuario.clave;
             return usuario;
         }
