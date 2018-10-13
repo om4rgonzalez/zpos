@@ -141,7 +141,7 @@ app.post('/conf/cargar_productos_pongo/', function(req, res) {
                     console.log(err.message);
                 }
 
-                Proveedor.findOneAndUpdate({ _id: '5bbdf4bd39f9bf12605c6ba9' }, { $push: { productos: item._id } },
+                Proveedor.findOneAndUpdate({ _id: '5bbdf4bd39f9bf12605c6bb0' }, { $push: { productos: item._id } },
                     function(err2, success) {
                         if (err2) {
                             console.log('Salto un error en el push del producto al proveedor');
