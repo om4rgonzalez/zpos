@@ -137,6 +137,8 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
     let fecha = new Date();
 
     Publicidad.find()
+        // .populate('proveedor')
+        .populate({ path: 'proveedor', select: '_id', populate: { path: 'entidad' } })
         .where({ disponibilidad: 'TODA LA RED' })
         .exec((err, publicidades) => {
             if (err) {
