@@ -156,9 +156,10 @@ app.post('/comercio/ingresar/', async function(req, res) {
         // console.log(usuario);
 
         Comercio.find({})
-            .populate('entidad')
-            .populate('proveedores', 'entidad tiposEntrega')
-            .populate({ path: 'proveedores', select: 'entidad tiposEntrega', populate: { path: 'entidad' } })
+            // .populate('entidad')
+            .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+            // .populate('proveedores', 'entidad tiposEntrega')
+            .populate({ path: 'proveedores', select: 'entidad tiposEntrega', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
             .where('usuarios').in(usuario._id)
             .exec((err, comercioDB) => {
 
@@ -333,7 +334,8 @@ app.post('/comercio/buscar_por_nombre/', async function(req, res) {
                 i++;
             }
             Comercio.find({ entidad: { $in: entidades } })
-                .populate('entidad')
+                .populate('contactos')
+                .populate({ path: 'entidad', populate: { path: 'domicilio' } })
                 .exec((err2, comercios) => {
                     if (err2) {
                         return res.json({
