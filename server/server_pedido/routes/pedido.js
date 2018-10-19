@@ -32,7 +32,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
             tipoEntrega: req.body.tipoEntrega,
             fechaEntrega: req.body.fechaEntrega,
             detallePedido: detalles,
-            estadoPedido: 'PEDIDO INFORMADO',
+            estadoPedido: 'PEDIDO SOLICITADO',
             estadoTerminal: false,
             comentario: req.body.comentario
         });
@@ -196,7 +196,7 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
-        .where({ estadoPedido: 'PEDIDO INFORMADO' })
+        .where({ estadoPedido: 'PEDIDO SOLICITADO' })
         .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
             if (err) {
@@ -304,6 +304,32 @@ app.post('/pedido/rechazar/', async function(req, res) {
 
 });
 
+app.post('/pedido/enviar/', async function(req, res) {
+
+    //cambiar el estado al pedido
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'EN CAMINO', estadoTerminal: false } }, function(err, exito) {
+        if (err) {
+            return res.json({
+                ok: false,
+                message: 'La actualizacion produjo un error. Error: ' + err.message
+            });
+        }
+
+        if (exito == null) {
+            return res.json({
+                ok: false,
+                message: 'No se puede modificar el estado de un pedido finalizado'
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: 'El pedido fue rechazado'
+        });
+    });
+
+});
+
 
 
 
@@ -328,7 +354,7 @@ app.post('/pedido/nuevo_pedido_comercio/', async function(req, res) {
         tipoEntrega: req.body.tipoEntrega,
         fechaEntrega: req.body.fechaEntrega,
         detallePedido: detalles,
-        estadoPedido: 'PEDIDO INFORMADO',
+        estadoPedido: 'PEDIDO SOLICITADO',
         estadoTerminal: false,
         comentario: req.body.comentario
     });
