@@ -43,7 +43,7 @@ app.use(require('./server_cliente/server_cliente'));
 app.use(require('./server_publicidad/server_publicidad'));
 
 
-mongoose.connect(process.env.URLDB, (err, res) => {
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
     console.log('Base de datos ONLINE');
 });

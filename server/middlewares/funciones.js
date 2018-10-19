@@ -194,8 +194,8 @@ const combosNuevoProveedor = async() => {
     let tiposPersoneria = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/domicilio/estadosCasa';
     // let estadosCasa = await axios.get(URL);
-    // URL = process.env.URL_SERVICE + process.env.PORT + '/contacto/tipos';
-    // let tiposContacto_ = await axios.get(URL);
+    URL = process.env.URL_SERVICE + process.env.PORT + '/contacto/tipos';
+    let tiposContacto_ = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/persona/tipos_dni';
     // let tiposDni = await axios.get(URL);
     // URL = process.env.URL_SERVICE + process.env.PORT + '/cliente/obtener_tipos';
@@ -209,9 +209,9 @@ const combosNuevoProveedor = async() => {
         actividadesPrincipalesComercio: actividadesComercio.data,
         actividadesPrincipalesProveedor: actividadesProveedor.data,
         tiposPersoneria: tiposPersoneria.data,
-        estadosPedido: EstadosPedido
-            // estadosCasa: estadosCasa.data.estadosCasaDB,
-            // tiposContacto: tiposContacto_.data.tiposContactoDB,
+        estadosPedido: EstadosPedido,
+        // estadosCasa: estadosCasa.data.estadosCasaDB,
+        tiposContacto: tiposContacto_.data.TiposContacto
             // tiposDni: tiposDni.data.tiposDni,
             // tiposCliente: tiposCliente.data.tipoCliente,
             // tiposPlanes: tiposPlanes.data.tipoPlan,

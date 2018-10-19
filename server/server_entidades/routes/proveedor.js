@@ -8,6 +8,7 @@ const PuntoVenta = require('../models/puntoVenta');
 const Usuario = require('../../server_usuario/models/usuario');
 const Persona = require('../../server_persona/models/persona');
 const Comercio = require('../models/comercio');
+const Contacto = require('../../server_contacto/models/contacto');
 
 
 app.post('/proveedor/nuevo/', async function(req, res) {
@@ -15,6 +16,7 @@ app.post('/proveedor/nuevo/', async function(req, res) {
     //tengo que generar la entidad y el domicilio. Pasarle esa info al metodo de funciones
     //y generar los id en ese momento (solo el _id de entidad se genera aqui)
     var usuarios = [];
+    var contactoGuardado = true;
     let domicilio = {
         pais: req.body.domicilio.pais,
         provincia: req.body.domicilio.provincia,
@@ -61,6 +63,33 @@ app.post('/proveedor/nuevo/', async function(req, res) {
                         proveedor.tiposEntrega.push(req.body.tiposEntrega[i].nombreTipo);
                     }
                     // console.log('tipos de entrega cargados');
+                }
+                if (req.body.contactos) {
+                    let contactos = [];
+                    for (var i in req.body.contactos) {
+                        // console.log(req.body.contactos[i]);
+                        let contacto = new Contacto({
+                            tipoContacto: req.body.contactos[i].tipoContacto,
+                            codigoPais: req.body.contactos[i].codigoPais,
+                            codigoArea: req.body.contactos[i].codigoArea,
+                            numeroCelular: req.body.contactos[i].numeroCelular,
+                            numeroFijo: req.body.contactos[i].numeroFijo,
+                            email: req.body.contactos[i].email
+                        });
+                        try {
+                            let respuesta = await funciones.nuevoContacto(contacto);
+                            if (respuesta.ok) {
+                                contactos.push(contacto._id);
+                            }
+
+                            // console.log('array de contactos antes de asignarselo al cliente: ' + contactos);
+                        } catch (e) {
+                            console.log('Error al guardar el contacto: ' + contacto);
+                            console.log('Error de guardado: ' + e);
+                            contactoGuardado = false;
+                        }
+                    }
+                    proveedor.contactos = contactos;
                 }
                 if (req.body.usuarios) {
                     // console.log('usuarios');
@@ -198,7 +227,8 @@ app.get('/proveedor/obtener_productos/', async function(req, res) {
 app.get('/proveedor/listar_todos/', async function(req, res) {
 
     Proveedor.find({}, 'tiposEntrega entidad _id')
-        .populate('entidad')
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .populate('contactos')
         .exec((err, proveedorDB) => {
 
             if (err) {

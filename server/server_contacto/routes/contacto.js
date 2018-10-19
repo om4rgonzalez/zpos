@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const Contacto = require('../models/contacto');
 const HistoriaCambios = require('../models/historiaCambio');
+const TiposContacto = require('../src/tiposContacto.json');
 
 
 
@@ -58,14 +59,22 @@ app.post('/contacto/nuevo/', function(req, res) {
 
         });
     });
+});
+
+app.get('/contacto/tipos', function(req, res) {
+    // TipoContacto.find({}).exec((err, tiposContactoDB) => {
+    //     if (err) {
+    //         return res.status(400).json({
+    //             ok: false,
+    //             err
+    //         });
+    //     }
+    res.json({
+        ok: true,
+        TiposContacto
+    });
+
+
 })
-
-// app.put('/contacto', function(req, res) {
-//     res.json('Modifica los datos de un usuario')
-// })
-
-// app.delete('/contacto', function(req, res) {
-//     res.json('Cambia el estado de un usuario a "borrado"')
-// })
 
 module.exports = app;
