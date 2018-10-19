@@ -50,6 +50,10 @@ let comercioSchema = new Schema({
         horarioAtencion: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'HorarioAtencion'
+        }],
+        contactos: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Contacto'
         }]
     }
 

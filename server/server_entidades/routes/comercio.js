@@ -7,6 +7,7 @@ const Comercio = require('../models/comercio');
 const Usuario = require('../../server_usuario/models/usuario');
 const Persona = require('../../server_persona/models/persona');
 const HorarioAtencion = require('../models/horarioAtencion');
+const Contacto = require('../../server_contacto/models/contacto');
 
 
 app.post('/comercio/nuevo/', async function(req, res) {
@@ -45,6 +46,38 @@ app.post('/comercio/nuevo/', async function(req, res) {
             let comercio = new Comercio({
                 entidad: entidad._id
             });
+            if (req.body.contactos) {
+                // console.log('Hay contactos para guardar');
+                let contactos = [];
+                for (var i in req.body.contactos) {
+                    // console.log(req.body.contactos[i]);
+                    let contacto = new Contacto({
+                        tipoContacto: req.body.contactos[i].tipoContacto,
+                        codigoPais: req.body.contactos[i].codigoPais,
+                        codigoArea: req.body.contactos[i].codigoArea,
+                        numeroCelular: req.body.contactos[i].numeroCelular,
+                        numeroFijo: req.body.contactos[i].numeroFijo,
+                        email: req.body.contactos[i].email
+                    });
+                    try {
+                        // console.log('Contacto a guardar');
+                        // console.log(contacto);
+                        let respuesta = await funciones.nuevoContacto(contacto);
+                        // console.log('Respuesta de la funcion guardar contacto: ' + respuesta.ok);
+                        if (respuesta.ok) {
+                            contactos.push(contacto._id);
+                        }
+
+                        // console.log('array de contactos antes de asignarselo al cliente: ' + contactos);
+                    } catch (e) {
+                        console.log('Error al guardar el contacto: ' + contacto);
+                        console.log('Error de guardado: ' + e);
+                        contactoGuardado = false;
+                    }
+                }
+                comercio.contactos = contactos;
+            }
+
             if (req.body.usuarios) {
                 // console.log('usuarios');
                 for (var i in req.body.usuarios) {
