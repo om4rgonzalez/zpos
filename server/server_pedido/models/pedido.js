@@ -41,6 +41,10 @@ let pedidoSchema = new Schema({
         comentario: {
             type: String
         },
+        comentarioCancelado: {
+            type: String,
+            default: '-'
+        },
         puntoVentaEntrega: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'PuntoVenta'

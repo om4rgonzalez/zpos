@@ -101,7 +101,8 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                     comentario: pedidos[cursor].comentario,
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
-                    detallePedido: pedidos[cursor].detallePedido
+                    detallePedido: pedidos[cursor].detallePedido,
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado
                 });
                 pedidos_array.push(pedido);
                 cursor++;
@@ -172,7 +173,8 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                     comentario: pedidos[cursor].comentario,
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
-                    detallePedido: pedidos[cursor].detallePedido
+                    detallePedido: pedidos[cursor].detallePedido,
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado
                 });
                 pedidos_array.push(pedido);
                 cursor++;
@@ -282,7 +284,7 @@ app.post('/pedido/aceptar/', async function(req, res) {
 app.post('/pedido/rechazar/', async function(req, res) {
 
     //cambiar el estado al pedido
-    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true } }, function(err, exito) {
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true, comentarioCancelado: req.body.comentario } }, function(err, exito) {
         if (err) {
             return res.json({
                 ok: false,
