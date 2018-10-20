@@ -236,7 +236,8 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                     comentario: pedidos[cursor].comentario,
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
-                    detallePedido: pedidos[cursor].detallePedido
+                    detallePedido: pedidos[cursor].detallePedido,
+                    fechaAlta: pedidos[cursor].fechaAlta
                 });
                 pedidos_array.push(pedido);
                 cursor++;
