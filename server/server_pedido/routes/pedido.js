@@ -125,6 +125,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
     Pedido.find({ proveedor: req.query.idProveedor })
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .sort({ fechaAlta: -1 })
