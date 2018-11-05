@@ -147,7 +147,7 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
         // .populate('proveedor')
         .populate({ path: 'proveedor', select: '_id', populate: { path: 'entidad' } })
         .where({ disponibilidad: 'TODA LA RED' })
-        .order({ fechaAlta: -1 })
+        .sort({ fechaAlta: -1 })
         .exec((err, publicidades) => {
             if (err) {
                 console.log('La busqueda produjo un error: ' + err.message);
@@ -188,9 +188,9 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
                 let inicio = parseInt(anioInicio + mesInicio + diaInicio, 10);
                 let fin = parseInt(anioFin + mesFin + diaFin, 10);
                 let fechaActual = parseInt(anio + mes + dia, 10);
-                console.log('Fecha inicio: ' + inicio);
-                console.log('Fecha fin: ' + fin);
-                console.log('Fecha actual: ' + fechaActual);
+                // console.log('Fecha inicio: ' + inicio);
+                // console.log('Fecha fin: ' + fin);
+                // console.log('Fecha actual: ' + fechaActual);
                 if ((inicio <= fechaActual) && (fin >= fechaActual)) {
                     // console.log('Se agrega un elemento a la coleccion');
                     publicaciones.push(publicidades[i]);
