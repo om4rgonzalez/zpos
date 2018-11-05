@@ -135,6 +135,13 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
 
     let publicaciones = [];
     let fecha = new Date();
+    let dia = fecha.getDate().toString();
+    let mes = fecha.getMonth().toString();
+    let anio = fecha.getFullYear().toString();
+    if (dia.length == 1)
+        dia = '0' + dia;
+    if (mes.length == 1)
+        mes = '0' + mes;
 
     Publicidad.find()
         // .populate('proveedor')
@@ -159,11 +166,31 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
 
             let hasta = publicidades.length;
             let i = 0;
+
             while (i < hasta) {
-                // console.log('Fecha inicio: ' + publicidades[i].fechaInicio);
-                // console.log('Fecha fin: ' + publicidades[i].fechaFin);
-                // console.log('Fecha actual: ' + fecha);
-                if ((publicidades[i].fechaInicio <= fecha) && (publicidades[i].fechaFin >= fecha)) {
+                let diaInicio = publicidades[i].fechaInicio.getDate().toString();
+                if (diaInicio.length == 1)
+                    diaInicio = '0' + diaInicio;
+                let mesInicio = publicidades[i].fechaInicio.getMonth().toString();
+                if (mesInicio.length == 1)
+                    mesInicio = '0' + mesInicio;
+                let anioInicio = publicidades[i].fechaInicio.getFullYear().toString();
+
+                let diaFin = publicidades[i].fechaFin.getDate().toString();
+                if (diaFin.length == 1)
+                    diaFin = '0' + diaFin;
+                let mesFin = publicidades[i].fechaFin.getMonth().toString();
+                if (mesFin.length == 1)
+                    mesFin = '0' + mesFin;
+                let anioFin = publicidades[i].fechaFin.getFullYear().toString();
+
+                let inicio = parseInt(anioInicio + mesInicio + diaInicio, 10);
+                let fin = parseInt(anioFin + mesFin + diaFin, 10);
+                let fechaActual = parseInt(anio + mes + dia, 10);
+                console.log('Fecha inicio: ' + inicio);
+                console.log('Fecha fin: ' + fin);
+                console.log('Fecha actual: ' + fechaActual);
+                if ((inicio <= fechaActual) && (fin >= fechaActual)) {
                     // console.log('Se agrega un elemento a la coleccion');
                     publicaciones.push(publicidades[i]);
                 }
