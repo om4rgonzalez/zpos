@@ -147,6 +147,7 @@ app.post('/publicidad/obtener_publicidad/', async(req, res) => {
         // .populate('proveedor')
         .populate({ path: 'proveedor', select: '_id', populate: { path: 'entidad' } })
         .where({ disponibilidad: 'TODA LA RED' })
+        .order({ fechaAlta: -1 })
         .exec((err, publicidades) => {
             if (err) {
                 console.log('La busqueda produjo un error: ' + err.message);
