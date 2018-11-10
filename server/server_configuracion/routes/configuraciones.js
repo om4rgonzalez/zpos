@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const funciones = require('../../middlewares/funciones');
+const Configuracion = require('../models/configuracion');
 
 
 
@@ -30,6 +31,50 @@ app.get('/conf/status/', function(req, res) {
 
 });
 
+app.post('/conf/conf_init/', function(req, res) {
 
+    let configuracion = new Configuracion({
+        versionAndroidComercio: '1.0',
+        versionAndroidProveedor: '1.0'
+    });
+    configuracion.save();
+    res.json({
+        ok: true,
+        message: 'La inicializacion termino con exito'
+    });
+});
+
+app.get('/conf/version/', function(req, res) {
+    Configuracion.find()
+        .exec((err, configuracion) => {
+            if (err) {
+                console.log('Error al consultar las versiones disponibles');
+                return res.json({
+                    ok: false,
+                    message: 'Error al consultar las versiones disponibles',
+                    versiones: null
+                });
+            }
+
+            if (configuracion.length == 0) {
+                console.log('No hay configuraciones disponibles');
+                return res.json({
+                    ok: false,
+                    message: 'No hay configuraciones disponibles',
+                    versiones: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo versiones',
+                versiones: {
+                    versionAndroidComercio: configuracion[0].versionAndroidComercio,
+                    versionAndroidProveedor: configuracion[0].versionAndroidProveedor
+                }
+            })
+
+        });
+})
 
 module.exports = app;
