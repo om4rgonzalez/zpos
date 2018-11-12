@@ -167,7 +167,9 @@ app.post('/comercio/ingresar/', async function(req, res) {
                     console.log('Error al realizar la consulta. Error: ' + err.message);
                     return res.json({
                         ok: false,
-                        message: 'Error al realizar la consulta. Error: ' + err.message
+                        message: 'Error al realizar la consulta. Error: ' + err.message,
+                        comercioDB: null,
+                        usuario: null
                     });
                 }
 
@@ -175,15 +177,16 @@ app.post('/comercio/ingresar/', async function(req, res) {
                     console.log('No hay proveedores para mostrar')
                     return res.json({
                         ok: false,
-                        err: {
-                            message: 'No hay proveedores para mostrar'
-                        }
+                        message: 'No hay proveedores para mostrar',
+                        comercioDB: null,
+                        usuario: null
                     });
                 }
 
 
                 return res.json({
                     ok: true,
+                    message: 'login correcto',
                     comercioDB,
                     usuario
                 });
@@ -192,7 +195,9 @@ app.post('/comercio/ingresar/', async function(req, res) {
     } else {
         return res.json({
             ok: false,
-            message: 'Usuario o clave incorrecta'
+            message: 'Usuario o clave incorrecta',
+            comercioDB: null,
+            usuario: null
         });
 
     }

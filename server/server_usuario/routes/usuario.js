@@ -217,7 +217,9 @@ app.post('/usuario/ingresar/', function(req, res) {
                 console.log('Error: ' + err.message);
                 return res.json({
                     ok: false,
-                    err
+                    message: 'Error en el login. ' + err.message,
+                    usuario: null,
+                    token: null
                 });
             }
 
@@ -225,9 +227,9 @@ app.post('/usuario/ingresar/', function(req, res) {
                 console.log('No se encontro el usuario');
                 return res.json({
                     ok: false,
-                    err: {
-                        message: 'Nombre de usuario o clave incorrecta'
-                    }
+                    message: 'Nombre de usuario o clave incorrecta',
+                    usuario: null,
+                    token: null
                 });
             }
 
@@ -236,9 +238,9 @@ app.post('/usuario/ingresar/', function(req, res) {
                 console.log('La clave no coincide');
                 return res.json({
                     ok: false,
-                    err: {
-                        message: 'Nombre de usuario o clave incorrecta'
-                    }
+                    message: 'Nombre de usuario o clave incorrecta',
+                    usuario: null,
+                    token: null
                 });
             }
 
@@ -250,6 +252,7 @@ app.post('/usuario/ingresar/', function(req, res) {
 
             res.json({
                 ok: true,
+                message: 'Usuario correcto',
                 usuario: usuarioDb,
                 token
             });
