@@ -5,6 +5,7 @@ const ProductosNorPan = require('../src/productos-norpan.json');
 const ProductosPongo = require('../src/productos-EL_PONGO_COOPERATIVA_AGRICOLA.json');
 const Helados = require('../src/productos-helado.json');
 const Proveedor = require('../../server_entidades/models/proveedor');
+const ProductosPanGabriel = require('../src/productos-PANADERIA SAN GABRIEL.json');
 
 
 
@@ -56,6 +57,48 @@ app.post('/conf/cargar_productos_norpan/', function(req, res) {
                 }
 
                 Proveedor.findOneAndUpdate({ _id: '5b8aa0414795cc56a5539313' }, { $push: { productos: item._id } },
+                    function(err2, success) {
+                        if (err2) {
+                            console.log('Salto un error en el push del producto al proveedor');
+                            console.log(err2.message);
+                        }
+
+                    });
+            });
+        }
+
+    }
+
+
+
+
+    return res.json({
+        ok: true,
+        message: 'Los valores se cargaron correctamente'
+    });
+});
+
+app.post('/conf/cargar_productos_pan_gabriel/', function(req, res) {
+
+    for (var i in ProductosPanGabriel) {
+        for (var j in ProductosPanGabriel[i].productos) {
+            let item = new Producto({
+                categoria: ProductosPanGabriel[i].categoria,
+                subcategoria: ProductosPanGabriel[i].subcategoria,
+                nombreProducto: ProductosPanGabriel[i].productos[j].nombreProducto,
+                precioProveedor: ProductosPanGabriel[i].productos[j].precioProveedor,
+                precioSugerido: ProductosPanGabriel[i].productos[j].precioSugerido
+            });
+            // console.log('producto a guardar');
+            // console.log(item);
+            item.unidadesMedida.push(ProductosPanGabriel[i].productos[j].unidadMedida);
+            item.save((err, exito) => {
+                if (err) {
+                    console.log("salto un error en el alta del producto");
+                    console.log(err.message);
+                }
+
+                Proveedor.findOneAndUpdate({ _id: '5beaa433ad9ff607a883003e' }, { $push: { productos: item._id } },
                     function(err2, success) {
                         if (err2) {
                             console.log('Salto un error en el push del producto al proveedor');
