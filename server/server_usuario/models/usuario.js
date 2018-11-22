@@ -16,6 +16,10 @@ let usuarioSchema = new Schema({
             type: String,
             require: [true, 'Debe ingresar una clave']
         },
+ 	idPush: {
+            type: String,
+            default: '-'
+        },
         rol: {
             type: mongoose.Schema.Types.ObjectId,
             require: [true, 'Todo usuario debe tener un rol asignado'],

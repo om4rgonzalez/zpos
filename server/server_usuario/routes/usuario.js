@@ -250,6 +250,18 @@ app.post('/usuario/ingresar/', function(req, res) {
                 usuario: usuarioDb
             }, process.env.SEED, { expiresIn: 2592000 }); //process.env.CADUCIDAD_TOKEN });
 
+
+		const idUsuarioDb = usuarioDb._id;
+		Usuario.update({ _id: idUsuarioDb }, { $set: { idPush: parametros.idPush } })
+                .exec()
+                .then((respuesta) => {
+                    console.log(respuesta);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+                    
+
             res.json({
                 ok: true,
                 message: 'Usuario correcto',
