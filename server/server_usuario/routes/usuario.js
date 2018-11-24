@@ -266,22 +266,40 @@ app.post('/usuario/ingresar/', function(req, res) {
             switch (log.error) {
                 case 0: //ya hizo login antes
                     console.log('Ya hizo un login previamente');
-                    console.log('Id login: ' + log.login);
-                    console.log('Id push: ' + parametros.idPush);
-                    sesion.save();
-                    Login.findOneAndUpdate({ '_id': log.login, online: false }, { $set: { idPush: parametros.idPush, online: true } }, { $push: { sesiones: sesion._id } },
-                        function(err, logins) {
-                            if (err) {
-                                console.log('Error en la actualizacion de login: ' + err.message);
-                            } else {
-                                if (logins == null) {
-                                    console.log('La sesion esta abierta');
-                                } else {
-                                    console.log('Login encontrado');
-                                    // console.log(logins);
-                                }
-                            }
-                        });
+                    // console.log('Id login: ' + log.login);
+                    // console.log('Id push: ' + parametros.idPush);
+                    // console.log('Id de sesion: ' + sesion._id);
+                    sesion.save((err, nuevoSesion) => {
+                        if (err) {
+                            console.log('Se produjo un error al guardar la sesion: ' + err.message);
+                        } else {
+                            console.log('Agregando la sesion: ' + nuevoSesion._id);
+                            Login.findOneAndUpdate({ '_id': log.login, online: false }, {
+                                    $set: {
+                                        idPush: parametros.idPush,
+                                        online: true
+                                    },
+                                    $push: {
+                                        sesiones: nuevoSesion._id
+                                    }
+                                },
+                                function(err_, logins) {
+                                    if (err_) {
+                                        console.log('Error en la actualizacion de login: ' + err_.message);
+                                    } else {
+                                        if (logins == null) {
+                                            console.log('La sesion esta abierta');
+                                        } else {
+                                            console.log('Login encontrado');
+
+                                            // logins.sesiones.push(sesion._id);
+                                            // console.log(logins);
+                                        }
+                                    }
+                                });
+                        }
+                    });
+
                     break;
                 case 1: // error de busqueda
                     ok: false;
