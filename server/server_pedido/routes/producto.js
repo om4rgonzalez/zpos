@@ -111,9 +111,6 @@ app.post('/conf/cargar_productos_pan_gabriel/', function(req, res) {
 
     }
 
-
-
-
     return res.json({
         ok: true,
         message: 'Los valores se cargaron correctamente'

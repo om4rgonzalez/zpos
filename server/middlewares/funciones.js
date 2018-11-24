@@ -228,7 +228,8 @@ let login = async(usuario) => {
     let resp = await axios.post(URL, {
 
         nombreUsuario: usuario.nombreUsuario,
-        clave: usuario.clave
+        clave: usuario.clave,
+        idPush: usuario.idPush
     });
     if (resp.data.ok) {
         return {
@@ -244,8 +245,14 @@ let login = async(usuario) => {
     }
 };
 
-let buscarComercioUsuario = (usuario) => {
-
+let buscarLoginUsuario = async(usuario) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/usuario/buscar_login/';
+    let resp = await axios.post(URL, {
+        idUsuario: usuario._id
+    });
+    // console.log('Data que devuelve la respuesta: ');
+    // console.log(resp.data);
+    return resp.data;
 };
 
 
@@ -315,5 +322,6 @@ module.exports = {
     combosNuevoProveedor,
     login,
     verificarExistenciaProveedorEnRedComercio,
-    cargarImagenPublicidad
+    cargarImagenPublicidad,
+    buscarLoginUsuario
 }

@@ -9,6 +9,8 @@ const Domicilio = require('../../server_direccion/models/domicilio');
 const Persona = require('../../server_persona/models/persona');
 const Contacto = require('../../server_contacto/models/contacto');
 const aut = require('../../middlewares/autenticacion');
+const Login = require('../models/login');
+const Sesion = require('../models/sesion');
 
 let Usuario = require('../models/usuario')
 
@@ -206,12 +208,14 @@ app.post('/usuario/buscar_por_dni/', async function(req, res) {
 
 app.post('/usuario/ingresar/', function(req, res) {
     let parametros = req.body;
+    // console.log('Parametros recibidos');
+    // console.log(parametros);
 
 
     Usuario.findOne({ nombreUsuario: parametros.nombreUsuario, estado: { $eq: true } })
         .populate('rol', 'precedencia')
         // .where('estado' == true)
-        .exec((err, usuarioDb) => {
+        .exec(async(err, usuarioDb) => {
 
             if (err) {
                 console.log('Error: ' + err.message);
@@ -251,16 +255,54 @@ app.post('/usuario/ingresar/', function(req, res) {
             }, process.env.SEED, { expiresIn: 2592000 }); //process.env.CADUCIDAD_TOKEN });
 
 
-		const idUsuarioDb = usuarioDb._id;
-		Usuario.update({ _id: idUsuarioDb }, { $set: { idPush: parametros.idPush } })
-                .exec()
-                .then((respuesta) => {
-                    console.log(respuesta);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-                    
+            const idUsuarioDb = usuarioDb._id;
+
+
+            //busco el login del usuario
+            let ok = true;
+            let sesion = new Sesion({});
+
+            let log = await funciones.buscarLoginUsuario(usuarioDb);
+            switch (log.error) {
+                case 0: //ya hizo login antes
+                    console.log('Ya hizo un login previamente');
+                    console.log('Id login: ' + log.login);
+                    console.log('Id push: ' + parametros.idPush);
+                    sesion.save();
+                    Login.findOneAndUpdate({ '_id': log.login, online: false }, { $set: { idPush: parametros.idPush, online: true } }, { $push: { sesiones: sesion._id } },
+                        function(err, logins) {
+                            if (err) {
+                                console.log('Error en la actualizacion de login: ' + err.message);
+                            } else {
+                                if (logins == null) {
+                                    console.log('La sesion esta abierta');
+                                } else {
+                                    console.log('Login encontrado');
+                                    // console.log(logins);
+                                }
+                            }
+                        });
+                    break;
+                case 1: // error de busqueda
+                    ok: false;
+
+                    break;
+                case 2: // primer login
+                    console.log('Primer login');
+
+                    // console.log(sesion);
+                    sesion.save();
+                    let login = new Login({
+                        usuario: usuarioDb._id,
+                        idPush: parametros.idPush
+                    });
+                    // console.log(login);
+                    login.sesiones.push(sesion._id);
+                    login.save();
+
+                    break;
+            }
+
 
             res.json({
                 ok: true,
@@ -273,7 +315,38 @@ app.post('/usuario/ingresar/', function(req, res) {
         })
 
 
-})
+});
+
+
+app.post('/usuario/buscar_login/', async function(req, res) {
+    Login.find({ usuario: req.body.idUsuario })
+        .exec((err, login) => {
+            if (err) {
+                console.log('La funcion de busqueda de login devolvio un error: ' + err.message);
+                return res.json({
+                    error: 1,
+                    message: 'Error en la busqueda de sesion',
+                    login: null
+                });
+
+            }
+
+            if (login.length == 0) {
+                console.log('Es el primer login del usuario');
+                return res.json({
+                    error: 2,
+                    message: 'Primer login',
+                    login: null
+                });
+            }
+
+            res.json({
+                error: 0,
+                message: 'Devolviendo login',
+                login: login[0]._id
+            });
+        });
+});
 
 
 
