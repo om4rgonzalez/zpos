@@ -747,6 +747,86 @@ app.post('/usuario/deshabilitar/', async function(req, res) {
             });
         }
     }
-})
+});
+
+app.post('/usuario/salir/', async function(req, res) {
+
+    let usuario = await aut.validarToken(req.body.token);
+
+    if (!usuario) {
+        return res.status(401).json({
+            ok: false,
+            message: 'Usuario no valido'
+        });
+    } else {
+        //tengo que modificar la fecha y hora de cierre de la sesion y actualizar el login a offline
+        //actualizando la fecha y hora de cierre
+        let log = await funciones.buscarLoginUsuario(usuario._id);
+        Login.find({ _id: log.login })
+            .populate('sesiones')
+            .exec((err, logins) => {
+                if (err) {
+                    console.log('La busqueda de login para cerrar sesion fallo. Error: ' + err.message);
+                    return res.json({
+                        err: 1,
+                        message: 'La busqueda de login para cerrar sesion fallo'
+                    });
+                }
+                if (logins.length == 0) {
+                    console.log('La busque de login para cerrar sesion no encontro resultados');
+                    return res.json({
+                        err: 2,
+                        message: 'La busqueda de login para cerrar sesion no encontro resultados'
+                    });
+                }
+
+                //modifico la fecha de cierre de sesion y el estado de la sesion
+                let i = 0;
+                let hasta = logins[0].sesiones.length;
+                let fecha = new Date();
+                while (i < hasta) {
+                    if (logins[0].sesiones[i].activa) {
+                        Sesion.findOneAndUpdate({ '_id': logins[0].sesiones[i]._id }, { $set: { activa: false, fechaFin: fecha } }, function(err, sesion_) {
+                            if (err) {
+                                console.log('La busqueda para cierre de sesion fallo: ' + err.message);
+                            } else {
+                                if (sesion_ == null) {
+                                    console.log('La busqueda de sesion para el cierre no arrojo resultados');
+                                } else {
+                                    console.log('Sesion cerrada y actualizada');
+                                    // console.log(sesion[0]);
+                                }
+                            }
+                        });
+                        console.log('La sesion se cerro');
+                        break;
+                    }
+                    i++;
+                }
+
+                //ahora cambio el estado de login a offline
+                Login.findOneAndUpdate({ '_id': logins[0]._id }, { $set: { online: false } }, function(err, login_) {
+                    if (err) {
+                        console.log('La busqueda de login para cierre de sesion fallo: ' + err.message);
+                    } else {
+                        if (login_ == null) {
+                            console.log('La busqueda de login para el cierre no arrojo resultados');
+                        } else {
+                            console.log('Login terminado y actualizado');
+                            // console.log(sesion[0]);
+                        }
+                    }
+                });
+
+                res.json({
+                    error: 0,
+                    message: 'Sesion terminada'
+                });
+            });
+
+
+    }
+
+});
 
 module.exports = app;

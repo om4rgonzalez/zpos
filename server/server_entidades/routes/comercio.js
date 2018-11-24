@@ -140,7 +140,8 @@ app.post('/comercio/ingresar/', async function(req, res) {
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
-        clave: req.body.clave
+        clave: req.body.clave,
+        idPush: req.body.idPush
     });
     let resp = await funciones.login(usuario_);
 
