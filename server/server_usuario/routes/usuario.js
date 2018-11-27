@@ -274,7 +274,7 @@ app.post('/usuario/ingresar/', function(req, res) {
                             console.log('Se produjo un error al guardar la sesion: ' + err.message);
                         } else {
                             console.log('Agregando la sesion: ' + nuevoSesion._id);
-                            Login.findOneAndUpdate({ '_id': log.login, online: false }, {
+                            Login.findOneAndUpdate({ '_id': log.login._id, online: false }, {
                                     $set: {
                                         idPush: parametros.idPush,
                                         online: true
@@ -361,7 +361,8 @@ app.post('/usuario/buscar_login/', async function(req, res) {
             res.json({
                 error: 0,
                 message: 'Devolviendo login',
-                login: login[0]._id
+                //login: login[0]._id
+                login: login[0]
             });
         });
 });
@@ -780,7 +781,7 @@ app.post('/usuario/salir/', async function(req, res) {
         //tengo que modificar la fecha y hora de cierre de la sesion y actualizar el login a offline
         //actualizando la fecha y hora de cierre
         let log = await funciones.buscarLoginUsuario(usuario._id);
-        Login.find({ _id: log.login })
+        Login.find({ _id: log.login._id })
             .populate('sesiones')
             .exec((err, logins) => {
                 if (err) {

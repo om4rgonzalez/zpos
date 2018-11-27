@@ -308,8 +308,69 @@ let cargarImagenPublicidad = async(imagen, nombre) => {
     }
 };
 
+let buscarPlantilla = async(metodo, tipoError) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/plantilla/buscar_plantilla/';
 
+    // console.log('URL buscar plantilla: ' + URL);
+    // console.log('Parametros: ');
+    // console.log('Metodo: ' + metodo);
+    // console.log('tipoError: ' + tipoError);
+    let resp = await axios.post(URL, {
+        metodo: metodo,
+        tipoError: tipoError
+    });
 
+    // console.log('la funcion devolvio ' + resp.data.ok);
+    // console.log(resp.data.message);
+    return {
+        error: resp.data.error,
+        message: resp.data.message,
+        plantilla: resp.data.plantilla
+    };
+
+};
+
+let nuevoMensaje = async(mensaje) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/bandeja_salida/nuevo_mensaje/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        metodo: mensaje.metodo,
+        tipoError: mensaje.tipoError,
+        parametros: mensaje.parametros,
+        valores: mensaje.valores,
+        buscar: mensaje.buscar,
+        esPush: mensaje.esPush,
+        destinoEsProveedor: mensaje.destinoEsProveedor,
+        destino: mensaje.destino
+    });
+
+    // console.log('la funcion devolvio ' + resp.data.ok);
+    // console.log(resp.data.message);
+    return resp;
+};
+
+let buscarParametros = async(objeto) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/bandeja_salida/buscar_parametros/';
+    let resp = await axios.post(URL, {
+        parametro: objeto.parametro,
+        valor: objeto.valor
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
+
+let buscarDestinos = async(objeto) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/bandeja_salida/buscar_destino/';
+    let resp = await axios.post(URL, {
+        esPush: objeto.esPush, //boolean
+        esProveedor: objeto.esProveedor, //boolean
+        id: objeto.id
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
 
 module.exports = {
     nuevoDetalle,
@@ -323,5 +384,9 @@ module.exports = {
     login,
     verificarExistenciaProveedorEnRedComercio,
     cargarImagenPublicidad,
-    buscarLoginUsuario
+    buscarLoginUsuario,
+    buscarPlantilla,
+    nuevoMensaje,
+    buscarParametros,
+    buscarDestinos
 }

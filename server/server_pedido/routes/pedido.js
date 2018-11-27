@@ -36,6 +36,16 @@ app.post('/pedido/nuevo/', async function(req, res) {
             estadoTerminal: false,
             comentario: req.body.comentario
         });
+        let respuestaMensaje = funciones.nuevoMensaje({
+            metodo: '/pedido/nuevo/',
+            tipoError: 0,
+            parametros: '$comercio',
+            valores: req.body.comercio,
+            buscar: 'SI',
+            esPush: true,
+            destinoEsProveedor: true,
+            destino: req.body.proveedor
+        });
 
         pedido.save();
         return res.json({
