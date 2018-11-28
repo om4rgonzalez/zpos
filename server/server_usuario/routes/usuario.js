@@ -208,8 +208,8 @@ app.post('/usuario/buscar_por_dni/', async function(req, res) {
 
 app.post('/usuario/ingresar/', function(req, res) {
     let parametros = req.body;
-    console.log('Parametros recibidos en el login');
-    console.log(parametros);
+    // console.log('Parametros recibidos en el login');
+    // console.log(parametros);
 
 
     Usuario.findOne({ nombreUsuario: parametros.nombreUsuario, estado: { $eq: true } })

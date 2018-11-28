@@ -312,8 +312,8 @@ app.get('/proveedor/listar_todos/', async function(req, res) {
 
 app.post('/proveedor/ingresar/', async function(req, res) {
 
-    console.log('Parametros recibidos en el login proveedor');
-    console.log(req.body);
+    // console.log('Parametros recibidos en el login proveedor');
+    // console.log(req.body);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
@@ -355,8 +355,8 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                         }
                     });
                 }
-                console.log('Los proveedores que se encontraron con ese usuario son:');
-                console.log(proveedorDB);
+                // console.log('Los proveedores que se encontraron con ese usuario son:');
+                // console.log(proveedorDB);
 
                 //busco el login del usuario
                 let ok = true;
