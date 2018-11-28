@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const app = express();
 const Plantilla = require('../models/plantilla');
 const BandejaSalida = require('../models/bandeja_salida');
@@ -292,6 +293,46 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
 
 });
 
+
+app.post('/bandeja_salida/enviar/', async function(req, res) {
+
+    let URL = 'https://onesignal.com/api/v1/notifications';
+    // let config = {
+    //     headers: {
+    //         'Authorization': 'Basic OTM5YzJmNmEtZmY0Mi00NjE3LThjN2ItNDIwYjIwZTIxNzli',
+    //         'Content-Type': 'application/json'
+    //     }
+    // }
+
+    //   let resp = await axios.post(URL, {
+    //     parametro: objeto.parametro,
+    //     valor: objeto.valor
+    // });
+
+    let resp = await axios({
+        method: 'post', //you can set what request you want to be
+        url: URL,
+        data: {
+            "app_id": "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
+
+            "include_player_ids": ["6f476f6a-8d55-4297-b03c-878d0bb23a6e"],
+            "headings": { "en": "English Title", "es": "Bitbi" },
+            "contents": { "en": "English Message", "es": "El comercio Don pablo solicito 5kg de migniones" }
+        },
+        headers: {
+            'Authorization': 'Basic OTM5YzJmNmEtZmY0Mi00NjE3LThjN2ItNDIwYjIwZTIxNzli',
+            'Content-Type': 'application/json'
+        }
+    });
+
+    console.log('Respuesta servicio push');
+    console.log(resp);
+
+    res.json({
+        ok: true,
+        message: 'Terminado el proceso de envio'
+    });
+});
 
 
 

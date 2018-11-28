@@ -137,6 +137,8 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
 
 app.post('/comercio/ingresar/', async function(req, res) {
+    console.log('Parametros recibidos en el login comercio');
+    console.log(req.body);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
