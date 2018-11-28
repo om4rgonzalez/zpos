@@ -178,11 +178,11 @@ app.post('/comercio/ingresar/', async function(req, res) {
                     });
                 }
 
-                if (!comercioDB) {
+                if (comercioDB.length == 0) {
                     console.log('No hay proveedores para mostrar')
                     return res.json({
                         ok: false,
-                        message: 'No hay proveedores para mostrar',
+                        message: 'Usuario o clave incorrecta',
                         comercioDB: null,
                         usuario: null
                     });

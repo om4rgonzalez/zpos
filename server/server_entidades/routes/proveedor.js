@@ -346,7 +346,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                     });
                 }
 
-                if (!proveedorDB) {
+                if (proveedorDB.length == 0) {
                     // console.log('No hay proveedores para mostrar')
                     return res.json({
                         ok: false,
@@ -355,6 +355,8 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                         }
                     });
                 }
+                console.log('Los proveedores que se encontraron con ese usuario son:');
+                console.log(proveedorDB);
 
                 //busco el login del usuario
                 let ok = true;
