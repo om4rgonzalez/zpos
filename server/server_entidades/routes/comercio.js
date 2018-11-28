@@ -8,6 +8,8 @@ const Usuario = require('../../server_usuario/models/usuario');
 const Persona = require('../../server_persona/models/persona');
 const HorarioAtencion = require('../models/horarioAtencion');
 const Contacto = require('../../server_contacto/models/contacto');
+const Login = require('../../server_usuario/models/login');
+const Sesion = require('../../server_usuario/models/sesion');
 
 
 app.post('/comercio/nuevo/', async function(req, res) {
@@ -164,7 +166,7 @@ app.post('/comercio/ingresar/', async function(req, res) {
             // .populate('proveedores', 'entidad tiposEntrega')
             .populate({ path: 'proveedores', select: 'entidad tiposEntrega', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
             .where('usuarios').in(usuario._id)
-            .exec((err, comercioDB) => {
+            .exec(async(err, comercioDB) => {
 
                 if (err) {
                     console.log('Error al realizar la consulta. Error: ' + err.message);
@@ -184,6 +186,69 @@ app.post('/comercio/ingresar/', async function(req, res) {
                         comercioDB: null,
                         usuario: null
                     });
+                }
+
+                //busco el login del usuario
+                let ok = true;
+                let sesion = new Sesion({});
+
+                let log = await funciones.buscarLoginUsuario(usuario._id);
+                switch (log.error) {
+                    case 0: //ya hizo login antes
+                        console.log('Ya hizo un login previamente');
+                        // console.log('Id login: ' + log.login);
+                        // console.log('Id push: ' + parametros.idPush);
+                        // console.log('Id de sesion: ' + sesion._id);
+                        sesion.save((err, nuevoSesion) => {
+                            if (err) {
+                                console.log('Se produjo un error al guardar la sesion: ' + err.message);
+                            } else {
+                                console.log('Agregando la sesion: ' + nuevoSesion._id);
+                                Login.findOneAndUpdate({ '_id': log.login._id, online: false }, {
+                                        $set: {
+                                            idPush: parametros.idPush,
+                                            online: true
+                                        },
+                                        $push: {
+                                            sesiones: nuevoSesion._id
+                                        }
+                                    },
+                                    function(err_, logins) {
+                                        if (err_) {
+                                            console.log('Error en la actualizacion de login: ' + err_.message);
+                                        } else {
+                                            if (logins == null) {
+                                                console.log('La sesion esta abierta');
+                                            } else {
+                                                console.log('Login encontrado');
+
+                                                // logins.sesiones.push(sesion._id);
+                                                // console.log(logins);
+                                            }
+                                        }
+                                    });
+                            }
+                        });
+
+                        break;
+                    case 1: // error de busqueda
+                        ok: false;
+
+                        break;
+                    case 2: // primer login
+                        console.log('Primer login');
+
+                        // console.log(sesion);
+                        sesion.save();
+                        let login = new Login({
+                            usuario: usuario._id,
+                            idPush: req.body.idPush
+                        });
+                        // console.log(login);
+                        login.sesiones.push(sesion._id);
+                        login.save();
+
+                        break;
                 }
 
 
