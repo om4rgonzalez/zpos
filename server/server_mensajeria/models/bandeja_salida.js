@@ -6,6 +6,9 @@ let bandejaSalidaSchema = new Schema({
         mensaje: {
             type: String
         },
+        titulo: {
+            type: String
+        },
         destino: {
             type: String
         },

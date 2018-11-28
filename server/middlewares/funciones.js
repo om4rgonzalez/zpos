@@ -372,6 +372,18 @@ let buscarDestinos = async(objeto) => {
     return resp.data;
 };
 
+let enviarPush = async(players, titulo, mensaje) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/bandeja_salida/enviar/';
+    let resp = await axios.post(URL, {
+        players: players,
+        titulo: titulo,
+        mensaje: omensaje
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -388,5 +400,6 @@ module.exports = {
     buscarPlantilla,
     nuevoMensaje,
     buscarParametros,
-    buscarDestinos
+    buscarDestinos,
+    enviarPush
 }

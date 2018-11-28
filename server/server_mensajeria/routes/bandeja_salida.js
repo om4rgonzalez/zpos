@@ -269,12 +269,26 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         //guardo el mensaje
         let bandejaSalida = new BandejaSalida({
             mensaje: plantilla.plantilla.mensaje,
+            titulo: plantilla.plantilla.titulo,
             destino: req.body.destino
         });
+        let mensajeEnviado = false;
 
         if (destinos_.length > 0) {
             bandejaSalida.destinos = destinos_;
+            let players = '';
+            for (var i in destinos_) {
+                if (i == 0) {
+                    players = destinos_[i];
+                } else {
+                    players = players + ',' + destinos_[i];
+                }
+            }
+            let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
+            mensajeEnviado = respEnviaPush.ok;
         }
+        bandejaSalida.enviado = mensajeEnviado;
+
         bandejaSalida.save(async(err, bandeja) => {
             if (err) {
                 console.log('Se produjo un error al guardar la bandeja de salida. ' + err.mensaje);
