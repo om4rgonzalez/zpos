@@ -248,7 +248,7 @@ let login = async(usuario) => {
 let buscarLoginUsuario = async(usuario) => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/usuario/buscar_login/';
     let resp = await axios.post(URL, {
-        idUsuario: usuario._id
+        idUsuario: usuario
     });
     // console.log('Data que devuelve la respuesta: ');
     // console.log(resp.data);

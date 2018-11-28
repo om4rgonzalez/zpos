@@ -315,9 +315,11 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
         data: {
             "app_id": "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
 
-            "include_player_ids": ["6f476f6a-8d55-4297-b03c-878d0bb23a6e"],
-            "headings": { "en": "English Title", "es": "Bitbi" },
-            "contents": { "en": "English Message", "es": "El comercio Don pablo solicito 5kg de migniones" }
+            "include_player_ids": [req.body.players],
+            "headings": { "es": req.body.titulo },
+            "contents": { "es": req.body.mensaje }
+            // "headings": { "en": "English Title", "es": "Bitbi" },
+            // "contents": { "en": "English Message", "es": "El comercio Don pablo solicito 5kg de migniones" }
         },
         headers: {
             'Authorization': 'Basic OTM5YzJmNmEtZmY0Mi00NjE3LThjN2ItNDIwYjIwZTIxNzli',

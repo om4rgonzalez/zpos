@@ -7,12 +7,14 @@ app.post('/config/inicialiazar_plantillas/', function(req, res) {
     let plantilla = new Plantilla({
         metodo: '/pedido/nuevo/',
         mensaje: '$comercio te hizo un nuevo pedido',
+        titulo: 'Nuevo Pedido',
         tipoError: 0
     });
 
     let plantilla2 = new Plantilla({
         metodo: '/pedido/aceptar/',
         mensaje: '$provedor acepto tu pedido',
+        titulo: 'Pedido Aceptado',
         tipoError: 0
     });
     plantilla.save();
