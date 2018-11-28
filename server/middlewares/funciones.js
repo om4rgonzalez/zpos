@@ -377,7 +377,7 @@ let enviarPush = async(players, titulo, mensaje) => {
     let resp = await axios.post(URL, {
         players: players,
         titulo: titulo,
-        mensaje: omensaje
+        mensaje: mensaje
     });
     // console.log('La funcion de busqueda de parametros devuelve');
     // console.log(resp.data);
