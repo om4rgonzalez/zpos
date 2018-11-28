@@ -333,12 +333,9 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
         url: URL,
         data: {
             "app_id": "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
-
-            "include_player_ids": [req.body.players],
-            "headings": { "en": req.body.titulo, "es": req.body.titulo },
-            "contents": { "en": req.body.mensaje, "es": req.body.mensaje }
-            // "headings": { "en": "English Title", "es": "Bitbi" },
-            // "contents": { "en": "English Message", "es": "El comercio Don pablo solicito 5kg de migniones" }
+            "include_player_ids": ['"' + req.body.players + '"'],
+            "headings": { "en": '"' + req.body.titulo + '"', "es": '"' + req.body.titulo + '"' },
+            "contents": { "en": req.body.mensaje, "es": '"' + req.body.mensaje + '"' }
         },
         headers: {
             'Authorization': 'Basic OTM5YzJmNmEtZmY0Mi00NjE3LThjN2ItNDIwYjIwZTIxNzli',
@@ -367,8 +364,6 @@ app.post('/bandeja_salida/test_envio_push/', async function(req, res) {
         data: {
             "app_id": "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
             "include_player_ids": ["6f476f6a-8d55-4297-b03c-878d0bb23a6e"],
-            // "headings": { "es": "Test" },
-            // "contents": { "es": "Probando la mensajeria push desde el servidor" }
             "headings": { "en": "English Title", "es": "Test" },
             "contents": { "en": "English Message", "es": "Probando la mensajeria push desde el servidor" }
         },
