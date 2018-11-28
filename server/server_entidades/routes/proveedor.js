@@ -347,7 +347,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                 }
 
                 if (proveedorDB.length == 0) {
-                    // console.log('No hay proveedores para mostrar')
+                    console.log('El usuario no pertenece a un proveedor')
                     return res.json({
                         ok: false,
                         err: {

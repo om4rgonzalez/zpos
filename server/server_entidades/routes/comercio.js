@@ -179,7 +179,7 @@ app.post('/comercio/ingresar/', async function(req, res) {
                 }
 
                 if (comercioDB.length == 0) {
-                    console.log('No hay proveedores para mostrar')
+                    console.log('El usuario no pertenece a un comercio')
                     return res.json({
                         ok: false,
                         message: 'Usuario o clave incorrecta',
