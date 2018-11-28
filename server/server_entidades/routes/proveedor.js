@@ -361,10 +361,10 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                 //busco el login del usuario
                 let ok = true;
                 let sesion = new Sesion({});
-                console.log('Id de usuario a buscar: ' + usuario._id);
+                // console.log('Id de usuario a buscar: ' + usuario._id);
                 let log = await funciones.buscarLoginUsuario(usuario._id);
-                console.log('La funcion de busqueda de sesion devolvio');
-                console.log(log);
+                // console.log('La funcion de busqueda de sesion devolvio');
+                // console.log(log);
                 switch (log.error) {
                     case 0: //ya hizo login antes
                         console.log('Ya hizo un login previamente');

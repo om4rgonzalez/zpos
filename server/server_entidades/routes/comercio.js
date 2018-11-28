@@ -193,8 +193,8 @@ app.post('/comercio/ingresar/', async function(req, res) {
                 let sesion = new Sesion({});
 
                 let log = await funciones.buscarLoginUsuario(usuario._id);
-                console.log('La funcion de busqueda de sesion devolvio');
-                console.log(log);
+                // console.log('La funcion de busqueda de sesion devolvio');
+                // console.log(log);
                 switch (log.error) {
                     case 0: //ya hizo login antes
                         console.log('Ya hizo un login previamente');
