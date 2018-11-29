@@ -245,8 +245,8 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         } else {
             let i = 0;
             let hasta = destinos.destino.length;
-            console.log('Destinos encontrados');
-            console.log('====================');
+            // console.log('Destinos encontrados');
+            // console.log('====================');
             while (i < hasta) {
                 let destino = new Destino({
                     contacto: destinos.destino[i]
@@ -261,7 +261,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                 // if(!req.body.esPush){
                 //     destino.tipoContacto = 
                 // }
-                console.log(destinos.destino[i]);
+                // console.log(destinos.destino[i]);
                 i++;
             }
         }
@@ -284,7 +284,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                     players = players + ',' + destinos_[j];
                 }
             }
-            console.log('Destino al que se le manda el push: ' + players);
+            // console.log('Destino al que se le manda el push: ' + players);
             let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
             mensajeEnviado = respEnviaPush.ok;
         }
@@ -324,7 +324,7 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
     //     valor: objeto.valor
     // });
 
-    console.log('Preparando entorno para enviar push');
+    // console.log('Preparando entorno para enviar push');
     // console.log('Players: ' + req.body.players);
     // console.log('Titulo: ' + req.body.titulo);
     // console.log('Mensaje: ' + req.body.mensaje);
@@ -343,7 +343,7 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
         }
     };
 
-    console.log(data);
+    // console.log(data);
 
     let resp = await axios({
         method: 'post', //you can set what request you want to be
@@ -357,7 +357,7 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
 
     // console.log('Respuesta servicio push');
     // console.log(resp);
-
+    console.log('Push Enviado');
     res.json({
         ok: true,
         message: 'Terminado el proceso de envio'
