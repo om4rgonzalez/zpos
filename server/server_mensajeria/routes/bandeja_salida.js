@@ -327,16 +327,26 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
     console.log('Players: ' + req.body.players);
     console.log('Titulo: ' + req.body.titulo);
     console.log('Mensaje: ' + req.body.mensaje);
+    let include_player_ids = req.body.players.split(',');
+
+    let data = {
+        app_id: "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
+        include_player_ids: include_player_ids,
+        headings: {
+            en: req.body.titulo,
+            es: req.body.titulo
+        },
+        contents: {
+            en: req.body.mensaje,
+            es: req.body.mensaje
+        }
+    };
+
 
     let resp = await axios({
         method: 'post', //you can set what request you want to be
         url: URL,
-        data: {
-            "app_id": "dbfe0f75-b1ff-44b0-9660-0ba5b72702c1",
-            "include_player_ids": ['"' + req.body.players + '"'],
-            "headings": { "en": '"' + req.body.titulo + '"', "es": '"' + req.body.titulo + '"' },
-            "contents": { "en": req.body.mensaje, "es": '"' + req.body.mensaje + '"' }
-        },
+        data: data,
         headers: {
             'Authorization': 'Basic OTM5YzJmNmEtZmY0Mi00NjE3LThjN2ItNDIwYjIwZTIxNzli',
             'Content-Type': 'application/json'
