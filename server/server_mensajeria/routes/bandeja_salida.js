@@ -324,9 +324,9 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
     // });
 
     console.log('Preparando entorno para enviar push');
-    console.log('Players: ' + req.body.players);
-    console.log('Titulo: ' + req.body.titulo);
-    console.log('Mensaje: ' + req.body.mensaje);
+    // console.log('Players: ' + req.body.players);
+    // console.log('Titulo: ' + req.body.titulo);
+    // console.log('Mensaje: ' + req.body.mensaje);
     let include_player_ids = req.body.players.split(',');
 
     let data = {
@@ -342,6 +342,7 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
         }
     };
 
+    console.log(data);
 
     let resp = await axios({
         method: 'post', //you can set what request you want to be
