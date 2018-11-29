@@ -277,13 +277,14 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         if (destinos_.length > 0) {
             bandejaSalida.destinos = destinos_;
             let players = '';
-            for (var i in destinos_) {
-                if (i == 0) {
-                    players = destinos_[i];
+            for (var j in destinos_) {
+                if (j == 0) {
+                    players = destinos_[j];
                 } else {
-                    players = players + ',' + destinos_[i];
+                    players = players + ',' + destinos_[j];
                 }
             }
+            console.log('Destino al que se le manda el push: ' + players);
             let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
             mensajeEnviado = respEnviaPush.ok;
         }
