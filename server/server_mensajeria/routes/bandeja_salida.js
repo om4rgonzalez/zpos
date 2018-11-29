@@ -251,7 +251,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                 let destino = new Destino({
                     contacto: destinos.destino[i]
                 });
-                destinos_.push(destino._id);
+                destinos_.push(destinos.destino[i]);
                 destino.save((err_des, ok) => {
                     if (err_des) {
                         console.log('Error al guardar el destino. ' + err_des.message);
