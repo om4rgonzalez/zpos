@@ -286,7 +286,7 @@ app.post('/pedido/aceptar/', async function(req, res) {
 
         // console.log('Datos de la aceptacion de pedido');
         // console.log(exito);
-
+        console.log('Preparando el envio de push;')
         let respuestaMensaje = funciones.nuevoMensaje({
             metodo: '/pedido/aceptar/',
             tipoError: 0,
