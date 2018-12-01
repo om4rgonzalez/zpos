@@ -284,6 +284,20 @@ app.post('/pedido/aceptar/', async function(req, res) {
             });
         }
 
+        // console.log('Datos de la aceptacion de pedido');
+        // console.log(exito);
+
+        let respuestaMensaje = funciones.nuevoMensaje({
+            metodo: '/pedido/aceptar/',
+            tipoError: 0,
+            parametros: '$proveedor',
+            valores: exito.proveedor,
+            buscar: 'SI',
+            esPush: true,
+            destinoEsProveedor: false,
+            destino: exito.comercio
+        });
+
         res.json({
             ok: true,
             message: 'El pedido fue aceptado'

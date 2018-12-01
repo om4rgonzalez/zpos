@@ -292,7 +292,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
 
         bandejaSalida.save(async(err, bandeja) => {
             if (err) {
-                console.log('Se produjo un error al guardar la bandeja de salida. ' + err.mensaje);
+                console.log('Se produjo un error al guardar la bandeja de salida. ' + err.message);
                 return res.json({
                     error: 1,
                     message: 'Se produjo un error al guardar la bandeja de salida'
