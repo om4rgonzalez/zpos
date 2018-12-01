@@ -324,6 +324,17 @@ app.post('/pedido/rechazar/', async function(req, res) {
             });
         }
 
+        let respuestaMensaje = funciones.nuevoMensaje({
+            metodo: '/pedido/rechazar/',
+            tipoError: 0,
+            parametros: '$proveedor',
+            valores: exito.proveedor,
+            buscar: 'SI',
+            esPush: true,
+            destinoEsProveedor: false,
+            destino: exito.comercio
+        });
+
         res.json({
             ok: true,
             message: 'El pedido fue rechazado'
