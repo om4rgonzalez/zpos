@@ -154,8 +154,11 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
 
                     let i = 0;
                     let hasta = comercio[0].usuarios.length;
+                    console.log('Comercio encontrado');
+                    console.log('Usuarios del comercio');
+                    console.log(comercio[0].usuarios);
                     while (i < hasta) {
-                        if (comercio[0].usuarios[i].rol.precedencia == 0) {
+                        if (comercio[0].usuarios[i].rol.precedencia == 1) {
                             let login = await funciones.buscarLoginUsuario({
                                 _id: comercio[0].usuarios[i]._id
                             });
