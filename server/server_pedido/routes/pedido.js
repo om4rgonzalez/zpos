@@ -132,11 +132,25 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
 
     // console.log('comercio: ' + req.query.idComercio);
 
+
     Pedido.find({ proveedor: req.query.idProveedor })
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
-        .populate('detallePedido')
+        .populate({
+            path: 'comercio',
+            select: 'entidad contactos',
+            populate: {
+                path: 'contactos',
+                match: { tipoContacto: "Telefono Celular" }
+            }
+        })
+
+    // .populate({
+    //     path: 'rol',
+    //     match: { precedencia: { $gt: idRol } }
+    // })
+    .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
