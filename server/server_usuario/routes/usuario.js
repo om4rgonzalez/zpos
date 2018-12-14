@@ -709,6 +709,35 @@ app.post('/usuario/blanquear_claves', async function(req, res) {
 });
 
 
+app.post('/conf/blanquear_claves/', async function(req, res) {
+
+    for (var i in req.body.usuarios) {
+        let body = {
+            '_id': "",
+            'clave': ""
+        };
+        body._id = req.body.usuarios[i]._id;
+        body.clave = bcrypt.hashSync(req.body.usuarios[i].clave, 10);
+
+        // body.clave = 
+        Usuario.findByIdAndUpdate(body._id, body, { new: true }, (err, PersonaDB) => {
+
+            if (err) {
+
+                return res.status(400).json({
+                    ok: false,
+                    message: 'No se pudo realizar la actualizacion'
+                });
+            }
+            res.json({
+                ok: true,
+                message: 'La clave se actualizo correctamente'
+            });
+        });
+    }
+});
+
+
 
 // app.put('/usuario', function(req, res) {
 //     res.json('Modifica los datos de un usuario')
