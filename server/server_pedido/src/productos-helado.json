@@ -1,160 +1,154 @@
 [{
     "categoria": "HELADO",
-    "subcategoria": "BASE",
+    "subcategoria": "HELADOS",
     "productos": [{
-            "nombreProducto": "HELADO AL AGUA X 12 LTS",
-            "unidadMedida": "TACHO",
-            "precioProveedor": "350",
+            "nombreProducto": "PALITO DE AGUA FRUTILLA X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "100",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "HELADO DE CREMA X 12 LTS",
-            "unidadMedida": "TACHO",
-            "precioProveedor": "410",
+            "nombreProducto": "PALITO DE AGUA NARANJA X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "100",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO DE AGUA X 20 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "70",
+            "nombreProducto": "PALITO DE AGUA LIMÓN X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "100",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO DE CREMA X 20 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "75",
+            "nombreProducto": "PALITO DE CREMA AMERICANA X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "115",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO BOMBON X 20 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "113",
+            "nombreProducto": "PALITO DE CREMA DE FRUTILLA X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "115",
+            "precioSugerido": "0"
+        },
+        {
+            "nombreProducto": "PALITO BOMBÓN X 20 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "155",
             "precioSugerido": "0"
         },
         {
             "nombreProducto": "ALMENDRADO X 8 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "55",
-            "precioSugerido": "0"
-        },
-        {
-            "nombreProducto": "CASATTA X 8 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "55",
-            "precioSugerido": "0"
-        },
-        {
-            "nombreProducto": "DELICIA DE DULCE DE LECHE X 8 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "70",
-            "precioSugerido": "0"
-        },
-        {
-            "nombreProducto": "BOMBON SUIZO X 8 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "75",
-            "precioSugerido": "0"
-        },
-        {
-            "nombreProducto": "BOMBON ESCOCES X 8 UNIDADES",
-            "unidadMedida": "CAJA",
+            "unidadMedida": " UNIDAD",
             "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "VIA BOM X 8 UNIDADES",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "65",
+            "nombreProducto": "CASATTA X 8 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "TORTA HELADA",
-            "unidadMedida": "CAJA",
-            "precioProveedor": "121",
+            "nombreProducto": "BOMBÓN ESCOCÉS X 8 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "115",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "HELADO POTE X LITRO",
-            "unidadMedida": "POTE",
-            "precioProveedor": "50",
+            "nombreProducto": "BOMBÓN SUIZO X 8 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "110",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "HELADO POTE X 3 LTS",
-            "unidadMedida": "POTE",
-            "precioProveedor": "133",
+            "nombreProducto": "VÍA BOM X 8 UNIDADES",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "95",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO DE AGUA X 4 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "280",
+            "nombreProducto": "DELICIA X UNIDAD",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "95",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO DE CREMA X 4 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "300",
+            "nombreProducto": "TORTA HELADA DE CHOCOLATE",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "150",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "PALITO BOMBON X 4 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "452",
+            "nombreProducto": "TORTA HELADA VIA BANA",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "150",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "ALEMDRADO X 6 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "220",
+            "nombreProducto": "POTE DE 1 LITRO AMERICANA",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "CASATTA X 6 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "220",
+            "nombreProducto": "POTE DE 1 LITRO CHOCOLATE",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "DELICIA DULCE DE LECHE X 4 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "280",
+            "nombreProducto": "POTE DE 1 LITRO DULCE DE LECHE GRANIZADO",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "BOMBON SUIZO X 6 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "450",
+            "nombreProducto": "POTE DE 1 LITRO FRUTILLA",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "BOMBON ESCOCES X 6 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "480",
+            "nombreProducto": "POTE DE 1 LITRO GRANIZADO",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "VIA BOM X 6 CAJAS",
-            "unidadMedida": "PACK",
-            "precioProveedor": "390",
+            "nombreProducto": "POTE DE 1 LITRO LIMÓN",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "TORTA HELADA X 4 UNIDADES",
-            "unidadMedida": "PACK",
-            "precioProveedor": "484",
+            "nombreProducto": "POTE DE 1 LITRO MASCARPONE",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "80",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "HELADO POTE X 4 UNIDADES",
-            "unidadMedida": "PACK",
-            "precioProveedor": "300",
+            "nombreProducto": "POTE DE 3 LITROS N°1: CHOCOLATE, AMERICANA, DULCE DE LECHE",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "170",
             "precioSugerido": "0"
         },
         {
-            "nombreProducto": "HELADO POTE X 4 UNIDADES",
-            "unidadMedida": "PACK",
-            "precioProveedor": "798",
+            "nombreProducto": "POTE DE 3 LITROS N°2: DULCE DE LECHE GRANIZADO, AMERICANA Y FRUTILLA",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "170",
+            "precioSugerido": "0"
+        },
+        {
+            "nombreProducto": "POTE DE 3 LITROS N° 3: GRANIZADO, FRUTILLA Y VAINILLA",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "170",
+            "precioSugerido": "0"
+        },
+        {
+            "nombreProducto": "POTE DE 3 LITROS N° 4: VAINILLA, DULCE DE LECHE GRANIZADO Y CHOCOLATE",
+            "unidadMedida": " UNIDAD",
+            "precioProveedor": "170",
             "precioSugerido": "0"
         }
     ]
