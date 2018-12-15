@@ -56,7 +56,7 @@ app.post('/conf/cargar_productos_norpan/', function(req, res) {
                     console.log(err.message);
                 }
 
-                Proveedor.findOneAndUpdate({ _id: '5b8aa0414795cc56a5539313' }, { $push: { productos: item._id } },
+                Proveedor.findOneAndUpdate({ _id: '5c15095f224a150b4689ffc7' }, { $push: { productos: item._id } },
                     function(err2, success) {
                         if (err2) {
                             console.log('Salto un error en el push del producto al proveedor');

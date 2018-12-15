@@ -109,7 +109,7 @@ app.post('/entidad/nueva_/', async function(req, res) {
 
                     if (exito.length == 0) {
                         //no hay resutlados. Se puede dar de alta la entidad
-                        entidad.save((err, entidadDB) => {
+                        entidad.save((err1, entidadDB) => {
                             if (err1) {
                                 console.log('El alta de entidad devolvio un error.');
                                 console.log(err1.message);
@@ -124,7 +124,7 @@ app.post('/entidad/nueva_/', async function(req, res) {
                             res.json({
                                 ok: true,
                                 message: 'Alta de entidad completa',
-                                entidadDB: entidadDB
+                                entidadDB
                             });
                         });
                     } else {

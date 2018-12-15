@@ -143,7 +143,7 @@ app.post('/persona/nueva/', function(req, res) {
 
             if (exito.length == 0) {
                 //la persona no existe, se puede dar de alta
-                persona.save((err, PersonaDB) => {
+                persona.save((err1, PersonaDB) => {
                     if (err1) {
                         console.log("Error al dar de alta la persona: " + err);
                         return res.json({
