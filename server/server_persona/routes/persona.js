@@ -129,22 +129,46 @@ app.post('/persona/nueva/', function(req, res) {
         fechaNacimiento: objeto.fechaNacimiento
     });
 
-    persona.save((err, PersonaDB) => {
-        if (err) {
-            // console.log("Error al dar de alta la persona: " + err);
-            return res.status(400).json({
-                ok: false,
+    Persona.find({ dni: objeto.dni })
+        .exec(async(err, exito) => {
+            if (err) {
+                console.log('La busqueda de persona para dar de alta devolvio un error.');
+                console.log(err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de persona para dar de alta devolvio un error.',
+                    personaDB: null
+                });
+            }
 
-                err
-            });
-        }
+            if (exito.length == 0) {
+                //la persona no existe, se puede dar de alta
+                persona.save((err, PersonaDB) => {
+                    if (err1) {
+                        console.log("Error al dar de alta la persona: " + err);
+                        return res.json({
+                            ok: false,
+                            message: 'El alta de persona devolvio un error',
+                            PersonaDB: null
+                        });
+                    }
 
-        res.json({
-            ok: true,
-            PersonaDB
+                    res.json({
+                        ok: true,
+                        message: 'Alta completa',
+                        PersonaDB: PersonaDB
+                    });
+                });
+            } else {
+                console.log("La persona ya esta cargada");
+                return res.json({
+                    ok: true,
+                    message: 'La persona ya figura en la base de datos',
+                    PersonaDB: exito[0]
+                });
+            }
         });
-    });
-})
+});
 
 //update de persona
 app.put('/persona/actualizar/:id', function(req, res) {

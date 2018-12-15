@@ -95,20 +95,49 @@ app.post('/entidad/nueva_/', async function(req, res) {
                 tipoPersoneria: req.body.tipoPersoneria
             });
 
-            entidad.save((err, entidadDB) => {
-                if (err) {
-                    return res.status(400).json({
-                        ok: false,
-                        err
-                    });
-                }
+            Entidad.find({ cuit: req.body.cuit })
+                .exec(async(err, exito) => {
+                    if (err) {
+                        console.log('La busqueda de comercio para dar de alta devolvio un error.');
+                        console.log(err.message);
+                        return res.json({
+                            ok: false,
+                            message: err.message,
+                            entidadDB: null
+                        });
+                    }
+
+                    if (exito.length == 0) {
+                        //no hay resutlados. Se puede dar de alta la entidad
+                        entidad.save((err, entidadDB) => {
+                            if (err1) {
+                                console.log('El alta de entidad devolvio un error.');
+                                console.log(err1.message);
+                                return res.json({
+                                    ok: false,
+                                    message: 'Error al dar de alta la entidad',
+                                    entidadDB: null
+                                });
+                            }
 
 
-                res.json({
-                    ok: true,
-                    entidadDB
+                            res.json({
+                                ok: true,
+                                message: 'Alta de entidad completa',
+                                entidadDB: entidadDB
+                            });
+                        });
+                    } else {
+                        //hay resultados, debo devolver la entidad
+                        res.json({
+                            ok: true,
+                            message: 'La entidad ya figura en la base de datos',
+                            entidadDB: exito[0]
+                        });
+                    }
                 });
-            });
+
+
         } else {
             return res.status(412).json({
                 ok: false,
