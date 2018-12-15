@@ -20,6 +20,7 @@
         "express": "^4.16.3",
         "express-formidable": "^1.0.0",
         "flatmap-stream": "0.0.1-security",
+        "hoek": "^6.1.2",
         "jsonwebtoken": "^8.3.0",
         "mongoose": "^5.2.3",
         "mongoose-unique-validator": "^2.0.1",
