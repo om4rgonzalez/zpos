@@ -44,6 +44,32 @@ app.post('/invitacion/nueva/', async function(req, res) {
                         err
                     });
                 }
+                if (!req.body.esProveedor) {
+                    //es comercio
+                    let respuestaMensajePush = funciones.nuevoMensaje({
+                        metodo: '/invitacion/nueva/',
+                        tipoError: 0,
+                        parametros: '$comercio',
+                        valores: req.body.comercio,
+                        buscar: 'SI',
+                        esPush: true,
+                        destinoEsProveedor: true,
+                        destino: req.body.proveedor
+                    });
+                } else {
+                    //es proveedor
+                    let respuestaMensajePush = funciones.nuevoMensaje({
+                        metodo: '/invitacion/nueva/',
+                        tipoError: 1,
+                        parametros: '$proveedor',
+                        valores: req.body.comercio,
+                        buscar: 'SI',
+                        esPush: true,
+                        destinoEsProveedor: true,
+                        destino: req.body.proveedor
+                    });
+                }
+
                 res.json({
                     ok: true,
                     message: 'La invitacion se envio con exito'
@@ -212,6 +238,18 @@ app.post('/invitacion/aceptar_rechazar/', async function(req, res) {
                                     });
                                 }
 
+                                //mando el push
+                                let respuestaMensajePush = funciones.nuevoMensaje({
+                                    metodo: '/invitacion/aceptar_rechazar/',
+                                    tipoError: 0,
+                                    parametros: '$proveedor',
+                                    valores: invitacionDB.proveedor,
+                                    buscar: 'SI',
+                                    esPush: true,
+                                    destinoEsProveedor: true,
+                                    destino: invitacionDB.comercio
+                                });
+
                                 return res.json({
                                     ok: true,
                                     message: 'La invitacion fue aceptada'
@@ -250,6 +288,17 @@ app.post('/invitacion/aceptar_rechazar/', async function(req, res) {
                                         message: 'La funcion de agregar proveedor a la red devolvio un error'
                                     });
                                 }
+                                //mando el push
+                                let respuestaMensajePush = funciones.nuevoMensaje({
+                                    metodo: '/invitacion/aceptar_rechazar/',
+                                    tipoError: 0,
+                                    parametros: '$proveedor',
+                                    valores: invitacionDB.proveedor,
+                                    buscar: 'SI',
+                                    esPush: true,
+                                    destinoEsProveedor: false,
+                                    destino: invitacionDB.comercio
+                                });
 
                                 return res.json({
                                     ok: true,
@@ -270,6 +319,32 @@ app.post('/invitacion/aceptar_rechazar/', async function(req, res) {
 
             // Comercio.findOneAndUpdate(invitacionDB.comercio, { $push: { proveedores: invitacionDB.proveedor } });
         } else {
+            if (invitacionDB.esProveedor) {
+                let respuestaMensajePush = funciones.nuevoMensaje({
+                    metodo: '/invitacion/aceptar_rechazar/',
+                    tipoError: 1,
+                    parametros: '$proveedor',
+                    valores: invitacionDB.proveedor,
+                    buscar: 'SI',
+                    esPush: true,
+                    destinoEsProveedor: true,
+                    destino: invitacionDB.comercio
+                });
+            } else {
+                let respuestaMensajePush = funciones.nuevoMensaje({
+                    metodo: '/invitacion/aceptar_rechazar/',
+                    tipoError: 1,
+                    parametros: '$proveedor',
+                    valores: invitacionDB.proveedor,
+                    buscar: 'SI',
+                    esPush: true,
+                    destinoEsProveedor: false,
+                    destino: invitacionDB.comercio
+                });
+            }
+
+
+
             return res.json({
                 ok: true,
                 message: 'La invitacion fue rechazada'

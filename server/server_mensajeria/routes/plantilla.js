@@ -27,7 +27,9 @@ app.post('/config/inicialiazar_plantillas/', function(req, res) {
 });
 
 app.post('/plantilla/buscar_plantilla/', async function(req, res) {
-
+    // console.log('Parametros a buscar');
+    // console.log('Metodo: ' + req.body.metodo);
+    // console.log('Tipo Error: ' + req.body.tipoError);
     Plantilla.find({ metodo: req.body.metodo, tipoError: req.body.tipoError })
         .exec((err, plantilla) => {
             if (err) {
