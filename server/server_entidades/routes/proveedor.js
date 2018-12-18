@@ -440,8 +440,77 @@ app.post('/proveedor/ingresar/', async function(req, res) {
     }
 });
 
+//la funcion busca el proveedor en la red del comercio
+app.post('/proveedor/buscar_proveedor_en_red/', async function(req, res) {
 
+    Proveedor.find({ '_id': req.body.proveedor })
+        .populate('red')
+        .exec((err, proveedores) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda arrojo un error: Error: ' + err.message
+                });
+            }
 
+            if (!proveedores) {
+                return res.json({
+                    ok: false,
+                    message: 'El comercio no tiene al proveedor en su red'
+                });
+            }
+            for (var i in proveedores[0].red) {
+                if (proveedores[0].red[i].comercio == req.body.comercio)
+                    return res.json({
+                        ok: true,
+                        message: 'El proveedor ya forma parte de la red'
+                    });
+
+            }
+            // console.log('proveedores:');
+            // console.log(comerciosDB);
+            // // console.log('_id comercio: ' + comerciosDB[0]._id);
+            // // console.log(comerciosDB[0].proveedores)
+
+            res.json({
+                ok: false,
+                message: 'El comercio no tiene al proveedor en su red'
+            });
+
+        });
+});
+
+app.post('/proveedor/buscar_proveedor/', async function(req, res) {
+
+    Proveedor.findOne({ _id: req.body.idProveedor })
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .exec(async(err, proveedor) => {
+            if (err) {
+                console.log('La busqueda de un proveedor por Id arrojo un error');
+                console.log(err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de un proveedor por Id arrojo un error',
+                    proveedor: null
+                });
+            }
+
+            if (proveedor == null) {
+                console.log('La busqueda de proveedor por id no produjo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de proveedor por id no produjo resultados',
+                    proveedor: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Proveedor encontrado',
+                proveedor
+            });
+        });
+});
 
 
 module.exports = app;

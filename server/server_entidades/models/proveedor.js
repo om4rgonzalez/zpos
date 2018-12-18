@@ -31,13 +31,17 @@ let proveedorSchema = new Schema({
             type: Date,
             default: Date.now
         },
-        comercios: [{
+        red: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Comercio"
+            ref: "Alias"
         }],
         contactos: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Contacto'
+        }],
+        proveedores: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Proveedor'
         }]
     }
 

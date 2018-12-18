@@ -256,8 +256,33 @@ let buscarLoginUsuario = async(usuario) => {
 };
 
 
+//la funcion busca si el proveedor esta cargado en la red del comercio
 let verificarExistenciaProveedorEnRedComercio = async(proveedor, comercio) => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/comercio/buscar_proveedor/';
+    let resp = await axios.post(URL, {
+        proveedor: proveedor,
+        comercio: comercio
+    });
+
+    // console.log('la funcion devolvio ' + resp.data.ok);
+    // console.log(resp.data.message);
+
+    if (resp.data.ok) {
+        return {
+            ok: false,
+            message: 'El proveedor ya es parte de la red'
+        };
+    }
+    return {
+        ok: true,
+        message: 'El proveedor no es parte de la red'
+    };
+
+};
+
+//la funcion busca si el proveedor esta cargado en la red del comercio
+let verificarExistenciaProveedorEnRedProveedor = async(proveedor, comercio) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/buscar_proveedor_en_red/';
     let resp = await axios.post(URL, {
         proveedor: proveedor,
         comercio: comercio
@@ -384,6 +409,39 @@ let enviarPush = async(players, titulo, mensaje) => {
     return resp.data;
 };
 
+let buscarProveedorPorId = async(id) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/buscar_proveedor/';
+    let resp = await axios.post(URL, {
+        idProveedor: id
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
+
+let buscarComercioPorId = async(id) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/comercio/buscar_comercio/';
+    let resp = await axios.post(URL, {
+        idComercio: id
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
+
+// let nuevaInvitacion = async(invitacion) => {
+//     let URL = process.env.URL_SERVICE + process.env.PORT + '/invitacion/nueva/';
+//     let resp = await axios.post(URL, {
+//         comercio: invitacion.comercio,
+//         proveedor: invitacion.proveedor,
+//         texto: invitacion.texto,
+//         esProveedor: invitacion.esProveedor
+//     });
+//     // console.log('La funcion de busqueda de parametros devuelve');
+//     // console.log(resp.data);
+//     return resp.data;
+// };
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -402,4 +460,9 @@ module.exports = {
     buscarParametros,
     buscarDestinos,
     enviarPush
+    // ,nuevaInvitacion
+    ,
+    verificarExistenciaProveedorEnRedProveedor,
+    buscarProveedorPorId,
+    buscarComercioPorId
 }

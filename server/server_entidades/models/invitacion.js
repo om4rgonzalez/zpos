@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let invitacionSchema = new Schema({
+        esProveedor: {
+            type: Boolean,
+            default: false
+        },
         comercio: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comercio'
