@@ -9,7 +9,8 @@ let rolSchema = new Schema({
     },
     precedencia: {
         type: Number,
-        required: true
+        required: true,
+        default: 1
     }
 
 });
