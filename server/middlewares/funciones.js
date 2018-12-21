@@ -429,6 +429,17 @@ let buscarComercioPorId = async(id) => {
     return resp.data;
 };
 
+
+let buscarAlias = async(idProveedor, idComercio) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/buscar_alias/';
+    let resp = await axios.post(URL, {
+        idProveedor: idProveedor,
+        idComercio: idComercio
+    });
+    // console.log('La funcion de busqueda de parametros devuelve');
+    // console.log(resp.data);
+    return resp.data;
+};
 // let nuevaInvitacion = async(invitacion) => {
 //     let URL = process.env.URL_SERVICE + process.env.PORT + '/invitacion/nueva/';
 //     let resp = await axios.post(URL, {
@@ -464,5 +475,6 @@ module.exports = {
     ,
     verificarExistenciaProveedorEnRedProveedor,
     buscarProveedorPorId,
-    buscarComercioPorId
+    buscarComercioPorId,
+    buscarAlias
 }

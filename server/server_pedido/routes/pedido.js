@@ -135,8 +135,8 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
 
     Pedido.find({ proveedor: req.query.idProveedor })
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
-        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
-        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+        .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
         .populate({
             path: 'comercio',
             select: 'entidad contactos',
@@ -153,7 +153,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
     .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
         .sort({ fechaAlta: -1 })
-        .exec((err, pedidos) => {
+        .exec(async(err, pedidos) => {
             if (err) {
                 return res.json({
                     ok: false,
@@ -186,6 +186,19 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                     totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     cursorDetalle++;
                 }
+                //buscar alias
+                console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
+                let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
+                console.log('La consulta de alias devolvio');
+                console.log(alias);
+                if (alias.ok) {
+                    if (alias.alias != '') {
+                        console.log('Asignando el alias a la razon social');
+                        pedidos[cursor].comercio.entidad.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                    }
+
+                }
+
                 let pedido = new Object({
                     idPedido: pedidos[cursor]._id,
                     proveedor: pedidos[cursor].proveedor,
