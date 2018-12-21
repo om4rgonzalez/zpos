@@ -541,11 +541,11 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
             let alias = '';
             // console.log('Buscando alias para el comercio: ' + req.body.idComercio);
             while (i < hasta) {
-                console.log('Comparando');
-                console.log('valor de i: ' + i);
-                console.log('Valor de hasta: ' + hasta);
-                console.log('Parametro a buscar: ' + req.body.idComercio);
-                console.log('Parametro de comparacion: ' + proveedor.red[i].comercio);
+                // console.log('Comparando');
+                // console.log('valor de i: ' + i);
+                // console.log('Valor de hasta: ' + hasta);
+                // console.log('Parametro a buscar: ' + req.body.idComercio);
+                // console.log('Parametro de comparacion: ' + proveedor.red[i].comercio);
                 if (req.body.idComercio == proveedor.red[i].comercio) {
                     alias = proveedor.red[i].alias;
                     break;
