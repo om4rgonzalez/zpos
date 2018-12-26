@@ -189,13 +189,16 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 //buscar alias
                 // console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
                 let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
-                // console.log('La consulta de alias devolvio');
-                // console.log(alias);
+                console.log('La consulta de alias devolvio');
+                console.log(alias);
                 if (alias.ok) {
-                    if (alias.alias != '') {
-                        // console.log('Asignando el alias a la razon social');
-                        pedidos[cursor].comercio.entidad.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                    if (alias.alias != null) {
+                        if (alias.alias != '') {
+                            // console.log('Asignando el alias a la razon social');
+                            pedidos[cursor].comercio.entidad.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                        }
                     }
+
 
                 }
 
