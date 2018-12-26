@@ -273,7 +273,7 @@ app.post('/comercio/ingresar/', async function(req, res) {
     }
 });
 
-
+//la funcion busca el proveedor en la red del comercio
 app.post('/comercio/buscar_proveedor/', async function(req, res) {
 
     Comercio.find({ '_id': req.body.comercio })
@@ -465,6 +465,38 @@ app.get('/comercio/obtener_productos/', async function(req, res) {
                 productos
             });
 
+        });
+});
+
+app.post('/comercio/buscar_comercio/', async function(req, res) {
+
+    Comercio.findOne({ _id: req.body.idComercio })
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .exec(async(err, comercio) => {
+            if (err) {
+                console.log('La busqueda de un comercio por Id arrojo un error');
+                console.log(err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de un comercio por Id arrojo un error',
+                    comercio: null
+                });
+            }
+
+            if (comercio == null) {
+                console.log('La busqueda de comercio por id no produjo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de comercio por id no produjo resultados',
+                    comercio: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Proveedor encontrado',
+                comercio
+            });
         });
 });
 
