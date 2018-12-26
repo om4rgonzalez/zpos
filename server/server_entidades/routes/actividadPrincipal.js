@@ -20,4 +20,5 @@ app.get('/conf/actividades_principales_comercio/', function(req, res) {
 
 
 
+
 module.exports = app;
