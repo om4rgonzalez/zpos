@@ -71,9 +71,9 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
 
     let destinos = [];
     let mensajeEnviar = '';
-    console.log('Comienza la busqueda de destinos');
-    console.log('Es push? ' + req.body.esPush);
-    console.log('Es proveedor? ' + req.body.esProveedor);
+    // console.log('Comienza la busqueda de destinos');
+    // console.log('Es push? ' + req.body.esPush);
+    // console.log('Es proveedor? ' + req.body.esProveedor);
 
     if (req.body.esPush) {
 
@@ -217,8 +217,8 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
     //busco la plantilla
     console.log('Buscando la plantilla');
     let plantilla = await funciones.buscarPlantilla(req.body.metodo, req.body.tipoError);
-    console.log('Respuesta de la busqueda de plantilla');
-    console.log(plantilla);
+    // console.log('Respuesta de la busqueda de plantilla');
+    // console.log(plantilla);
     if (plantilla.error == 0) {
         //no hubo error, procedo con el armado del mensaje
 
