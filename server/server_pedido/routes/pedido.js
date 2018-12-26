@@ -309,43 +309,44 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
 app.post('/pedido/aceptar/', async function(req, res) {
 
     //cambiar el estado al pedido
-    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO' } }, function(err, exito) {
-        if (err) {
-            return res.json({
-                ok: false,
-                message: 'La actualizacion produjo un error. Error: ' + err.message
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO' } },
+        function(err, exito) {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La actualizacion produjo un error. Error: ' + err.message
+                });
+            }
+
+            if (exito == null) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede modificar el estado de un pedido finalizado'
+                });
+            }
+
+            console.log('Datos de la aceptacion de pedido');
+            console.log(exito);
+            console.log('Preparando el envio de push;')
+            console.log('Parametros:');
+            console.log('Proveedor: ' + exito.proveedor);
+            console.log('Comercio: ' + exito.comercio);
+            let respuestaMensajePush = funciones.nuevoMensaje({
+                metodo: '/pedido/aceptar/',
+                tipoError: 0,
+                parametros: '$proveedor',
+                valores: exito.proveedor,
+                buscar: 'SI',
+                esPush: true,
+                destinoEsProveedor: false,
+                destino: exito.comercio
             });
-        }
 
-        if (exito == null) {
-            return res.json({
-                ok: false,
-                message: 'No se puede modificar el estado de un pedido finalizado'
+            res.json({
+                ok: true,
+                message: 'El pedido fue aceptado'
             });
-        }
-
-        // console.log('Datos de la aceptacion de pedido');
-        // console.log(exito);
-        // console.log('Preparando el envio de push;')
-        // console.log('Parametros:');
-        // console.log('Proveedor: ' + exito.proveedor);
-        // console.log('Comercio: ' + exito.comercio);
-        let respuestaMensajePush = funciones.nuevoMensaje({
-            metodo: '/pedido/aceptar/',
-            tipoError: 0,
-            parametros: '$proveedor',
-            valores: exito.proveedor,
-            buscar: 'SI',
-            esPush: true,
-            destinoEsProveedor: false,
-            destino: exito.comercio
         });
-
-        res.json({
-            ok: true,
-            message: 'El pedido fue aceptado'
-        });
-    });
 
 });
 
