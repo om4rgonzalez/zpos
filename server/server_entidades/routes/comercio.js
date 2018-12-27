@@ -4,6 +4,7 @@ const app = express();
 const Entidad = require('../models/entidad');
 const funciones = require('../../middlewares/funciones');
 const Comercio = require('../models/comercio');
+const Proveedor = require('../models/proveedor');
 const Usuario = require('../../server_usuario/models/usuario');
 const Persona = require('../../server_persona/models/persona');
 const HorarioAtencion = require('../models/horarioAtencion');
@@ -267,6 +268,274 @@ app.post('/comercio/ingresar/', async function(req, res) {
             ok: false,
             message: 'Usuario o clave incorrecta',
             comercioDB: null,
+            usuario: null
+        });
+
+    }
+});
+
+app.post('/comercio/login/', async function(req, res) {
+    // console.log('Parametros recibidos en el login comercio');
+    // console.log(req.body);
+
+    let usuario_ = new Object({
+        nombreUsuario: req.body.nombreUsuario,
+        clave: req.body.clave,
+        idPush: req.body.idPush
+    });
+    let resp = await funciones.login(usuario_);
+
+    // console.log(resp);
+
+    if (resp.ok) {
+        // console.log(resp);
+        let usuario = new Object({
+            _id: resp._id,
+            token: resp.token
+        });
+
+        // console.log(usuario);
+        let entidad_ = new Object({
+            idEntidad: '0',
+            cuit: '0',
+            razonSocial: '-'
+        });
+
+        Comercio.find({})
+            // .populate('entidad')
+            .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+            // .populate('proveedores', 'entidad tiposEntrega')
+            .populate({ path: 'proveedores', select: 'entidad tiposEntrega', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+            .where('usuarios').in(usuario._id)
+            .exec(async(err, comercioDB) => {
+
+                if (err) {
+                    console.log('Error al realizar la consulta. Error: ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'Error al realizar la consulta. Error: ' + err.message,
+                        esProveedor: false,
+                        entidad: null,
+                        usuario: null
+                    });
+                }
+
+                if (comercioDB.length == 0) {
+                    console.log('El usuario no pertenece a un comercio. Debo buscar si pertenece a un proveedor');
+
+                    ////////////////////////////////////////
+
+                    Proveedor.find({}, 'tiposEntrega entidad _id')
+                        .populate('entidad')
+                        .where('usuarios').in(usuario._id)
+                        .exec(async(errP, proveedorDB) => {
+
+                            if (err) {
+                                console.log('Error al realizar la consulta. Error: ' + errP.message);
+                                return res.json({
+                                    ok: false,
+                                    message: 'Error al realizar la consulta. Error: ' + errP.message,
+                                    esProveedor: false,
+                                    entidad: null,
+                                    usuario: null
+                                });
+                            }
+
+                            if (proveedorDB.length == 0) {
+                                console.log('El usuario no pertenece a un proveedor')
+                                return res.json({
+                                    ok: false,
+                                    message: 'El usuario no pertenece a un proveedor',
+                                    esProveedor: false,
+                                    entidad: null,
+                                    usuario: null
+                                });
+                            }
+                            // console.log('Los proveedores que se encontraron con ese usuario son:');
+                            // console.log(proveedorDB);
+
+                            //busco el login del usuario
+                            let ok = true;
+                            let sesion = new Sesion({});
+                            sesion.sistemaOperativo = req.body.sistemaOperativo;
+                            sesion.fabricante = req.body.fabricante;
+                            sesion.modelo = req.body.modelo;
+                            sesion.versionKernel = req.body.versionKernel;
+                            sesion.longitud = req.body.longitud;
+                            sesion.latitud = req.body.latitud;
+                            // console.log('Id de usuario a buscar: ' + usuario._id);
+                            let log = await funciones.buscarLoginUsuario(usuario._id);
+                            // console.log('La funcion de busqueda de sesion devolvio');
+                            // console.log(log);
+                            switch (log.error) {
+                                case 0: //ya hizo login antes
+                                    console.log('Ya hizo un login previamente');
+                                    // console.log('Id login: ' + log.login);
+                                    // console.log('Id push: ' + parametros.idPush);
+                                    // console.log('Id de sesion: ' + sesion._id);
+                                    sesion.save((err, nuevoSesion) => {
+                                        if (err) {
+                                            console.log('Se produjo un error al guardar la sesion: ' + err.message);
+                                        } else {
+                                            console.log('Agregando la sesion: ' + nuevoSesion._id);
+                                            Login.findOneAndUpdate({ '_id': log.login._id, online: false }, {
+                                                    $set: {
+                                                        idPush: req.body.idPush,
+                                                        online: true
+                                                    },
+                                                    $push: {
+                                                        sesiones: nuevoSesion._id
+                                                    }
+                                                },
+                                                function(err_, logins) {
+                                                    if (err_) {
+                                                        console.log('Error en la actualizacion de login: ' + err_.message);
+                                                    } else {
+                                                        if (logins == null) {
+                                                            console.log('La sesion esta abierta');
+                                                        } else {
+                                                            console.log('Login encontrado');
+
+                                                            // logins.sesiones.push(sesion._id);
+                                                            // console.log(logins);
+                                                        }
+                                                    }
+                                                });
+                                        }
+                                    });
+
+                                    break;
+                                case 1: // error de busqueda
+                                    ok: false;
+
+                                    break;
+                                case 2: // primer login
+                                    console.log('Primer login');
+
+                                    // console.log(sesion);
+                                    sesion.save();
+                                    let login = new Login({
+                                        usuario: usuario._id,
+                                        idPush: req.body.idPush
+                                    });
+                                    // console.log(login);
+                                    login.sesiones.push(sesion._id);
+                                    login.save();
+
+                                    break;
+                            }
+
+                            entidad_.idEntidad = proveedorDB[0]._id;
+                            entidad_.cuit = proveedorDB[0].entidad.cuit;
+                            entidad_.razonSocial = proveedorDB[0].entidad.razonSocial;
+
+
+                            return res.json({
+                                ok: true,
+                                message: 'login correcto',
+                                esProveedor: true,
+                                entidad: entidad_,
+                                usuario
+                            });
+
+                        });
+                } else {
+                    // console.log(comercioDB);
+                    entidad_.idEntidad = comercioDB[0]._id;
+                    entidad_.cuit = comercioDB[0].entidad.cuit;
+                    entidad_.razonSocial = comercioDB[0].entidad.razonSocial;
+
+                    //busco el login del usuario
+                    let ok = true;
+                    let sesion = new Sesion({});
+
+                    let log = await funciones.buscarLoginUsuario(usuario._id);
+                    // console.log('La funcion de busqueda de sesion devolvio');
+                    // console.log(log);
+                    switch (log.error) {
+                        case 0: //ya hizo login antes
+                            console.log('Ya hizo un login previamente. Debo agregar una nueva sesion.');
+                            // console.log('Id login: ' + log.login);
+                            // console.log('Id push: ' + parametros.idPush);
+                            // console.log('Id de sesion: ' + sesion._id);
+                            sesion.sistemaOperativo = req.body.sistemaOperativo;
+                            sesion.fabricante = req.body.fabricante;
+                            sesion.modelo = req.body.modelo;
+                            sesion.versionKernel = req.body.versionKernel;
+                            sesion.longitud = req.body.longitud;
+                            sesion.latitud = req.body.latitud;
+
+                            sesion.save(async(err, nuevoSesion) => {
+                                if (err) {
+                                    console.log('Se produjo un error al guardar la sesion: ' + err.message);
+                                } else {
+                                    console.log('Agregando la sesion: ' + nuevoSesion._id);
+                                    Login.findOneAndUpdate({ '_id': log.login._id, online: false }, {
+                                            $set: {
+                                                idPush: req.body.idPush,
+                                                online: true
+                                            },
+                                            $push: {
+                                                sesiones: nuevoSesion._id
+                                            }
+                                        },
+                                        function(err_, logins) {
+                                            if (err_) {
+                                                console.log('Error en la actualizacion de login: ' + err_.message);
+                                            } else {
+                                                if (logins == null) {
+                                                    console.log('La sesion esta abierta');
+                                                } else {
+                                                    console.log('Login encontrado');
+
+                                                    // logins.sesiones.push(sesion._id);
+                                                    // console.log(logins);
+                                                }
+                                            }
+                                        });
+                                }
+                            });
+
+                            break;
+                        case 1: // error de busqueda
+                            ok: false;
+
+                            break;
+                        case 2: // primer login
+                            console.log('Primer login');
+
+                            // console.log(sesion);
+                            sesion.save();
+                            let login = new Login({
+                                usuario: usuario._id,
+                                idPush: req.body.idPush
+                            });
+                            // console.log(login);
+                            login.sesiones.push(sesion._id);
+                            login.save();
+
+                            break;
+                    }
+
+
+                    return res.json({
+                        ok: true,
+                        message: 'login correcto',
+                        esProveedor: false,
+                        entidad: entidad_,
+                        usuario
+                    });
+                }
+
+
+
+            });
+    } else {
+        return res.json({
+            ok: false,
+            message: 'Usuario o clave incorrecta',
+            esProveedor: false,
+            entidad: null,
             usuario: null
         });
 
