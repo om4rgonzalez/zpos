@@ -567,7 +567,7 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
 app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res) {
 
     Comercio.find({ proveedores: { $in: req.query.idProveedor } })
-        .populate('entidad')
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
         .populate('contactos')
         // .where({proveedores: $in})
         .exec(async(err, comercios) => {
