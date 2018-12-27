@@ -189,8 +189,8 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 //buscar alias
                 // console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
                 let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
-                console.log('La consulta de alias devolvio');
-                console.log(alias);
+                // console.log('La consulta de alias devolvio');
+                // console.log(alias);
                 if (alias.ok) {
                     if (alias.alias != null) {
                         if (alias.alias != '') {
@@ -325,12 +325,12 @@ app.post('/pedido/aceptar/', async function(req, res) {
                 });
             }
 
-            console.log('Datos de la aceptacion de pedido');
-            console.log(exito);
-            console.log('Preparando el envio de push;')
-            console.log('Parametros:');
-            console.log('Proveedor: ' + exito.proveedor);
-            console.log('Comercio: ' + exito.comercio);
+            // console.log('Datos de la aceptacion de pedido');
+            // console.log(exito);
+            // console.log('Preparando el envio de push;')
+            // console.log('Parametros:');
+            // console.log('Proveedor: ' + exito.proveedor);
+            // console.log('Comercio: ' + exito.comercio);
             let respuestaMensajePush = funciones.nuevoMensaje({
                 metodo: '/pedido/aceptar/',
                 tipoError: 0,
