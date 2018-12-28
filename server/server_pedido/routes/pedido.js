@@ -386,39 +386,42 @@ app.post('/pedido/aceptar/', async function(req, res) {
 });
 
 app.post('/pedido/rechazar/', async function(req, res) {
-
+    var hoy = new Date();
     //cambiar el estado al pedido
-    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true, comentarioCancelado: req.body.comentario } }, function(err, exito) {
-        if (err) {
-            return res.json({
-                ok: false,
-                message: 'La actualizacion produjo un error. Error: ' + err.message
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, {
+            $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true, comentarioCancelado: req.body.comentario, fechaCambioEstado: hoy.getDate() }
+        },
+        function(err, exito) {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La actualizacion produjo un error. Error: ' + err.message
+                });
+            }
+
+            if (exito == null) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede modificar el estado de un pedido finalizado'
+                });
+            }
+
+            let respuestaMensaje = funciones.nuevoMensaje({
+                metodo: '/pedido/rechazar/',
+                tipoError: 0,
+                parametros: '$proveedor',
+                valores: exito.proveedor,
+                buscar: 'SI',
+                esPush: true,
+                destinoEsProveedor: false,
+                destino: exito.comercio
             });
-        }
 
-        if (exito == null) {
-            return res.json({
-                ok: false,
-                message: 'No se puede modificar el estado de un pedido finalizado'
+            res.json({
+                ok: true,
+                message: 'El pedido fue rechazado'
             });
-        }
-
-        let respuestaMensaje = funciones.nuevoMensaje({
-            metodo: '/pedido/rechazar/',
-            tipoError: 0,
-            parametros: '$proveedor',
-            valores: exito.proveedor,
-            buscar: 'SI',
-            esPush: true,
-            destinoEsProveedor: false,
-            destino: exito.comercio
         });
-
-        res.json({
-            ok: true,
-            message: 'El pedido fue rechazado'
-        });
-    });
 
 });
 
