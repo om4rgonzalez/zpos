@@ -312,8 +312,8 @@ app.get('/proveedor/listar_todos/', async function(req, res) {
 
 app.post('/proveedor/ingresar/', async function(req, res) {
 
-    console.log('Parametros recibidos en el login proveedor');
-    console.log(req.body);
+    // console.log('Parametros recibidos en el login proveedor');
+    // console.log(req.body);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,

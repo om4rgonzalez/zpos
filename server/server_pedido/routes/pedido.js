@@ -342,9 +342,9 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
 
 
 app.post('/pedido/aceptar/', async function(req, res) {
-
+    var hoy = new Date();
     //cambiar el estado al pedido
-    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO' } },
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO', fechaCambioEstado: hoy.getDate() } },
         function(err, exito) {
             if (err) {
                 return res.json({

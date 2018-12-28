@@ -48,6 +48,10 @@ let pedidoSchema = new Schema({
         puntoVentaEntrega: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'PuntoVenta'
+        },
+        fechaCambioEstado: {
+            type: Date,
+            default: Date.now
         }
     }
 
