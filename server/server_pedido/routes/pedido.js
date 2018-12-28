@@ -189,7 +189,8 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 let entidad_ = new Object({
                     _id: pedidos[cursor].comercio.entidad._id,
                     cuit: pedidos[cursor].comercio.entidad.cuit,
-                    razonSocial: pedidos[cursor].comercio.entidad.razonSocial
+                    razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
+                    domicilio: pedidos[cursor].comercio.entidad.domicilio
                 });
 
 
@@ -203,9 +204,9 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 if (alias.ok) {
                     if (alias.alias != null) {
                         if (alias.alias != '') {
-                            console.log('Asignando el alias a la razon social');
+                            // console.log('Asignando el alias a la razon social');
                             entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
-                            console.log('Razon social con alias: ' + entidad_.razonSocial);
+                            // console.log('Razon social con alias: ' + entidad_.razonSocial);
                         }
                     }
                 }
@@ -283,20 +284,38 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                     totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     cursorDetalle++;
                 }
+
+                let entidad_ = new Object({
+                    _id: pedidos[cursor].comercio.entidad._id,
+                    cuit: pedidos[cursor].comercio.entidad.cuit,
+                    razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
+                    domicilio: pedidos[cursor].comercio.entidad.domicilio
+                });
+
+
                 let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
                 // console.log('La consulta de alias devolvio');
                 // console.log(alias);
                 if (alias.ok) {
                     if (alias.alias != '') {
                         // console.log('Asignando el alias a la razon social');
-                        pedidos[cursor].comercio.entidad.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                        // pedidos[cursor].comercio.entidad.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                        entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
                     }
 
                 }
+
+                let comercio_ = new Object({
+                    _id: pedidos[cursor].comercio._id,
+                    entidad: entidad_,
+                    contactos: pedidos[cursor].comercio.contactos
+                });
+
                 let pedido = new Object({
                     idPedido: pedidos[cursor]._id,
                     proveedor: pedidos[cursor].proveedor,
-                    comercio: pedidos[cursor].comercio,
+                    // comercio: pedidos[cursor].comercio,
+                    comercio: comercio_,
                     tipoEntrega: pedidos[cursor].tipoEntrega,
                     fechaEntrega: pedidos[cursor].fechaEntrega,
                     activo: pedidos[cursor].activo,
