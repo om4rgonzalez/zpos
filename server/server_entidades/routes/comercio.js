@@ -73,8 +73,8 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
                         // console.log('array de contactos antes de asignarselo al cliente: ' + contactos);
                     } catch (e) {
-                        console.log('Error al guardar el contacto: ' + contacto);
-                        console.log('Error de guardado: ' + e);
+                        // console.log('Error al guardar el contacto: ' + contacto);
+                        // console.log('Error de guardado: ' + e);
                         contactoGuardado = false;
                     }
                 }
@@ -110,28 +110,33 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
             comercio.save((err, comercioDB) => {
                 if (err) {
-                    return res.status(400).json({
+                    console.log('El alta de comercio produjo un error. Error: ' + err.message);
+                    return res.json({
                         ok: false,
-                        err
+                        message: 'El alta de comercio produjo un error',
+                        comercioDB: null
                     });
                 }
 
 
                 res.json({
                     ok: true,
+                    message: 'Alta completa',
                     comercioDB
                 });
             });
         } else {
-            return res.status(412).json({
+            return res.json({
                 ok: false,
-                message: 'Fallo el alta de entidad'
+                message: 'Fallo el alta de entidad para generar un comercio',
+                comercioDB: null
             });
         }
     } catch (e) {
-        return res.status(500).json({
+        return res.json({
             ok: false,
-            message: 'Fallo la ejecucion de una funcion: ' + e.message
+            message: 'Fallo la ejecucion de una funcion: ' + e.message,
+            comercioDB: null
         });
     }
 
