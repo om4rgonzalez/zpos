@@ -113,30 +113,26 @@ app.post('/comercio/nuevo/', async function(req, res) {
                     console.log('El alta de comercio produjo un error. Error: ' + err.message);
                     return res.json({
                         ok: false,
-                        message: 'El alta de comercio produjo un error',
-                        comercioDB: null
+                        message: 'El alta de comercio produjo un error'
                     });
                 }
 
 
                 res.json({
                     ok: true,
-                    message: 'Alta completa',
-                    comercioDB
+                    message: 'Alta completa'
                 });
             });
         } else {
             return res.json({
                 ok: false,
-                message: 'Fallo el alta de entidad para generar un comercio',
-                comercioDB: null
+                message: 'Fallo el alta de entidad para generar un comercio'
             });
         }
     } catch (e) {
         return res.json({
             ok: false,
-            message: 'Fallo la ejecucion de una funcion: ' + e.message,
-            comercioDB: null
+            message: 'Fallo la ejecucion de una funcion: ' + e.message
         });
     }
 
