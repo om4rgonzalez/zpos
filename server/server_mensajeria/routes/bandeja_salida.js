@@ -244,6 +244,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         // console.log(destinos);
 
         let destinos_ = [];
+        let destinos__ = [];
         if (!destinos.ok) {
             console.log('No hay destinos a los cuales enviar push');
         } else {
@@ -255,6 +256,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                 let destino = new Destino({
                     contacto: destinos.destino[i]
                 });
+                destinos__.push(destino._id);
                 destinos_.push(destinos.destino[i]);
                 destino.save((err_des, ok) => {
                     if (err_des) {
@@ -279,7 +281,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         let mensajeEnviado = false;
 
         if (destinos_.length > 0) {
-            bandejaSalida.destinos = destinos_;
+            bandejaSalida.destinos = ddestinos__;
             let players = '';
             for (var j in destinos_) {
                 if (j == 0) {
@@ -292,6 +294,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
             let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
             mensajeEnviado = respEnviaPush.ok;
         }
+
         bandejaSalida.enviado = mensajeEnviado;
 
         bandejaSalida.save(async(err, bandeja) => {
