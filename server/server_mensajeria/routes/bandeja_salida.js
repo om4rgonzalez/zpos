@@ -281,7 +281,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         let mensajeEnviado = false;
 
         if (destinos_.length > 0) {
-            bandejaSalida.destinos = ddestinos__;
+            bandejaSalida.destinos = destinos__;
             let players = '';
             for (var j in destinos_) {
                 if (j == 0) {
