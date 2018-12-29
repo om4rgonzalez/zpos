@@ -414,7 +414,10 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                         sesion.save();
                         let login = new Login({
                             usuario: usuario._id,
-                            idPush: req.body.idPush
+                            idPush: req.body.idPush,
+                            nombreUsuario: req.body.nombreUsuario,
+                            entidad: proveedorDB[0].entidad.razonSocial,
+                            esProveedor: true
                         });
                         // console.log(login);
                         login.sesiones.push(sesion._id);

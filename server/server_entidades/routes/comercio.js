@@ -250,7 +250,10 @@ app.post('/comercio/ingresar/', async function(req, res) {
                         sesion.save();
                         let login = new Login({
                             usuario: usuario._id,
-                            idPush: req.body.idPush
+                            idPush: req.body.idPush,
+                            nombreUsuario: req.body.nombreUsuario,
+                            entidad: comercioDB[0].entidad.razonSocial,
+                            esProveedor: false
                         });
                         // console.log(login);
                         login.sesiones.push(sesion._id);
@@ -421,7 +424,10 @@ app.post('/comercio/login/', async function(req, res) {
                                     sesion.save();
                                     let login = new Login({
                                         usuario: usuario._id,
-                                        idPush: req.body.idPush
+                                        idPush: req.body.idPush,
+                                        nombreUsuario: req.body.nombreUsuario,
+                                        entidad: proveedorDB[0].entidad.razonSocial,
+                                        esProveedor: true
                                     });
                                     // console.log(login);
                                     login.sesiones.push(sesion._id);
@@ -513,7 +519,10 @@ app.post('/comercio/login/', async function(req, res) {
                             sesion.save();
                             let login = new Login({
                                 usuario: usuario._id,
-                                idPush: req.body.idPush
+                                idPush: req.body.idPush,
+                                nombreUsuario: req.body.nombreUsuario,
+                                entidad: comercioDB[0].entidad.razonSocial,
+                                esProveedor: false
                             });
                             // console.log(login);
                             login.sesiones.push(sesion._id);

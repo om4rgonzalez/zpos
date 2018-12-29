@@ -14,6 +14,18 @@ let loginSchema = new Schema({
             type: Boolean,
             default: true
         },
+        nombreUsuario: {
+            type: String,
+            default: '-'
+        },
+        entidad: {
+            type: String,
+            default: '-'
+        },
+        esProveedor: {
+            type: Boolean,
+            default: true
+        },
         sesiones: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Sesion'
