@@ -306,7 +306,8 @@ app.post('/comercio/login/', async function(req, res) {
         let entidad_ = new Object({
             idEntidad: '0',
             cuit: '0',
-            razonSocial: '-'
+            razonSocial: '-',
+            actividadPrincipal: '-'
         });
 
         Comercio.find({})
@@ -439,7 +440,7 @@ app.post('/comercio/login/', async function(req, res) {
                             entidad_.idEntidad = proveedorDB[0]._id;
                             entidad_.cuit = proveedorDB[0].entidad.cuit;
                             entidad_.razonSocial = proveedorDB[0].entidad.razonSocial;
-
+                            entidad_.actividadPrincipal = proveedorDB[0].entidad.actividadPrincipal;
 
                             return res.json({
                                 ok: true,
@@ -455,6 +456,7 @@ app.post('/comercio/login/', async function(req, res) {
                     entidad_.idEntidad = comercioDB[0]._id;
                     entidad_.cuit = comercioDB[0].entidad.cuit;
                     entidad_.razonSocial = comercioDB[0].entidad.razonSocial;
+                    entidad_.actividadPrincipal = comercioDB[0].entidad.actividadPrincipal;
 
                     //busco el login del usuario
                     let ok = true;
