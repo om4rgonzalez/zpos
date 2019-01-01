@@ -282,6 +282,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
 
         if (destinos_.length > 0) {
             bandejaSalida.destinos = destinos__;
+
             let players = '';
             for (var j in destinos_) {
                 if (j == 0) {
