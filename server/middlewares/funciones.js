@@ -440,6 +440,28 @@ let buscarAlias = async(idProveedor, idComercio) => {
     // console.log(resp.data);
     return resp.data;
 };
+
+let verificarExistenciaComercio = async(id) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/comercio/existe/';
+    let resp = await axios.post(URL, {
+        comercio: id
+    });
+    // console.log('Data que devuelve la respuesta: ');
+    // console.log(resp.data);
+    return resp.data;
+};
+
+let verificarExistenciaProveedor = async(id) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/existe/';
+    let resp = await axios.post(URL, {
+        proveedor: id
+    });
+    // console.log('Data que devuelve la respuesta: ');
+    // console.log(resp.data);
+    return resp.data;
+};
+
+
 // let nuevaInvitacion = async(invitacion) => {
 //     let URL = process.env.URL_SERVICE + process.env.PORT + '/invitacion/nueva/';
 //     let resp = await axios.post(URL, {
@@ -476,5 +498,7 @@ module.exports = {
     verificarExistenciaProveedorEnRedProveedor,
     buscarProveedorPorId,
     buscarComercioPorId,
-    buscarAlias
+    buscarAlias,
+    verificarExistenciaComercio,
+    verificarExistenciaProveedor
 }

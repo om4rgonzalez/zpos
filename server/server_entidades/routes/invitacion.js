@@ -23,71 +23,105 @@ const Alias = require('../models/alias');
 app.post('/invitacion/nueva/', async function(req, res) {
 
     //verifico si el proveedor ya forma parte de la red del comercio
+
     let forma;
-    if (!req.body.esProveedor)
-        forma = await funciones.verificarExistenciaProveedorEnRedComercio(req.body.proveedor, req.body.comercio);
-    else
-        forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
-    // console.log('La funcion devuelve ' + forma.ok);
-    if (forma.ok) {
-        let invitacion = Invitacion({
-            comercio: req.body.comercio,
-            proveedor: req.body.proveedor,
-            texto: req.body.texto,
-            esProveedor: req.body.esProveedor
-        });
-        try {
-            invitacion.save((err, invitacionDB) => {
-                if (err) {
-                    return res.status(400).json({
-                        ok: false,
-                        err
-                    });
-                }
-                if (!req.body.esProveedor) {
-                    //es comercio
-                    let respuestaMensajePush = funciones.nuevoMensaje({
-                        metodo: '/invitacion/nueva/',
-                        tipoError: 0,
-                        parametros: '$comercio',
-                        valores: req.body.comercio,
-                        buscar: 'SI',
-                        esPush: true,
-                        destinoEsProveedor: true,
-                        destino: req.body.proveedor
-                    });
-                } else {
-                    //es proveedor
-                    let respuestaMensajePush = funciones.nuevoMensaje({
-                        metodo: '/invitacion/nueva/',
-                        tipoError: 1,
-                        parametros: '$proveedor',
-                        valores: req.body.comercio,
-                        buscar: 'SI',
-                        esPush: true,
-                        destinoEsProveedor: true,
-                        destino: req.body.proveedor
-                    });
-                }
-
-                res.json({
-                    ok: true,
-                    message: 'La invitacion se envio con exito'
-                });
-            });
-
-        } catch (e) {
+    if (!req.body.esProveedor) {
+        //verifico si existe el comercio
+        let existe = await funciones.verificarExistenciaComercio(req.body.comercio);
+        if (existe.ok) {
+            forma = await funciones.verificarExistenciaProveedorEnRedComercio(req.body.proveedor, req.body.comercio);
+        } else {
             return res.json({
                 ok: false,
-                message: 'Fallo la ejecucion de una funcion: ' + e.message
+                message: 'EL comercio que intenta enviar la invitacion no esta registrado en la plataforma'
+            });
+        }
+    } else {
+        //verifico si existe el proveedor
+        let existe = await funciones.verificarExistenciaProveedor(req.body.comercio);
+        if (existe.ok) {
+            forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
+        } else {
+            return res.json({
+                ok: false,
+                message: 'EL proveedor que intenta enviar la invitacion no esta registrado en la plataforma'
+            });
+        }
+    }
+
+    //verifico que exista el destino de la invitacion
+    let existeProveedor = await funciones.verificarExistenciaProveedor(req.body.proveedor);
+    if (existeProveedor.ok) {
+        // console.log('La funcion devuelve ' + forma.ok);
+        if (forma.ok) {
+            let invitacion = Invitacion({
+                comercio: req.body.comercio,
+                proveedor: req.body.proveedor,
+                texto: req.body.texto,
+                esProveedor: req.body.esProveedor
+            });
+            try {
+                invitacion.save((err, invitacionDB) => {
+                    if (err) {
+                        console.log('Error en el proceso de guardar la invitacion');
+                        console.log(err.message);
+                        return res.json({
+                            ok: false,
+                            message: 'EL proceso de guardar la invitacion produjo un error'
+                        });
+                    }
+                    if (!req.body.esProveedor) {
+                        //es comercio
+                        let respuestaMensajePush = funciones.nuevoMensaje({
+                            metodo: '/invitacion/nueva/',
+                            tipoError: 0,
+                            parametros: '$comercio',
+                            valores: req.body.comercio,
+                            buscar: 'SI',
+                            esPush: true,
+                            destinoEsProveedor: true,
+                            destino: req.body.proveedor
+                        });
+                    } else {
+                        //es proveedor
+                        let respuestaMensajePush = funciones.nuevoMensaje({
+                            metodo: '/invitacion/nueva/',
+                            tipoError: 1,
+                            parametros: '$proveedor',
+                            valores: req.body.comercio,
+                            buscar: 'SI',
+                            esPush: true,
+                            destinoEsProveedor: true,
+                            destino: req.body.proveedor
+                        });
+                    }
+
+                    res.json({
+                        ok: true,
+                        message: 'La invitacion se envio con exito'
+                    });
+                });
+
+            } catch (e) {
+                return res.json({
+                    ok: false,
+                    message: 'Fallo la ejecucion de una funcion: ' + e.message
+                });
+            }
+        } else {
+            return res.json({
+                ok: false,
+                message: 'El proveedor ya forma parte de la red del comercio'
             });
         }
     } else {
         return res.json({
             ok: false,
-            message: 'El proveedor ya forma parte de la red del comercio'
+            message: 'El proveedor no esta registrado en la plataforma'
         });
     }
+
+
 
 });
 

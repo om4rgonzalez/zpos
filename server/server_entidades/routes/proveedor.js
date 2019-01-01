@@ -657,5 +657,39 @@ app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res)
 
 });
 
+app.post('/proveedor/existe/', async function(req, res) {
+    console.log('Analizando si el proveedor esta en la base de datos');
+    Proveedor.find({ '_id': req.body.proveedor })
+        // .where('proveedores').in(req.body.proveedor)
+        .exec((err, comerciosDB) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda arrojo un error: Error: ' + err.message
+                });
+            }
+
+            if (!comerciosDB) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda no encontro ningun proveedor con el id ' + req.body.comercio
+                });
+            }
+
+            if (comerciosDB.length == 0) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda no encontro ningun proveedor con el id ' + req.body.comercio
+                });
+            }
+
+            return res.json({
+                ok: true,
+                message: 'El proveedor esta cargado'
+            });
+
+        });
+});
+
 
 module.exports = app;

@@ -556,7 +556,7 @@ app.post('/comercio/login/', async function(req, res) {
 
 //la funcion busca el proveedor en la red del comercio
 app.post('/comercio/buscar_proveedor/', async function(req, res) {
-
+    console.log('Analizando si el proveedor ya pertenece a la red del comercio')
     Comercio.find({ '_id': req.body.comercio })
         // .where('proveedores').in(req.body.proveedor)
         .exec((err, comerciosDB) => {
@@ -573,6 +573,15 @@ app.post('/comercio/buscar_proveedor/', async function(req, res) {
                     message: 'El comercio no tiene al proveedor en su red'
                 });
             }
+
+            if (comerciosDB.length == 0) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda no encontro ningun comercio con el id ' + req.body.comercio
+                });
+            }
+
+
             for (var i in comerciosDB[0].proveedores) {
                 if (comerciosDB[0].proveedores[i] == req.body.proveedor)
                     return res.json({
@@ -589,6 +598,41 @@ app.post('/comercio/buscar_proveedor/', async function(req, res) {
             res.json({
                 ok: false,
                 message: 'El comercio no tiene al proveedor en su red'
+            });
+
+        });
+});
+
+
+app.post('/comercio/existe/', async function(req, res) {
+    console.log('Analizando si el comercio esta en la base de datos');
+    Comercio.find({ '_id': req.body.comercio })
+        // .where('proveedores').in(req.body.proveedor)
+        .exec((err, comerciosDB) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda arrojo un error: Error: ' + err.message
+                });
+            }
+
+            if (!comerciosDB) {
+                return res.json({
+                    ok: false,
+                    message: 'El comercio no tiene al proveedor en su red'
+                });
+            }
+
+            if (comerciosDB.length == 0) {
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda no encontro ningun comercio con el id ' + req.body.comercio
+                });
+            }
+
+            return res.json({
+                ok: true,
+                message: 'El comercio esta cargado'
             });
 
         });
