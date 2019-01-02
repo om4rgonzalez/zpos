@@ -279,8 +279,8 @@ app.post('/comercio/ingresar/', async function(req, res) {
 });
 
 app.post('/comercio/login/', async function(req, res) {
-    // console.log('Parametros recibidos en el login comercio');
-    // console.log(req.body);
+    console.log('Parametros recibidos en el login comercio');
+    console.log(req.body);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
@@ -306,6 +306,8 @@ app.post('/comercio/login/', async function(req, res) {
             actividadPrincipal: '-'
         });
 
+        let primerLogin = false;
+
         Comercio.find({})
             // .populate('entidad')
             .populate({ path: 'entidad', populate: { path: 'domicilio' } })
@@ -321,7 +323,8 @@ app.post('/comercio/login/', async function(req, res) {
                         message: 'Error al realizar la consulta. Error: ' + err.message,
                         esProveedor: false,
                         entidad: null,
-                        usuario: null
+                        usuario: null,
+                        primerLogin: primerLogin
                     });
                 }
 
@@ -342,7 +345,8 @@ app.post('/comercio/login/', async function(req, res) {
                                     message: 'Error al realizar la consulta. Error: ' + errP.message,
                                     esProveedor: false,
                                     entidad: null,
-                                    usuario: null
+                                    usuario: null,
+                                    primerLogin: primerLogin
                                 });
                             }
 
@@ -353,7 +357,8 @@ app.post('/comercio/login/', async function(req, res) {
                                     message: 'El usuario no pertenece a un proveedor',
                                     esProveedor: false,
                                     entidad: null,
-                                    usuario: null
+                                    usuario: null,
+                                    primerLogin: primerLogin
                                 });
                             }
                             // console.log('Los proveedores que se encontraron con ese usuario son:');
@@ -416,7 +421,7 @@ app.post('/comercio/login/', async function(req, res) {
                                     break;
                                 case 2: // primer login
                                     console.log('Primer login');
-
+                                    primerLogin = true;
                                     // console.log(sesion);
                                     sesion.save();
                                     let login = new Login({
@@ -443,7 +448,8 @@ app.post('/comercio/login/', async function(req, res) {
                                 message: 'login correcto',
                                 esProveedor: true,
                                 entidad: entidad_,
-                                usuario
+                                usuario,
+                                primerLogin: primerLogin
                             });
 
                         });
@@ -512,7 +518,7 @@ app.post('/comercio/login/', async function(req, res) {
                             break;
                         case 2: // primer login
                             console.log('Primer login');
-
+                            primerLogin = true;
                             // console.log(sesion);
                             sesion.save();
                             let login = new Login({
@@ -535,7 +541,8 @@ app.post('/comercio/login/', async function(req, res) {
                         message: 'login correcto',
                         esProveedor: false,
                         entidad: entidad_,
-                        usuario
+                        usuario,
+                        primerLogin: primerLogin
                     });
                 }
 
@@ -548,7 +555,8 @@ app.post('/comercio/login/', async function(req, res) {
             message: 'Usuario o clave incorrecta',
             esProveedor: false,
             entidad: null,
-            usuario: null
+            usuario: null,
+            primerLogin: primerLogin
         });
 
     }
