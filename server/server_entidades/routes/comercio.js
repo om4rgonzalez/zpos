@@ -11,6 +11,7 @@ const HorarioAtencion = require('../models/horarioAtencion');
 const Contacto = require('../../server_contacto/models/contacto');
 const Login = require('../../server_usuario/models/login');
 const Sesion = require('../../server_usuario/models/sesion');
+const Domicilio = require('../../server_direccion/models/domicilio');
 
 
 app.post('/comercio/nuevo/', async function(req, res) {
@@ -777,28 +778,7 @@ app.post('/comercio/cargar_conf_domicilio/', async function(req, res) {
 
 
 
-    let domicilio = {
-        pais: req.body.domicilio.pais,
-        provincia: req.body.domicilio.provincia,
-        localidad: req.body.domicilio.localidad,
-        barrio: req.body.domicilio.barrio,
-        calle: req.body.domicilio.calle,
-        numeroCasa: req.body.domicilio.numeroCasa,
-        piso: req.body.domicilio.piso,
-        numeroDepartamento: req.body.domicilio.numeroDepartamento,
-        latitud: req.body.domicilio.latitud,
-        longitud: req.body.domicilio.longitud,
-        codigoPostal: req.body.domicilio.codigoPostal
-    };
 
-    try {
-        domicilio.save();
-        //debo actualizar el domicilio en la entidad
-
-
-    } catch (e) {
-
-    }
 
 
 
@@ -957,6 +937,79 @@ app.post('/comercio/buscar_comercio/', async function(req, res) {
                 comercio
             });
         });
+});
+
+
+app.post('/comercio/cargar_configuracion/', async function(req, res) {
+    if (req.body.direccion) {
+        Comercio.findOne({ _id: req.body.idComercio })
+            .exec(async(err, comercio) => {
+                if (err) {
+                    console.log('La busqueda de comercio para cargar la configuracion arrojo un error');
+                    console.log(err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'La busqueda de comercio para cargar la configuracion arrojo un error'
+                    });
+                }
+
+                if (comercio == null) {
+                    console.log('La busqueda de comercio para cargar la configuracion no arrojo resultados');
+                    return res.json({
+                        ok: false,
+                        message: 'La busqueda de comercio para cargar la configuracion no arrojo resultados'
+                    });
+                }
+
+                let domicilio = {
+                    pais: req.body.domicilio.pais,
+                    provincia: req.body.domicilio.provincia,
+                    localidad: req.body.domicilio.localidad,
+                    barrio: req.body.domicilio.barrio,
+                    calle: req.body.domicilio.calle,
+                    numeroCasa: req.body.domicilio.numeroCasa,
+                    piso: req.body.domicilio.piso,
+                    numeroDepartamento: req.body.domicilio.numeroDepartamento,
+                    latitud: req.body.domicilio.latitud,
+                    longitud: req.body.domicilio.longitud,
+                    codigoPostal: req.body.domicilio.codigoPostal
+                };
+
+                try {
+                    domicilio.save();
+                    //debo actualizar el domicilio en la entidad
+                    Entidad.findOneAndUpdate({ _id: comercio.entidad }, {
+                            $set: {
+                                domcilio: domcilio._id
+                            }
+                        },
+                        async function(errUpdate, entidad) {
+                            if (errUpdate) {
+                                console.log('La actualiacion de la carga de configuracion arrojo un error');
+                                console.log(errUpdate.message);
+                                return res.json({
+                                    ok: false,
+                                    message: 'La actualiacion de la carga de configuracion arrojo un error'
+                                });
+                            }
+
+                            res.json({
+                                ok: true,
+                                message: 'La carga de configuracion termino sin errores'
+                            });
+                        });
+                } catch (e) {
+                    console.log('El try de la carga de configuracion produjo un error');
+                    console.log(e.message);
+                    return res.json({
+                        ok: false,
+                        message: 'La actualiacion de la carga de configuracion arrojo un error'
+                    });
+                }
+
+
+            });
+    }
 });
 
 
