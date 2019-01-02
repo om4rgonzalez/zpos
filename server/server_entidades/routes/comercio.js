@@ -138,6 +138,132 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
 });
 
+app.post('/comercio/nuevo_v_nativo/', async function(req, res) {
+    // console.log('Comienzo dando de alta el domicilio')
+    //tengo que generar la entidad y el domicilio. Pasarle esa info al metodo de funciones
+    //y generar los id en ese momento (solo el _id de entidad se genera aqui)
+    var usuarios = [];
+    let domicilio = {
+        pais: req.body.domicilio.pais,
+        provincia: req.body.domicilio.provincia,
+        localidad: req.body.domicilio.localidad,
+        barrio: req.body.domicilio.barrio,
+        calle: req.body.domicilio.calle,
+        numeroCasa: req.body.domicilio.numeroCasa,
+        piso: req.body.domicilio.piso,
+        numeroDepartamento: req.body.domicilio.numeroDepartamento,
+        latitud: req.body.domicilio.latitud,
+        longitud: req.body.domicilio.longitud,
+        codigoPostal: req.body.domicilio.codigoPostal
+    };
+
+    let entidad = Entidad({
+        cuit: req.body.entidad.cuit,
+        razonSocial: req.body.entidad.razonSocial,
+        actividadPrincipal: req.body.entidad.actividadPrincipal,
+        tipoPersoneria: req.body.entidad.tipoPersoneria
+    });
+
+    // console.log('Entidad antes de ser enviada a la funcion');
+
+    // console.log(entidad);
+    try {
+        let respuestaEntidad = await funciones.nuevaEntidad(entidad, domicilio);
+        // console.log('Entidad creada');
+        if (respuestaEntidad.ok) {
+            let comercio = new Comercio({
+                entidad: entidad._id
+            });
+            if (req.body.contactos) {
+                // console.log('Hay contactos para guardar');
+                let contactos = [];
+                for (var i in req.body.contactos) {
+                    // console.log(req.body.contactos[i]);
+                    let contacto = new Contacto({
+                        tipoContacto: req.body.contactos[i].tipoContacto,
+                        codigoPais: req.body.contactos[i].codigoPais,
+                        codigoArea: req.body.contactos[i].codigoArea,
+                        numeroCelular: req.body.contactos[i].numeroCelular,
+                        numeroFijo: req.body.contactos[i].numeroFijo,
+                        email: req.body.contactos[i].email
+                    });
+                    try {
+                        // console.log('Contacto a guardar');
+                        // console.log(contacto);
+                        let respuesta = await funciones.nuevoContacto(contacto);
+                        // console.log('Respuesta de la funcion guardar contacto: ' + respuesta.ok);
+                        if (respuesta.ok) {
+                            contactos.push(contacto._id);
+                        }
+
+                        // console.log('array de contactos antes de asignarselo al cliente: ' + contactos);
+                    } catch (e) {
+                        // console.log('Error al guardar el contacto: ' + contacto);
+                        // console.log('Error de guardado: ' + e);
+                        contactoGuardado = false;
+                    }
+                }
+                comercio.contactos = contactos;
+            }
+
+            if (req.body.usuarios) {
+                let persona = new Persona({
+                    tipoDni: req.body.usuarios.persona.tipoDni,
+                    dni: req.body.usuarios.persona.dni,
+                    apellidos: req.body.usuarios.persona.apellidos,
+                    nombres: req.body.usuarios.persona.nombres
+                });
+                let usuario = new Usuario({
+                    persona: persona,
+                    nombreUsuario: req.body.usuarios.nombreUsuario,
+                    clave: req.body.usuarios.clave,
+                    rol: req.body.usuarios.rol
+                });
+                let respuestaUsuario = await funciones.nuevoUsuario(usuario);
+                if (respuestaUsuario.ok) {
+                    // console.log('Usuario creado');
+                    usuarios.push(usuario._id);
+                } else
+                    avanzar = false;
+                // // console.log('usuarios');
+                // for (var i in req.body.usuarios) {
+                //     // console.log(req.body.usuarios[i]);
+
+                // }
+            }
+            if (req.body.usuarios)
+                comercio.usuarios = usuarios;
+
+            comercio.save((err, comercioDB) => {
+                if (err) {
+                    console.log('El alta de comercio produjo un error. Error: ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'El alta de comercio produjo un error'
+                    });
+                }
+
+
+                res.json({
+                    ok: true,
+                    message: 'Alta completa'
+                });
+            });
+        } else {
+            return res.json({
+                ok: false,
+                message: 'Fallo el alta de entidad para generar un comercio'
+            });
+        }
+    } catch (e) {
+        return res.json({
+            ok: false,
+            message: 'Fallo la ejecucion de una funcion: ' + e.message
+        });
+    }
+
+});
+
 
 
 app.post('/comercio/ingresar/', async function(req, res) {
