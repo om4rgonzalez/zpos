@@ -941,7 +941,7 @@ app.post('/comercio/buscar_comercio/', async function(req, res) {
 
 
 app.post('/comercio/cargar_configuracion/', async function(req, res) {
-    if (req.body.direccion) {
+    if (req.body.domicilio) {
         Comercio.findOne({ _id: req.body.idComercio })
             .exec(async(err, comercio) => {
                 if (err) {
@@ -961,7 +961,7 @@ app.post('/comercio/cargar_configuracion/', async function(req, res) {
                     });
                 }
 
-                let domicilio = {
+                let domicilio = new Domicilio({
                     pais: req.body.domicilio.pais,
                     provincia: req.body.domicilio.provincia,
                     localidad: req.body.domicilio.localidad,
@@ -973,14 +973,14 @@ app.post('/comercio/cargar_configuracion/', async function(req, res) {
                     latitud: req.body.domicilio.latitud,
                     longitud: req.body.domicilio.longitud,
                     codigoPostal: req.body.domicilio.codigoPostal
-                };
+                });
 
                 try {
                     domicilio.save();
                     //debo actualizar el domicilio en la entidad
                     Entidad.findOneAndUpdate({ _id: comercio.entidad }, {
                             $set: {
-                                domcilio: domcilio._id
+                                domicilio: domicilio._id
                             }
                         },
                         async function(errUpdate, entidad) {
