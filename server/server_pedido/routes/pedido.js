@@ -425,6 +425,82 @@ app.post('/pedido/rechazar/', async function(req, res) {
 
 });
 
+app.post('/pedido/buscar_pedido_pendiente_entrega/', async function(req, res) {
+
+    Pedido.findOne({ _id: req.body.idPedido, proveedor: req.body.idProveedor })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        // .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .where({ estadoPedido: 'ACEPTADO' })
+        .exec(async(err, pedido) => {
+            if (err) {
+                console.log('La busqueda de pedido por id produjo un error');
+                console.log(err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de pedido por id produjo un error',
+                    pedido: null
+                });
+            }
+
+            if (pedido == null) {
+                console.log('La busqueda de pedido no arrojo resultado');
+                return res.json({
+                    ok: false,
+                    message: 'No se encontro un pedido para entregar',
+                    pedido: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Pedido encontrado',
+                pedido
+            });
+
+        });
+});
+
+app.post('/pedido/entregar/', async function(req, res) {
+    var hoy = new Date();
+    //cambiar el estado al pedido
+    Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, {
+            $set: { estadoPedido: 'ENTREGADO', estadoTerminal: true, comentarioCancelado: req.body.comentario, fechaCambioEstado: hoy.getDate() }
+        },
+        function(err, exito) {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'La actualizacion produjo un error. Error: ' + err.message
+                });
+            }
+
+            if (exito == null) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede modificar el estado de un pedido finalizado'
+                });
+            }
+
+            // let respuestaMensaje = funciones.nuevoMensaje({
+            //     metodo: '/pedido/rechazar/',
+            //     tipoError: 0,
+            //     parametros: '$proveedor',
+            //     valores: exito.proveedor,
+            //     buscar: 'SI',
+            //     esPush: true,
+            //     destinoEsProveedor: false,
+            //     destino: exito.comercio
+            // });
+
+            res.json({
+                ok: true,
+                message: 'El pedido fue entregado'
+            });
+        });
+
+});
+
 app.post('/pedido/enviar/', async function(req, res) {
 
     //cambiar el estado al pedido
