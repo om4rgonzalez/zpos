@@ -8,6 +8,17 @@ let detallePedidoSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Producto'
         },
+        nombreProducto: {
+            type: String
+        },
+        precioProveedor: {
+            type: Number,
+            default: 0
+        },
+        precioSugerido: {
+            type: Number,
+            default: 0
+        },
         unidadMedida: {
             type: String
         },

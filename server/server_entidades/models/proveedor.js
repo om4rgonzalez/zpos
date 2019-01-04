@@ -42,6 +42,10 @@ let proveedorSchema = new Schema({
         proveedores: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Proveedor'
+        }],
+        productos_: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Producto_'
         }]
     }
 

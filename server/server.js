@@ -42,6 +42,7 @@ app.use(require('./server_pedido/server_pedido'));
 app.use(require('./server_cliente/server_cliente'));
 app.use(require('./server_publicidad/server_publicidad'));
 app.use(require('./server_mensajeria/server_mensajeria'));
+app.use(require('./server_stock/server_stock'));
 
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
