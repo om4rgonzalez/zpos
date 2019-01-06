@@ -312,8 +312,9 @@ app.get('/proveedor/listar_todos/', async function(req, res) {
 
 app.post('/proveedor/ingresar/', async function(req, res) {
 
-    // console.log('Parametros recibidos en el login proveedor');
-    // console.log(req.body);
+    let hoy = new Date();
+    console.log(hoy + ' Parametros recibidos en el login proveedor');
+    console.log(hoy + ' ' + req.body);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
@@ -347,7 +348,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                 }
 
                 if (proveedorDB.length == 0) {
-                    console.log('El usuario no pertenece a un proveedor')
+                    console.log(hoy + ' El usuario no pertenece a un proveedor')
                     return res.json({
                         ok: false,
                         err: {
@@ -367,15 +368,15 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                 // console.log(log);
                 switch (log.error) {
                     case 0: //ya hizo login antes
-                        console.log('Ya hizo un login previamente');
+                        console.log(hoy + ' Ya hizo un login previamente');
                         // console.log('Id login: ' + log.login);
                         // console.log('Id push: ' + parametros.idPush);
                         // console.log('Id de sesion: ' + sesion._id);
                         sesion.save((err, nuevoSesion) => {
                             if (err) {
-                                console.log('Se produjo un error al guardar la sesion: ' + err.message);
+                                console.log(hoy + ' Se produjo un error al guardar la sesion: ' + err.message);
                             } else {
-                                console.log('Agregando la sesion: ' + nuevoSesion._id);
+                                console.log(hoy + ' Agregando la sesion: ' + nuevoSesion._id);
                                 Login.findOneAndUpdate({ '_id': log.login._id, online: false }, {
                                         $set: {
                                             idPush: req.body.idPush,
@@ -387,12 +388,12 @@ app.post('/proveedor/ingresar/', async function(req, res) {
                                     },
                                     function(err_, logins) {
                                         if (err_) {
-                                            console.log('Error en la actualizacion de login: ' + err_.message);
+                                            console.log(hoy + ' Error en la actualizacion de login: ' + err_.message);
                                         } else {
                                             if (logins == null) {
-                                                console.log('La sesion esta abierta');
+                                                console.log(hoy + ' La sesion esta abierta');
                                             } else {
-                                                console.log('Login encontrado');
+                                                console.log(hoy + ' Login encontrado');
 
                                                 // logins.sesiones.push(sesion._id);
                                                 // console.log(logins);
@@ -408,7 +409,7 @@ app.post('/proveedor/ingresar/', async function(req, res) {
 
                         break;
                     case 2: // primer login
-                        console.log('Primer login');
+                        console.log(hoy + ' Primer login');
 
                         // console.log(sesion);
                         sesion.save();
