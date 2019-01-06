@@ -615,6 +615,171 @@ app.post('/pedido/nuevo_pedido_comercio/', async function(req, res) {
     // }
 });
 
+///////////// ESTADISTICAS /////////////////
+app.post('/pedido/listar_pedidos_admin/', async function(req, res) {
+
+    // console.log('comercio: ' + req.query.idComercio);
+
+
+    Pedido.find({})
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+        .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .sort({ fechaAlta: -1 })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message
+                });
+            }
+
+            if (!pedidos) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            if (pedidos.length <= 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let entidad_ = new Object({
+                    _id: pedidos[cursor].comercio.entidad._id,
+                    cuit: pedidos[cursor].comercio.entidad.cuit,
+                    razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
+                    domicilio: pedidos[cursor].comercio.entidad.domicilio
+                });
+
+
+
+
+                // //buscar alias
+                // // console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
+                // let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
+                // // console.log('La consulta de alias devolvio');
+                // // console.log(alias);
+                // if (alias.ok) {
+                //     if (alias.alias != null) {
+                //         if (alias.alias != '') {
+                //             // console.log('Asignando el alias a la razon social');
+                //             entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                //             // console.log('Razon social con alias: ' + entidad_.razonSocial);
+                //         }
+                //     }
+                // }
+
+                let comercio_ = new Object({
+                    _id: pedidos[cursor].comercio._id,
+                    entidad: entidad_,
+                    contactos: pedidos[cursor].comercio.contactos
+                });
+
+                let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
+                    proveedor: pedidos[cursor].proveedor,
+                    //comercio: pedidos[cursor].comercio,
+                    comercio: comercio_,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido,
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado,
+                    fechaAlta: pedidos[cursor].fechaAlta
+                });
+
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
+            res.json({
+                ok: true,
+                pedidos: pedidos_array
+            })
+
+        });
+
+});
+
+
+app.post('/pedido/resumen_admin/', async function(req, res) {
+    let hoy = new Date();
+    let aceptados = 0;
+    let rechazados = 0;
+    let pendientes = 0;
+    Pedido.find()
+        .exec(async(err, pedidos) => {
+            if (err) {
+                console.log(hoy + ' La consulta de pedidos para armar el resumen para el admin arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de pedidos para armar el resumen para el admin arrojo un error',
+                    aceptados: 0,
+                    rechazados: 0,
+                    pendientes: 0
+                });
+            }
+
+            if (pedidos.length == 0) {
+                console.log(hoy + ' No hay pedidos registrados');
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos registrados',
+                    aceptados: 0,
+                    rechazados: 0,
+                    pendientes: 0
+                })
+            }
+
+            let i = 0;
+            let hasta = pedidos.length;
+            while (i < hasta) {
+                if (pedidos[i].estadoPedido == 'ACEPTADO') {
+                    aceptados++;
+                }
+                if (pedidos[i].estadoPedido == 'RECHAZADO') {
+                    rechazados++;
+                }
+
+                if (pedidos[i].estadoPedido == 'PEDIDO SOLICITADO') {
+                    pendientes++;
+                }
+
+
+                i++;
+            }
+
+            res.json({
+                ok: true,
+                message: 'Pedidos analizados',
+                aceptados: aceptados,
+                rechazados: rechazados,
+                pendientes: pendientes
+            })
+        });
+});
 
 
 
