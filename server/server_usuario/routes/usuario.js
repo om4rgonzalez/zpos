@@ -210,7 +210,7 @@ app.post('/usuario/ingresar/', function(req, res) {
     let parametros = req.body;
     // console.log('Parametros recibidos en el login');
     // console.log(parametros);
-
+    let hoy = new Date();
 
     Usuario.findOne({ nombreUsuario: parametros.nombreUsuario, estado: { $eq: true } })
         .populate('rol', 'precedencia')
@@ -218,7 +218,7 @@ app.post('/usuario/ingresar/', function(req, res) {
         .exec(async(err, usuarioDb) => {
 
             if (err) {
-                console.log('Error: ' + err.message);
+                console.log(hoy + ' Error: ' + err.message);
                 return res.json({
                     ok: false,
                     message: 'Error en el login. ' + err.message,
@@ -228,7 +228,7 @@ app.post('/usuario/ingresar/', function(req, res) {
             }
 
             if (!usuarioDb) {
-                console.log('No se encontro el usuario');
+                console.log(hoy + ' No se encontro el usuario');
                 return res.json({
                     ok: false,
                     message: 'Nombre de usuario o clave incorrecta',
@@ -239,7 +239,7 @@ app.post('/usuario/ingresar/', function(req, res) {
 
 
             if (!bcrypt.compareSync(parametros.clave, usuarioDb.clave)) {
-                console.log('La clave no coincide');
+                console.log(hoy + ' La clave no coincide');
                 return res.json({
                     ok: false,
                     message: 'Nombre de usuario o clave incorrecta',
@@ -271,10 +271,11 @@ app.post('/usuario/ingresar/', function(req, res) {
 
 
 app.post('/usuario/buscar_login/', async function(req, res) {
+    let hoy = new Date();
     Login.find({ usuario: req.body.idUsuario })
         .exec((err, login) => {
             if (err) {
-                console.log('La funcion de busqueda de login devolvio un error: ' + err.message);
+                console.log(hoy + ' La funcion de busqueda de login devolvio un error: ' + err.message);
                 return res.json({
                     error: 1,
                     message: 'Error en la busqueda de sesion',
@@ -284,7 +285,7 @@ app.post('/usuario/buscar_login/', async function(req, res) {
             }
 
             if (login.length == 0) {
-                console.log('Es el primer login del usuario');
+                console.log(hoy + ' Es el primer login del usuario');
                 return res.json({
                     error: 2,
                     message: 'Primer login',

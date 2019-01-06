@@ -24,9 +24,17 @@ if (process.env.NODE_ENV == 'prod') {
     urlImagen = '/home/marcelo/img/'
 }
 
+let urlImagenProducto;
+
+if (process.env.NODE_ENV == 'prod') {
+    urlImagenProducto = 'C:\\xampp\\htdocs\\imagenes_productos\\';
+} else {
+    urlImagenProducto = '/home/marcelo/imagenes_productos/'
+}
+
 process.env.UrlImagen = urlImagen;
 
-
+process.env.UrlImagenProducto = urlImagenProducto;
 
 
 
