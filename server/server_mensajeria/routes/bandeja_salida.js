@@ -71,6 +71,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
 
     let destinos = [];
     let mensajeEnviar = '';
+    let hoy = new Date();
     // console.log('Comienza la busqueda de destinos');
     // console.log('Es push? ' + req.body.esPush);
     // console.log('Es proveedor? ' + req.body.esProveedor);
@@ -83,7 +84,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                 .populate({ path: 'usuarios', populate: { path: 'rol' } })
                 .exec(async(err, proveedor) => {
                     if (err) {
-                        console.log('Error al buscar el proveedor para devolver el destino. ' + err.mensaje);
+                        console.log(hoy + ' Error al buscar el proveedor para devolver el destino. ' + err.mensaje);
                         return res.json({
                             ok: false,
                             destino: null
@@ -91,7 +92,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                     }
 
                     if (proveedor.length == 0) {
-                        console.log('La busqueda de proveedor para devolver destino no produjo resultados');
+                        console.log(hoy + ' La busqueda de proveedor para devolver destino no produjo resultados');
                         return res.json({
                             ok: false,
                             destino: null
@@ -101,9 +102,9 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                     let i = 0;
                     let hasta = proveedor[0].usuarios.length;
                     while (i < hasta) {
-                        console.log('');
-                        console.log('Usuario a analizar');
-                        console.log(proveedor[0].usuarios[i]);
+                        // console.log('');
+                        // console.log('Usuario a analizar');
+                        // console.log(proveedor[0].usuarios[i]);
                         if (proveedor[0].usuarios[i].rol.precedencia == 1) {
                             let login = await funciones.buscarLoginUsuario({
                                 _id: proveedor[0].usuarios[i]._id
@@ -118,7 +119,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                     }
 
                     if (destinos.length == 0) {
-                        console.log('No se encontraron destinos disponibles');
+                        console.log(hoy + ' No se encontraron destinos disponibles');
                         return res.json({
                             ok: false,
                             destino: null
@@ -137,7 +138,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                 .populate({ path: 'usuarios', populate: { path: 'rol' } })
                 .exec(async(err, comercio) => {
                     if (err) {
-                        console.log('Error al buscar el proveedor para devolver el destino. ' + err.mensaje);
+                        console.log(hoy + ' Error al buscar el proveedor para devolver el destino. ' + err.mensaje);
                         return res.json({
                             ok: false,
                             destino: null
@@ -145,7 +146,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                     }
 
                     if (comercio.length == 0) {
-                        console.log('La busqueda de proveedor para devolver destino no produjo resultados');
+                        console.log(hoy + ' La busqueda de proveedor para devolver destino no produjo resultados');
                         return res.json({
                             ok: false,
                             destino: null
@@ -154,8 +155,8 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
 
                     let i = 0;
                     let hasta = comercio[0].usuarios.length;
-                    console.log('Comercio encontrado');
-                    console.log('Usuarios del comercio');
+                    console.log(hoy + ' Comercio encontrado');
+                    console.log(hoy + ' Usuarios del comercio');
                     console.log(comercio[0].usuarios);
                     while (i < hasta) {
                         if (comercio[0].usuarios[i].rol.precedencia == 1) {
@@ -173,7 +174,7 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
                     }
 
                     if (destinos.length == 0) {
-                        console.log('No se encontraron destinos disponibles');
+                        console.log(hoy + ' No se encontraron destinos disponibles');
                         return res.json({
                             ok: false,
                             destino: null
@@ -195,12 +196,13 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
     let parametros = req.body.parametros.split(";");
     let valores = req.body.valores.split(";");
     let buscar = req.body.buscar.split(";");
+    let hoy = new Date();
     for (var i in parametros) {
         // console.log('Parametro: ' + parametros[i]);
         // console.log('Busca el Parametro? : ' + buscar[i]);
         // console.log('Valor: ' + valores[i]);
         if (buscar[i] == "SI") {
-            console.log('Buscando el parametro');
+            // console.log(hoy + ' Buscando el parametro');
             let resp = await funciones.buscarParametros({
                 parametro: parametros[i],
                 valor: valores[i]
@@ -215,7 +217,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
     }
 
     //busco la plantilla
-    console.log('Buscando la plantilla');
+    // console.log(hoy + ' Buscando la plantilla');
     let plantilla = await funciones.buscarPlantilla(req.body.metodo, req.body.tipoError);
     // console.log('Respuesta de la busqueda de plantilla');
     // console.log(plantilla);
@@ -223,12 +225,12 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         //no hubo error, procedo con el armado del mensaje
 
         console.log('');
-        console.log('reemplazando valores en la cadena');
+        console.log(hoy + ' reemplazando valores en la cadena');
         for (var i in parametros) {
-            console.log('Parametro: ' + parametros[i]);
-            console.log('Valores: ' + valores[i]);
+            // console.log('Parametro: ' + parametros[i]);
+            // console.log('Valores: ' + valores[i]);
             plantilla.plantilla.mensaje = plantilla.plantilla.mensaje.replace(parametros[i], valores[i]);
-            console.log('El nuevo mensaje queda asi');
+            console.log(hoy + ' El nuevo mensaje queda asi');
             console.log(plantilla.plantilla.mensaje);
         }
 
@@ -246,7 +248,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
         let destinos_ = [];
         let destinos__ = [];
         if (!destinos.ok) {
-            console.log('No hay destinos a los cuales enviar push');
+            console.log(hoy + ' No hay destinos a los cuales enviar push');
         } else {
             let i = 0;
             let hasta = destinos.destino.length;
@@ -260,9 +262,9 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                 destinos_.push(destinos.destino[i]);
                 destino.save((err_des, ok) => {
                     if (err_des) {
-                        console.log('Error al guardar el destino. ' + err_des.message);
+                        console.log(hoy + ' Error al guardar el destino. ' + err_des.message);
                     } else
-                        console.log('Destino Guardado');
+                        console.log(hoy + ' Destino Guardado');
                 });
                 // if(!req.body.esPush){
                 //     destino.tipoContacto = 
@@ -300,7 +302,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
 
         bandejaSalida.save(async(err, bandeja) => {
             if (err) {
-                console.log('Se produjo un error al guardar la bandeja de salida. ' + err.message);
+                console.log(hoy + ' Se produjo un error al guardar la bandeja de salida. ' + err.message);
                 return res.json({
                     error: 1,
                     message: 'Se produjo un error al guardar la bandeja de salida'
@@ -318,7 +320,7 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
 
 
 app.post('/bandeja_salida/enviar/', async function(req, res) {
-
+    let hoy = new Date();
     let URL = 'https://onesignal.com/api/v1/notifications';
     // let config = {
     //     headers: {
@@ -365,7 +367,7 @@ app.post('/bandeja_salida/enviar/', async function(req, res) {
 
     // console.log('Respuesta servicio push');
     // console.log(resp);
-    console.log('Push Enviado');
+    console.log(hoy + ' Push Enviado');
     res.json({
         ok: true,
         message: 'Terminado el proceso de envio'

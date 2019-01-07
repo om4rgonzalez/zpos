@@ -21,7 +21,7 @@ const Alias = require('../models/alias');
 
 
 app.post('/invitacion/nueva/', async function(req, res) {
-
+    let hoy = new Date();
     //verifico si el proveedor ya forma parte de la red del comercio
 
     let forma;
@@ -31,6 +31,7 @@ app.post('/invitacion/nueva/', async function(req, res) {
         if (existe.ok) {
             forma = await funciones.verificarExistenciaProveedorEnRedComercio(req.body.proveedor, req.body.comercio);
         } else {
+            console.log(hoy + ' EL comercio que intenta enviar la invitacion no esta registrado en la plataforma');
             return res.json({
                 ok: false,
                 message: 'EL comercio que intenta enviar la invitacion no esta registrado en la plataforma'
@@ -42,6 +43,7 @@ app.post('/invitacion/nueva/', async function(req, res) {
         if (existe.ok) {
             forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
         } else {
+            console.log(hoy + ' EL proveedor que intenta enviar la invitacion no esta registrado en la plataforma');
             return res.json({
                 ok: false,
                 message: 'EL proveedor que intenta enviar la invitacion no esta registrado en la plataforma'
@@ -52,69 +54,85 @@ app.post('/invitacion/nueva/', async function(req, res) {
     //verifico que exista el destino de la invitacion
     let existeProveedor = await funciones.verificarExistenciaProveedor(req.body.proveedor);
     if (existeProveedor.ok) {
-        // console.log('La funcion devuelve ' + forma.ok);
-        if (forma.ok) {
-            let invitacion = Invitacion({
-                comercio: req.body.comercio,
-                proveedor: req.body.proveedor,
-                texto: req.body.texto,
-                esProveedor: req.body.esProveedor
-            });
-            try {
-                invitacion.save((err, invitacionDB) => {
-                    if (err) {
-                        console.log('Error en el proceso de guardar la invitacion');
-                        console.log(err.message);
-                        return res.json({
-                            ok: false,
-                            message: 'EL proceso de guardar la invitacion produjo un error'
-                        });
-                    }
-                    if (!req.body.esProveedor) {
-                        //es comercio
-                        let respuestaMensajePush = funciones.nuevoMensaje({
-                            metodo: '/invitacion/nueva/',
-                            tipoError: 0,
-                            parametros: '$comercio',
-                            valores: req.body.comercio,
-                            buscar: 'SI',
-                            esPush: true,
-                            destinoEsProveedor: true,
-                            destino: req.body.proveedor
-                        });
-                    } else {
-                        //es proveedor
-                        let respuestaMensajePush = funciones.nuevoMensaje({
-                            metodo: '/invitacion/nueva/',
-                            tipoError: 1,
-                            parametros: '$proveedor',
-                            valores: req.body.comercio,
-                            buscar: 'SI',
-                            esPush: true,
-                            destinoEsProveedor: true,
-                            destino: req.body.proveedor
-                        });
-                    }
+        //verifico que el origen no le haya enviado una invitacion previa
+        let existeInvitacion = await funciones.verificarExistenciaInivitacion(req.body.proveedor, req.body.comercio);
+        if (!existeInvitacion.ok) {
 
-                    res.json({
-                        ok: true,
-                        message: 'La invitacion se envio con exito'
-                    });
+            // console.log('La funcion devuelve ' + forma.ok);
+            if (forma.ok) {
+                let invitacion = Invitacion({
+                    comercio: req.body.comercio,
+                    proveedor: req.body.proveedor,
+                    texto: req.body.texto,
+                    esProveedor: req.body.esProveedor
                 });
+                try {
+                    invitacion.save((err, invitacionDB) => {
+                        if (err) {
+                            console.log(hoy + ' Error en el proceso de guardar la invitacion');
+                            console.log(hoy + ' ' + err.message);
+                            return res.json({
+                                ok: false,
+                                message: 'EL proceso de guardar la invitacion produjo un error'
+                            });
+                        }
+                        if (!req.body.esProveedor) {
+                            //es comercio
+                            let respuestaMensajePush = funciones.nuevoMensaje({
+                                metodo: '/invitacion/nueva/',
+                                tipoError: 0,
+                                parametros: '$comercio',
+                                valores: req.body.comercio,
+                                buscar: 'SI',
+                                esPush: true,
+                                destinoEsProveedor: true,
+                                destino: req.body.proveedor
+                            });
+                        } else {
+                            //es proveedor
+                            let respuestaMensajePush = funciones.nuevoMensaje({
+                                metodo: '/invitacion/nueva/',
+                                tipoError: 1,
+                                parametros: '$proveedor',
+                                valores: req.body.comercio,
+                                buscar: 'SI',
+                                esPush: true,
+                                destinoEsProveedor: true,
+                                destino: req.body.proveedor
+                            });
+                        }
 
-            } catch (e) {
+                        res.json({
+                            ok: true,
+                            message: 'La invitacion se envio con exito'
+                        });
+                    });
+
+                } catch (e) {
+                    console.log(hoy + ' Fallo la ejecucion de una funcion: ' + e.message);
+                    return res.json({
+                        ok: false,
+                        message: 'Fallo la ejecucion de una funcion: ' + e.message
+                    });
+                }
+            } else {
+                console.log(hoy + ' El proveedor ya forma parte de la red del comercio');
                 return res.json({
                     ok: false,
-                    message: 'Fallo la ejecucion de una funcion: ' + e.message
+                    message: 'El proveedor ya forma parte de la red del comercio'
                 });
             }
+
         } else {
+            console.log(hoy + ' El proveedor ya tiene una invitacion pendiente de revision');
             return res.json({
                 ok: false,
-                message: 'El proveedor ya forma parte de la red del comercio'
+                message: 'El proveedor ya tiene una invitacion pendiente de revision'
             });
         }
+
     } else {
+        console.log(hoy + ' El proveedor no esta registrado en la plataforma');
         return res.json({
             ok: false,
             message: 'El proveedor no esta registrado en la plataforma'
@@ -130,6 +148,7 @@ app.post('/invitacion/nueva/', async function(req, res) {
 
 
 app.get('/invitacion/consultar_pendientes/', async function(req, res) {
+    let hoy = new Date();
     // console.log('El proveedor que consulta es: ' + req.query.proveedor);
     Invitacion.find({ proveedor: req.query.proveedor })
         // .populate('comercio')
@@ -168,7 +187,7 @@ app.get('/invitacion/consultar_pendientes/', async function(req, res) {
                 // console.log('Z en el bucle vale: ' + z);
                 if (invitaciones[z].esProveedor) {
                     //busco los datos de entidad del proveedor
-                    console.log('La invitacion es de un proveedor. Procedo a buscarlo');
+                    console.log(hoy + ' La invitacion es de un proveedor. Procedo a buscarlo');
                     let proveedor_ = await funciones.buscarProveedorPorId(invitaciones[z].comercio);
                     if (proveedor_.ok) {
                         invitaciones_.push({
@@ -459,6 +478,31 @@ app.post('/invitacion/aceptar_rechazar/', async function(req, res) {
 
 });
 
+app.post('/invitacion/existe/', async function(req, res) {
+    let hoy = new Date();
+    Invitacion.find({ proveedor: req.body.idProveedor, comercio: req.body.idComercio })
+        .where({ pendienteDeRevision: true })
+        .exec(async(err, invitaciones) => {
+            if (err) {
+                console.log(hoy + ' La busqueda de invitaciones devolvio un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false
+                });
+            }
 
+            if (invitaciones.length == 0) {
+                return res.json({
+                    ok: false
+                });
+            }
+
+            //si existen invitaciones
+            res.json({
+                ok: true
+            });
+        })
+
+});
 
 module.exports = app;

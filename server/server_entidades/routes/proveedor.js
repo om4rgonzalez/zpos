@@ -659,7 +659,8 @@ app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res)
 });
 
 app.post('/proveedor/existe/', async function(req, res) {
-    console.log('Analizando si el proveedor esta en la base de datos');
+    let hoy = new Date();
+    console.log(hoy + ' Analizando si el proveedor esta en la base de datos');
     Proveedor.find({ '_id': req.body.proveedor })
         // .where('proveedores').in(req.body.proveedor)
         .exec((err, comerciosDB) => {

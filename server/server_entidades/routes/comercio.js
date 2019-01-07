@@ -692,7 +692,8 @@ app.post('/comercio/login/', async function(req, res) {
 
 //la funcion busca el proveedor en la red del comercio
 app.post('/comercio/buscar_proveedor/', async function(req, res) {
-    console.log('Analizando si el proveedor ya pertenece a la red del comercio')
+    let hoy = new Date();
+    console.log(hoy + ' Analizando si el proveedor ya pertenece a la red del comercio')
     Comercio.find({ '_id': req.body.comercio })
         // .where('proveedores').in(req.body.proveedor)
         .exec((err, comerciosDB) => {
@@ -741,7 +742,8 @@ app.post('/comercio/buscar_proveedor/', async function(req, res) {
 
 
 app.post('/comercio/existe/', async function(req, res) {
-    console.log('Analizando si el comercio esta en la base de datos');
+    let hoy = new Date();
+    console.log(hoy + ' Analizando si el comercio esta en la base de datos');
     Comercio.find({ '_id': req.body.comercio })
         // .where('proveedores').in(req.body.proveedor)
         .exec((err, comerciosDB) => {
