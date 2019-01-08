@@ -54,7 +54,11 @@ let comercioSchema = new Schema({
         contactos: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Contacto'
-        }]
+        }],
+        cargoConfiguracion: {
+            type: Boolean,
+            default: false
+        }
     }
 
 );

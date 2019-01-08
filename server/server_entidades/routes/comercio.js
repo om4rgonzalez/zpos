@@ -452,7 +452,9 @@ app.post('/comercio/login/', async function(req, res) {
                         esProveedor: false,
                         entidad: null,
                         usuario: null,
-                        primerLogin: primerLogin
+                        tiposEntrega: null,
+                        primerLogin: primerLogin,
+                        cargoConfiguracion: null
                     });
                 }
 
@@ -474,7 +476,9 @@ app.post('/comercio/login/', async function(req, res) {
                                     esProveedor: false,
                                     entidad: null,
                                     usuario: null,
-                                    primerLogin: primerLogin
+                                    tiposEntrega: null,
+                                    primerLogin: primerLogin,
+                                    cargoConfiguracion: null
                                 });
                             }
 
@@ -486,7 +490,9 @@ app.post('/comercio/login/', async function(req, res) {
                                     esProveedor: false,
                                     entidad: null,
                                     usuario: null,
-                                    primerLogin: primerLogin
+                                    tiposEntrega: null,
+                                    primerLogin: primerLogin,
+                                    cargoConfiguracion: null
                                 });
                             }
                             // console.log('Los proveedores que se encontraron con ese usuario son:');
@@ -577,7 +583,9 @@ app.post('/comercio/login/', async function(req, res) {
                                 esProveedor: true,
                                 entidad: entidad_,
                                 usuario,
-                                primerLogin: primerLogin
+                                tiposEntrega: proveedorDB[0].tiposEntrega,
+                                primerLogin: primerLogin,
+                                cargoConfiguracion: null
                             });
 
                         });
@@ -670,12 +678,11 @@ app.post('/comercio/login/', async function(req, res) {
                         esProveedor: false,
                         entidad: entidad_,
                         usuario,
-                        primerLogin: primerLogin
+                        tiposEntrega: null,
+                        primerLogin: primerLogin,
+                        cargoConfiguracion: null
                     });
                 }
-
-
-
             });
     } else {
         return res.json({
@@ -684,7 +691,9 @@ app.post('/comercio/login/', async function(req, res) {
             esProveedor: false,
             entidad: null,
             usuario: null,
-            primerLogin: primerLogin
+            tiposEntrega: null,
+            primerLogin: primerLogin,
+            cargoConfiguracion: null
         });
 
     }
@@ -944,12 +953,13 @@ app.post('/comercio/buscar_comercio/', async function(req, res) {
 
 
 app.post('/comercio/cargar_configuracion/', async function(req, res) {
+    let hoy = new Date();
     if (req.body.domicilio) {
         Comercio.findOne({ _id: req.body.idComercio })
             .exec(async(err, comercio) => {
                 if (err) {
-                    console.log('La busqueda de comercio para cargar la configuracion arrojo un error');
-                    console.log(err.message);
+                    console.log(hoy + ' La busqueda de comercio para cargar la configuracion arrojo un error');
+                    console.log(hoy + ' ' + err.message);
                     return res.json({
                         ok: false,
                         message: 'La busqueda de comercio para cargar la configuracion arrojo un error'
@@ -957,7 +967,7 @@ app.post('/comercio/cargar_configuracion/', async function(req, res) {
                 }
 
                 if (comercio == null) {
-                    console.log('La busqueda de comercio para cargar la configuracion no arrojo resultados');
+                    console.log(hoy + ' La busqueda de comercio para cargar la configuracion no arrojo resultados');
                     return res.json({
                         ok: false,
                         message: 'La busqueda de comercio para cargar la configuracion no arrojo resultados'
@@ -988,13 +998,24 @@ app.post('/comercio/cargar_configuracion/', async function(req, res) {
                         },
                         async function(errUpdate, entidad) {
                             if (errUpdate) {
-                                console.log('La actualiacion de la carga de configuracion arrojo un error');
-                                console.log(errUpdate.message);
+                                console.log(hoy + ' La actualiacion de la carga de configuracion arrojo un error');
+                                console.log(hoy + ' ' + errUpdate.message);
                                 return res.json({
                                     ok: false,
                                     message: 'La actualiacion de la carga de configuracion arrojo un error'
                                 });
                             }
+
+                            Comercio.findOneAndUpdate({ _id: req.body.idComercio }, { $set: { cargoConfiguracion: true } }, async function(errU, ok) {
+                                if (errU) {
+                                    console.log(hoy + ' La actualizacion del estado de carga de configuracion del comercio arrojo un error');
+                                    console.log(hoy + ' ' + errU.message);
+                                    return res.json({
+                                        ok: false,
+                                        message: 'La actualizacion del estado de carga de configuracion del comercio arrojo un error'
+                                    });
+                                }
+                            })
 
                             res.json({
                                 ok: true,

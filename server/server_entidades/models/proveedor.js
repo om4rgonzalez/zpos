@@ -46,7 +46,11 @@ let proveedorSchema = new Schema({
         productos_: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Producto_'
-        }]
+        }],
+        cargoConfiguracion: {
+            type: Boolean,
+            default: false
+        }
     }
 
 );
