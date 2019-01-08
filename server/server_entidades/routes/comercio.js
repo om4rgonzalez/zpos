@@ -454,7 +454,7 @@ app.post('/comercio/login/', async function(req, res) {
                         usuario: null,
                         tiposEntrega: null,
                         primerLogin: primerLogin,
-                        cargoConfiguracion: null
+                        cargoConfiguracion: false
                     });
                 }
 
@@ -478,7 +478,7 @@ app.post('/comercio/login/', async function(req, res) {
                                     usuario: null,
                                     tiposEntrega: null,
                                     primerLogin: primerLogin,
-                                    cargoConfiguracion: null
+                                    cargoConfiguracion: false
                                 });
                             }
 
@@ -492,7 +492,7 @@ app.post('/comercio/login/', async function(req, res) {
                                     usuario: null,
                                     tiposEntrega: null,
                                     primerLogin: primerLogin,
-                                    cargoConfiguracion: null
+                                    cargoConfiguracion: false
                                 });
                             }
                             // console.log('Los proveedores que se encontraron con ese usuario son:');
@@ -585,7 +585,7 @@ app.post('/comercio/login/', async function(req, res) {
                                 usuario,
                                 tiposEntrega: proveedorDB[0].tiposEntrega,
                                 primerLogin: primerLogin,
-                                cargoConfiguracion: null
+                                cargoConfiguracion
                             });
 
                         });
@@ -680,7 +680,7 @@ app.post('/comercio/login/', async function(req, res) {
                         usuario,
                         tiposEntrega: null,
                         primerLogin: primerLogin,
-                        cargoConfiguracion: null
+                        cargoConfiguracion: false
                     });
                 }
             });
@@ -693,7 +693,7 @@ app.post('/comercio/login/', async function(req, res) {
             usuario: null,
             tiposEntrega: null,
             primerLogin: primerLogin,
-            cargoConfiguracion: null
+            cargoConfiguracion: false
         });
 
     }
