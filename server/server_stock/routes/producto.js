@@ -126,7 +126,120 @@ app.post('/producto/cargar_imagenes/', async function(req, res) {
     });
 });
 
+app.post('/producto/actualizar/', async function(req, res) {
+    let hoy = new Date();
+    if (req.body.productos) {
+        for (var i in req.body.productos) {
+            let update = {};
+            let historiaCambioPrecioProveedor = new HistoriaPrecioProveedor();
+            let historiaCambioPrecioSugerido = new HistoriaPrecioSugerido();
+            if (req.body.productos[i].precioProveedor) {
 
+                update.precioProveedor = req.body.productos[i].precioProveedor;
+
+                historiaCambioPrecioProveedor.precio = req.body.productos[i].precioProveedor
+                historiaCambioPrecioProveedor.save();
+                Producto.findByIdAndUpdate(req.body.productos[i].idProducto, {
+                        $push: {
+                            historialPrecioProveedor: historiaCambioPrecioProveedor._id
+                        }
+                    },
+                    async function(err, success) {
+                        if (err) {
+                            console.log(hoy + ' La funcion de actualizacion del precio proveedor devolvio un error');
+                            console.log(hoy + ' ' + err.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La funcion de actualizacion del precio proveedor devolvio un error'
+                            });
+                        }
+                        console.log(hoy + ' Se termino la actualizacion del precio proveedor');
+                    });
+            }
+            if (req.body.productos[i].precioSugerido) {
+                update.precioSugerido = req.body.productos[i].precioSugerido;
+
+                historiaCambioPrecioSugerido.precio = req.body.productos[i].precioSugerido;
+                historiaCambioPrecioSugerido.save();
+                Producto.findByIdAndUpdate(req.body.productos[i].idProducto, {
+                        $push: {
+                            historiaPrecioSugerido: historiaCambioPrecioSugerido._id
+                        }
+                    },
+                    async function(err, success) {
+                        if (err) {
+                            console.log(hoy + ' La funcion de actualizacion del precio sugerido devolvio un error');
+                            console.log(hoy + ' ' + err.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La funcion de actualizacion del precio sugerido devolvio un error'
+                            });
+                        }
+                        console.log(hoy + ' Se termino la actualizacion del precio sugerido');
+                    });
+            }
+            if (req.body.productos[i].nombreProducto) {
+                update.nombreProducto = req.body.productos[i].nombreProducto.toUpperCase();
+            }
+            if (req.body.productos[i].categoria) {
+                update.categoria = req.body.productos[i].categoria.toUpperCase();
+            }
+            if (req.body.productos[i].subcategoria) {
+                update.subcategoria = req.body.productos[i].subcategoria.toUpperCase();
+            }
+            if (req.body.productos[i].stock) {
+                update.stock = req.body.productos[i].stock;
+            }
+            if (req.body.productos[i].unidadMedida) {
+                update.unidadMedida = req.body.productos[i].unidadMedida.toUpperCase();
+            }
+            if (req.body.productos[i].codigoProveedor) {
+                update.codigoProveedor = req.body.productos[i].codigoProveedor;
+            }
+
+            Producto.findByIdAndUpdate(req.body.productos[i].idProducto, update, { new: true }, (err, success) => {
+                if (err) {
+                    console.log(hoy + ' La funcion de actualizacion de producto devolvio un error');
+                    console.log(hoy + ' ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'La funcion de actualizacion de producto devolvio un error'
+                    });
+                }
+
+                console.log(hoy + ' La actualizacion de datos del producto finalizo correctamente');
+            });
+            // Producto.findByIdAndUpdate(req.body.productos[i].idProducto, {
+            //         $set: {
+            //             nombreProducto: req.body.productos[i].nombre.toUpperCase(),
+            //             precioProveedor: req.body.productos[i].precioProveedor,
+            //             precioSugerido: req.body.productos[i].precioSugerido,
+            //             unidadMedida: req.body.productos[i].unidadMedida,
+            //             categoria: req.body.productos[i].categoria.toUpperCase(),
+            //             subcategoria: req.body.productos[i].subcategoria.toUpperCase(),
+            //             stock: req.body.productos[i].stock
+            //         }
+            //     },
+            //     async function(err, success) {
+            //         if (err) {
+            //             console.log(hoy + ' La funcion de actualizacion de producto devolvio un error');
+            //             console.log(hoy + ' ' + err.message);
+            //             return res.json({
+            //                 ok: false,
+            //                 message: 'La funcion de actualizacion de producto devolvio un error'
+            //             });
+            //         }
+
+            //         console.log(hoy + ' La actualizacion de datos del producto finalizo correctamente');
+            //     });
+        }
+        console.log(hoy + ' El proceso de actualizacion finalizo');
+        res.json({
+            ok: true,
+            message: 'La actualizacion termino correctamente'
+        });
+    }
+});
 
 
 module.exports = app;
