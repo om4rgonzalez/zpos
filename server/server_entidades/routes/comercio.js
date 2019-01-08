@@ -585,7 +585,7 @@ app.post('/comercio/login/', async function(req, res) {
                                 usuario,
                                 tiposEntrega: proveedorDB[0].tiposEntrega,
                                 primerLogin: primerLogin,
-                                cargoConfiguracion
+                                cargoConfiguracion: true
                             });
 
                         });
