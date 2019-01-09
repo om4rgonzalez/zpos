@@ -26,11 +26,17 @@ app.post('/pedido/nuevo/', async function(req, res) {
             detalles.push(detallePedido._id);
         }
 
-        let forma = await funciones.verificarExistenciaProveedorEnRedComercio(req.body.proveedor, req.body.comercio);
+        let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
 
+        let ok = false;
         // console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
         // console.log(forma);
-
+        if (forma.ok) {
+            ok = false;
+        } else {
+            ok = true;
+        }
+        // console.log('Forma.ok vale: ' + forma.ok);
         let pedido = new Pedido({
             proveedor: req.body.proveedor,
             comercio: req.body.comercio,
@@ -40,7 +46,17 @@ app.post('/pedido/nuevo/', async function(req, res) {
             estadoPedido: 'PEDIDO SOLICITADO',
             estadoTerminal: false,
             comentario: req.body.comentario,
-            comercioPerteneceARedProveedor: !forma.ok
+            comercioPerteneceARedProveedor: ok
+        });
+        // console.log('El campo comercioPerteneceARedProveedor vale: ' + pedido.comercioPerteneceARedProveedor);
+        pedido.save(async(errN, exito) => {
+            if (errN) {
+                console.log(hoy + ' El alta de pedido arrojo un error.');
+                console.log(hoy + ' ' + errN.message);
+            } else {
+                console.log(hoy + ' Pedido guardado');
+                console.log(pedido);
+            }
         });
         let respuestaMensaje = funciones.nuevoMensaje({
             metodo: '/pedido/nuevo/',
@@ -53,7 +69,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
             destino: req.body.proveedor
         });
 
-        pedido.save();
+
         return res.json({
             ok: true,
             message: 'El pedido ha sido registrado'
@@ -83,6 +99,16 @@ app.post('/pedido/nuevo_v2/', async function(req, res) {
             detalles.push(detallePedido._id);
         }
 
+        let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
+        let ok = false;
+        console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
+        console.log(forma);
+        if (forma.ok) {
+            ok = false;
+        } else {
+            ok = true;
+        }
+
         let pedido = new Pedido({
             proveedor: req.body.proveedor,
             comercio: req.body.comercio,
@@ -91,7 +117,8 @@ app.post('/pedido/nuevo_v2/', async function(req, res) {
             detallePedido: detalles,
             estadoPedido: 'PEDIDO SOLICITADO',
             estadoTerminal: false,
-            comentario: req.body.comentario
+            comentario: req.body.comentario,
+            comercioPerteneceARedProveedor: ok
         });
         let respuestaMensaje = funciones.nuevoMensaje({
             metodo: '/pedido/nuevo/',

@@ -288,8 +288,8 @@ let verificarExistenciaProveedorEnRedProveedor = async(proveedor, comercio) => {
         comercio: comercio
     });
 
-    // console.log('la funcion devolvio ' + resp.data.ok);
-    // console.log(resp.data.message);
+    console.log('la funcion devolvio ' + resp.data.ok);
+    console.log(resp.data.message);
 
     if (resp.data.ok) {
         return {

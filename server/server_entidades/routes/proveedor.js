@@ -464,6 +464,8 @@ app.post('/proveedor/buscar_proveedor_en_red/', async function(req, res) {
                 });
             }
             for (var i in proveedores[0].red) {
+                console.log('Comercio a analizar: ' + proveedores[0].red[i].comercio);
+                console.log('Comercio a buscar: ' + req.body.comercio);
                 if (proveedores[0].red[i].comercio == req.body.comercio)
                     return res.json({
                         ok: true,
@@ -565,7 +567,6 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
             });
         });
 });
-
 
 
 app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res) {
