@@ -266,54 +266,60 @@ app.post('/bandeja_salida/nuevo_mensaje/', async function(req, res) {
                     } else
                         console.log(hoy + ' Destino Guardado');
                 });
-                // if(!req.body.esPush){
-                //     destino.tipoContacto = 
-                // }
-                // console.log(destinos.destino[i]);
                 i++;
             }
         }
 
-        //guardo el mensaje
-        let bandejaSalida = new BandejaSalida({
-            mensaje: plantilla.plantilla.mensaje,
-            titulo: plantilla.plantilla.titulo,
-            destino: req.body.destino
-        });
-        let mensajeEnviado = false;
+        try {
+            //guardo el mensaje
+            let bandejaSalida = new BandejaSalida({
+                mensaje: plantilla.plantilla.mensaje,
+                titulo: plantilla.plantilla.titulo,
+                destino: req.body.destino
+            });
+            let mensajeEnviado = false;
 
-        if (destinos_.length > 0) {
-            bandejaSalida.destinos = destinos__;
+            if (destinos_.length > 0) {
+                bandejaSalida.destinos = destinos__;
 
-            let players = '';
-            for (var j in destinos_) {
-                if (j == 0) {
-                    players = destinos_[j];
-                } else {
-                    players = players + ',' + destinos_[j];
+                let players = '';
+                for (var j in destinos_) {
+                    if (j == 0) {
+                        players = destinos_[j];
+                    } else {
+                        players = players + ',' + destinos_[j];
+                    }
                 }
+                // console.log('Destino al que se le manda el push: ' + players);
+                let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
+                mensajeEnviado = respEnviaPush.ok;
             }
-            // console.log('Destino al que se le manda el push: ' + players);
-            let respEnviaPush = await funciones.enviarPush(players, bandejaSalida.titulo, bandejaSalida.mensaje);
-            mensajeEnviado = respEnviaPush.ok;
+
+            bandejaSalida.enviado = mensajeEnviado;
+
+            bandejaSalida.save(async(err, bandeja) => {
+                if (err) {
+                    console.log(hoy + ' Se produjo un error al guardar la bandeja de salida. ' + err.message);
+                    return res.json({
+                        error: 1,
+                        message: 'Se produjo un error al guardar la bandeja de salida'
+                    });
+                }
+
+                res.json({
+                    error: 0,
+                    message: 'Se guardo el mensaje'
+                });
+            });
+        } catch (e) {
+            console.log(hoy + ' Una funcion arrojo un error:' + e.message);
+            return res.json({
+                error: 1,
+                message: 'Una funcion arrojo un error'
+            });
         }
 
-        bandejaSalida.enviado = mensajeEnviado;
 
-        bandejaSalida.save(async(err, bandeja) => {
-            if (err) {
-                console.log(hoy + ' Se produjo un error al guardar la bandeja de salida. ' + err.message);
-                return res.json({
-                    error: 1,
-                    message: 'Se produjo un error al guardar la bandeja de salida'
-                });
-            }
-
-            res.json({
-                error: 0,
-                message: 'Se guardo el mensaje'
-            });
-        });
     }
 
 });

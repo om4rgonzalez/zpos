@@ -703,6 +703,8 @@ app.post('/comercio/login/', async function(req, res) {
 app.post('/comercio/buscar_proveedor/', async function(req, res) {
     let hoy = new Date();
     console.log(hoy + ' Analizando si el proveedor ya pertenece a la red del comercio')
+        // console.log('Comercio a analizar: ' + req.body.comercio);
+        // console.log('Proveedor a buscar: ' + req.body.proveedor);
     Comercio.find({ '_id': req.body.comercio })
         // .where('proveedores').in(req.body.proveedor)
         .exec((err, comerciosDB) => {
@@ -729,12 +731,15 @@ app.post('/comercio/buscar_proveedor/', async function(req, res) {
 
 
             for (var i in comerciosDB[0].proveedores) {
-                if (comerciosDB[0].proveedores[i] == req.body.proveedor)
+                // console.log('Proveedor a analizar: ' + comerciosDB[0].proveedores[i]);
+                // console.log('Proveedor buscado: ' + req.body.proveedor);
+                if (comerciosDB[0].proveedores[i] == req.body.proveedor.trim()) {
+                    // console.log('Proveedor encontrado');
                     return res.json({
                         ok: true,
                         message: 'El proveedor forma parte de la red del comercio'
                     });
-
+                }
             }
             // console.log('proveedores:');
             // console.log(comerciosDB);

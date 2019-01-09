@@ -12,6 +12,10 @@ let pedidoSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comercio'
         },
+        comercioPerteneceARedProveedor: {
+            type: Boolean,
+            default: false
+        },
         tipoEntrega: {
             type: String,
             required: true

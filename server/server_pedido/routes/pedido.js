@@ -7,7 +7,7 @@ const DetallePedido = require('../models/detallePedido');
 const aut = require('../../middlewares/autenticacion');
 
 app.post('/pedido/nuevo/', async function(req, res) {
-
+    let hoy = new Date();
     let usuario = aut.validarToken(req.body.token);
     if (!usuario) {
         return res.json({
@@ -26,6 +26,11 @@ app.post('/pedido/nuevo/', async function(req, res) {
             detalles.push(detallePedido._id);
         }
 
+        let forma = await funciones.verificarExistenciaProveedorEnRedComercio(req.body.proveedor, req.body.comercio);
+
+        // console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
+        // console.log(forma);
+
         let pedido = new Pedido({
             proveedor: req.body.proveedor,
             comercio: req.body.comercio,
@@ -34,7 +39,8 @@ app.post('/pedido/nuevo/', async function(req, res) {
             detallePedido: detalles,
             estadoPedido: 'PEDIDO SOLICITADO',
             estadoTerminal: false,
-            comentario: req.body.comentario
+            comentario: req.body.comentario,
+            comercioPerteneceARedProveedor: !forma.ok
         });
         let respuestaMensaje = funciones.nuevoMensaje({
             metodo: '/pedido/nuevo/',
