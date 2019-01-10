@@ -155,9 +155,9 @@ app.post('/bandeja_salida/buscar_destino/', async function(req, res) {
 
                     let i = 0;
                     let hasta = comercio[0].usuarios.length;
-                    console.log(hoy + ' Comercio encontrado');
-                    console.log(hoy + ' Usuarios del comercio');
-                    console.log(comercio[0].usuarios);
+                    // console.log(hoy + ' Comercio encontrado');
+                    // console.log(hoy + ' Usuarios del comercio');
+                    // console.log(comercio[0].usuarios);
                     while (i < hasta) {
                         if (comercio[0].usuarios[i].rol.precedencia == 1) {
                             // if (1 == 1) {
@@ -401,8 +401,8 @@ app.post('/bandeja_salida/test_envio_push/', async function(req, res) {
         }
     });
 
-    console.log('Respuesta servicio push');
-    console.log(resp);
+    // console.log('Respuesta servicio push');
+    // console.log(resp);
 
     res.json({
         ok: true,

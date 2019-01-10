@@ -5,6 +5,8 @@ const Pedido = require('../models/pedido');
 const funciones = require('../../middlewares/funciones');
 const DetallePedido = require('../models/detallePedido');
 const aut = require('../../middlewares/autenticacion');
+const Alias = require('../../server_entidades/models/alias');
+const Proveedor = require('../../server_entidades/models/proveedor');
 
 app.post('/pedido/nuevo/', async function(req, res) {
     let hoy = new Date();
@@ -196,7 +198,8 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
                     detallePedido: pedidos[cursor].detallePedido,
-                    comentarioCancelado: pedidos[cursor].comentarioCancelado
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado,
+                    comercioPerteneceARedProveedor: pedidos[cursor].comercioPerteneceARedProveedor
                 });
                 pedidos_array.push(pedido);
                 cursor++;
@@ -315,7 +318,8 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
                     detallePedido: pedidos[cursor].detallePedido,
-                    comentarioCancelado: pedidos[cursor].comentarioCancelado
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado,
+                    comercioPerteneceARedProveedor: pedidos[cursor].comercioPerteneceARedProveedor
                 });
 
                 pedidos_array.push(pedido);
@@ -409,7 +413,8 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                     puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
                     totalPedido: totalPedido,
                     detallePedido: pedidos[cursor].detallePedido,
-                    fechaAlta: pedidos[cursor].fechaAlta
+                    fechaAlta: pedidos[cursor].fechaAlta,
+                    comercioPerteneceARedProveedor: pedidos[cursor].comercioPerteneceARedProveedor
                 });
                 pedidos_array.push(pedido);
                 cursor++;
@@ -429,7 +434,7 @@ app.post('/pedido/aceptar/', async function(req, res) {
     var hoy = new Date();
     //cambiar el estado al pedido
     Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, { $set: { estadoPedido: 'ACEPTADO', fechaCambioEstado: hoy.getDate() } },
-        function(err, exito) {
+        function(err, pedido) {
             if (err) {
                 return res.json({
                     ok: false,
@@ -437,7 +442,7 @@ app.post('/pedido/aceptar/', async function(req, res) {
                 });
             }
 
-            if (exito == null) {
+            if (pedido == null) {
                 return res.json({
                     ok: false,
                     message: 'No se puede modificar el estado de un pedido finalizado'
@@ -454,12 +459,111 @@ app.post('/pedido/aceptar/', async function(req, res) {
                 metodo: '/pedido/aceptar/',
                 tipoError: 0,
                 parametros: '$proveedor',
-                valores: exito.proveedor,
+                valores: pedido.proveedor,
                 buscar: 'SI',
                 esPush: true,
                 destinoEsProveedor: false,
-                destino: exito.comercio
+                destino: pedido.comercio
             });
+
+            //verifico si el comercio pertenece a la red del proveedor
+            console.log('verifico si el comercio pertenece a la red del proveedor');
+            console.log(pedido.comercioPerteneceARedProveedor);
+            if (!pedido.comercioPerteneceARedProveedor) {
+                //debo agregar el comercio a la red del proveedor
+                let alias = new Alias({
+                    esProveedor: false,
+                    comercio: pedido.comercio,
+                    alias: req.body.alias,
+                    cantidadPedidosAprobados: 1
+                });
+                alias.save();
+
+
+                Proveedor.findOneAndUpdate({ _id: pedido.proveedor }, { $push: { red: alias._id } },
+                    function(errP, exito) {
+                        if (errP) {
+                            console.log(hoy + ' La funcion de agregar proveedor a la red devolvio un error');
+                            console.log(hoy + ' ' + errP.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La funcion de agregar proveedor a la red devolvio un error'
+                            });
+                        }
+                    });
+            } else {
+                //el comercio ya pertenece a la red del proveedor, tengo que incrementar la cantidad de pedidos
+                Proveedor.findOne({ _id: pedido.proveedor })
+                    .populate('red')
+                    .exec(async(errF, proveedor_) => {
+                        if (errF) {
+                            console.log(hoy + ' La busqueda del proveedor para actualizar el alias devolvio un error');
+                            console.log(hoy + ' ' + errF.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La busqueda del proveedor para actualizar el alias devolvio un error'
+                            });
+                        }
+
+                        let i = 0;
+                        let hasta = proveedor_.red.length;
+                        while (i < hasta) {
+                            // console.log('Id comercio a analizar: ' + proveedor_.red[i].comercio);
+                            // console.log('Comercio a buscar: ' + pedido.comercio);
+                            let idAlias = proveedor_.red[i]._id;
+                            // console.log('Alias a buscar: ' + idAlias);
+                            if (proveedor_.red[i].comercio == pedido.comercio.toString().trim()) {
+                                console.log('Comercio encontrado');
+                                Alias.findOne({ _id: proveedor_.red[i]._id })
+                                    .exec(async(errA, alias_) => {
+                                        if (errA) {
+                                            console.log(hoy + ' La busqueda de alias para actualizar la cantidad de pedidos devolvio un error');
+                                            console.log(hoy + ' ' + errA.message);
+                                            return res.json({
+                                                ok: false,
+                                                message: 'La busqueda de alias para actualizar la cantidad de pedidos devolvio un error'
+                                            });
+                                        }
+                                        let cantidadPedidos_ = 0;
+                                        cantidadPedidos_ = alias_.cantidadPedidos;
+                                        cantidadPedidos_++;
+
+                                        let cantidadAprobados = 0;
+                                        cantidadAprobados = alias_.cantidadPedidosAprobados;
+                                        cantidadAprobados++;
+
+                                        // console.log('Alias encontrado');
+                                        // console.log('Valores a guardar:');
+                                        // console.log('Cantidad de pedidos: ' + cantidadPedidos_);
+                                        // console.log('Cantidad de pedidos aprobados: ' + cantidadAprobados);
+                                        // console.log('Asi se ve la red:');
+                                        // console.log(proveedor_.red[i]);
+                                        Alias.findOneAndUpdate({ '_id': idAlias }, {
+                                                $set: {
+                                                    cantidadPedidos: cantidadPedidos_,
+                                                    cantidadPedidosAprobados: cantidadAprobados
+                                                }
+                                            },
+                                            function(errUp, succesUp) {
+                                                if (errUp) {
+                                                    console.log(hoy + ' La actualizacion de los valores de pedidos en el alias devolvio un error');
+                                                    console.log(hoy + ' ' + errUp.message);
+                                                    return res.json({
+                                                        ok: false,
+                                                        message: 'La actualizacion de los valores de pedidos en el alias devolvio un error'
+                                                    });
+                                                }
+
+                                                console.log('Valores actualizados');
+                                            });
+                                    });
+                            } else {
+                                console.log('Comercio no encontrado');
+                            }
+                            i++;
+                        }
+                    });
+            }
 
             res.json({
                 ok: true,
@@ -475,7 +579,7 @@ app.post('/pedido/rechazar/', async function(req, res) {
     Pedido.findOneAndUpdate({ '_id': req.body.idPedido, estadoTerminal: false }, {
             $set: { estadoPedido: 'RECHAZADO', estadoTerminal: true, comentarioCancelado: req.body.comentario, fechaCambioEstado: hoy.getDate() }
         },
-        function(err, exito) {
+        function(err, pedido) {
             if (err) {
                 return res.json({
                     ok: false,
@@ -483,7 +587,7 @@ app.post('/pedido/rechazar/', async function(req, res) {
                 });
             }
 
-            if (exito == null) {
+            if (pedido == null) {
                 return res.json({
                     ok: false,
                     message: 'No se puede modificar el estado de un pedido finalizado'
@@ -494,12 +598,111 @@ app.post('/pedido/rechazar/', async function(req, res) {
                 metodo: '/pedido/rechazar/',
                 tipoError: 0,
                 parametros: '$proveedor',
-                valores: exito.proveedor,
+                valores: pedido.proveedor,
                 buscar: 'SI',
                 esPush: true,
                 destinoEsProveedor: false,
-                destino: exito.comercio
+                destino: pedido.comercio
             });
+
+            //verifico si el comercio pertenece a la red del proveedor
+            console.log('verifico si el comercio pertenece a la red del proveedor');
+            console.log(pedido.comercioPerteneceARedProveedor);
+            if (!pedido.comercioPerteneceARedProveedor) {
+                //debo agregar el comercio a la red del proveedor
+                let alias = new Alias({
+                    esProveedor: false,
+                    comercio: pedido.comercio,
+                    alias: req.body.alias,
+                    cantidadPedidosRechazados: 1
+                });
+                alias.save();
+
+
+                Proveedor.findOneAndUpdate({ _id: pedido.proveedor }, { $push: { red: alias._id } },
+                    function(errP, exito) {
+                        if (errP) {
+                            console.log(hoy + ' La funcion de agregar proveedor a la red devolvio un error');
+                            console.log(hoy + ' ' + errP.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La funcion de agregar proveedor a la red devolvio un error'
+                            });
+                        }
+                    });
+            } else {
+                //el comercio ya pertenece a la red del proveedor, tengo que incrementar la cantidad de pedidos
+                Proveedor.findOne({ _id: pedido.proveedor })
+                    .populate('red')
+                    .exec(async(errF, proveedor_) => {
+                        if (errF) {
+                            console.log(hoy + ' La busqueda del proveedor para actualizar el alias devolvio un error');
+                            console.log(hoy + ' ' + errF.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La busqueda del proveedor para actualizar el alias devolvio un error'
+                            });
+                        }
+
+                        let i = 0;
+                        let hasta = proveedor_.red.length;
+                        while (i < hasta) {
+                            // console.log('Id comercio a analizar: ' + proveedor_.red[i].comercio);
+                            // console.log('Comercio a buscar: ' + pedido.comercio);
+                            let idAlias = proveedor_.red[i]._id;
+                            // console.log('Alias a buscar: ' + idAlias);
+                            if (proveedor_.red[i].comercio == pedido.comercio.toString().trim()) {
+                                console.log('Comercio encontrado');
+                                Alias.findOne({ _id: proveedor_.red[i]._id })
+                                    .exec(async(errA, alias_) => {
+                                        if (errA) {
+                                            console.log(hoy + ' La busqueda de alias para actualizar la cantidad de pedidos devolvio un error');
+                                            console.log(hoy + ' ' + errA.message);
+                                            return res.json({
+                                                ok: false,
+                                                message: 'La busqueda de alias para actualizar la cantidad de pedidos devolvio un error'
+                                            });
+                                        }
+                                        let cantidadPedidos_ = 0;
+                                        cantidadPedidos_ = alias_.cantidadPedidos;
+                                        cantidadPedidos_++;
+
+                                        let cantidadRechazados = 0;
+                                        cantidadRechazados = alias_.cantidadPedidosRechazados;
+                                        cantidadRechazados++;
+
+                                        console.log('Alias encontrado');
+                                        console.log('Valores a guardar:');
+                                        console.log('Cantidad de pedidos: ' + cantidadPedidos_);
+                                        console.log('Cantidad de pedidos aprobados: ' + cantidadRechazados);
+                                        // console.log('Asi se ve la red:');
+                                        // console.log(proveedor_.red[i]);
+                                        Alias.findOneAndUpdate({ '_id': idAlias }, {
+                                                $set: {
+                                                    cantidadPedidos: cantidadPedidos_,
+                                                    cantidadPedidosRechazados: cantidadRechazados
+                                                }
+                                            },
+                                            function(errUp, succesUp) {
+                                                if (errUp) {
+                                                    console.log(hoy + ' La actualizacion de los valores de pedidos en el alias devolvio un error');
+                                                    console.log(hoy + ' ' + errUp.message);
+                                                    return res.json({
+                                                        ok: false,
+                                                        message: 'La actualizacion de los valores de pedidos en el alias devolvio un error'
+                                                    });
+                                                }
+
+                                                console.log('Valores actualizados');
+                                            });
+                                    });
+                            } else {
+                                console.log('Comercio no encontrado');
+                            }
+                            i++;
+                        }
+                    });
+            }
 
             res.json({
                 ok: true,

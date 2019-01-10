@@ -13,11 +13,23 @@ let aliasSchema = new Schema({
         },
         alias: {
             type: String,
-            default: ''
+            default: '-'
         },
         fechaAlta: {
             type: Date,
             default: Date.now
+        },
+        cantidadPedidos: {
+            type: Number,
+            default: 1
+        },
+        cantidadPedidosAprobados: {
+            type: Number,
+            default: 0
+        },
+        cantidadPedidosRechazados: {
+            type: Number,
+            default: 0
         }
     }
 
