@@ -671,10 +671,10 @@ app.post('/pedido/rechazar/', async function(req, res) {
                                         cantidadRechazados = alias_.cantidadPedidosRechazados;
                                         cantidadRechazados++;
 
-                                        console.log('Alias encontrado');
-                                        console.log('Valores a guardar:');
-                                        console.log('Cantidad de pedidos: ' + cantidadPedidos_);
-                                        console.log('Cantidad de pedidos aprobados: ' + cantidadRechazados);
+                                        // console.log('Alias encontrado');
+                                        // console.log('Valores a guardar:');
+                                        // console.log('Cantidad de pedidos: ' + cantidadPedidos_);
+                                        // console.log('Cantidad de pedidos aprobados: ' + cantidadRechazados);
                                         // console.log('Asi se ve la red:');
                                         // console.log(proveedor_.red[i]);
                                         Alias.findOneAndUpdate({ '_id': idAlias }, {
