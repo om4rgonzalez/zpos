@@ -473,6 +473,18 @@ let verificarExistenciaInivitacion = async(idProveedor, idComercio) => {
     return resp.data;
 };
 
+let buscarProveedoresFrecuentes = async(idComercio) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/consultar_proveedores_frecuentes/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        idComercio: idComercio
+    });
+
+    // console.log('la funcion devolvio ' + resp.data.ok);
+    // console.log(resp.data.message);
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -499,5 +511,6 @@ module.exports = {
     buscarAlias,
     verificarExistenciaComercio,
     verificarExistenciaProveedor,
-    verificarExistenciaInivitacion
+    verificarExistenciaInivitacion,
+    buscarProveedoresFrecuentes
 }

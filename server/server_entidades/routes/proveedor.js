@@ -309,6 +309,174 @@ app.get('/proveedor/listar_todos/', async function(req, res) {
         });
 });
 
+app.post('/proveedor/listar_todos_/', async function(req, res) {
+    let hoy = new Date();
+    Proveedor.find({}, 'tiposEntrega entidad _id')
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .populate('contactos')
+        // Project.populate(project, [{path: 'galleries', match: {status: {$ne: 'published'}}}
+        .populate({
+            path: 'red',
+            match: { comercio: { $ne: req.body.idComercio } }
+        })
+        .select('_id entidad red contactos')
+        .exec(async(err, proveedores) => {
+
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'Error al realizar la consulta. Error: ' + err.message,
+                    cantidadRegistros: 0,
+                    proveedores: null
+                });
+            }
+
+            if (!proveedores) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay proveedores para mostrar',
+                    cantidadRegistros: 0,
+                    proveedores: null
+                });
+            }
+
+            // console.log('Antes del fitro hay ' + proveedores.length + ' elementos');
+
+            // proveedores = proveedores.filter(function(proveedores) {
+            //     return proveedores.red.length != 0;
+            // });
+
+            let proveedoresNoFrecuentes = [];
+            let proveedoresFrecuentes = [];
+            let proveedores_ = [];
+            let respuestaFrecuentes = await funciones.buscarProveedoresFrecuentes(req.body.idComercio);
+            if (respuestaFrecuentes.ok == 0) {
+                //la funcion devolvio proveedores frecuentes
+                for (var j in respuestaFrecuentes.proveedores) {
+                    respuestaFrecuentes.proveedores[j].esFrecuente = true;
+                    proveedoresFrecuentes.push(respuestaFrecuentes.proveedores[j]);
+                }
+            }
+
+            let i = 0;
+            let hasta = proveedores.length;
+            // console.log('Hay ' + hasta + ' elementos');
+            while (i < hasta) {
+                //reviso que el comercio no sea frecuente
+                let pertenece = false;
+                for (var j in proveedoresFrecuentes) {
+                    if (proveedoresFrecuentes[j]._id == proveedores[i]._id) {
+                        pertenece = true;
+                        break;
+                    }
+                }
+                if (!pertenece) {
+                    // console.log('');
+                    // console.log(hoy + ' Agregando el proveedor: ' + proveedores[i].entidad.razonSocial);
+                    let p = {
+                        _id: proveedores[i]._id,
+                        esFrecuente: false,
+                        entidad: proveedores[i].entidad,
+                        red: proveedores[i].red,
+                        contactos: proveedores[i].contactos
+                    };
+                    proveedoresNoFrecuentes.push(p);
+                }
+                i++;
+            }
+
+            for (var k in proveedoresFrecuentes) {
+                proveedores_.push(proveedoresFrecuentes[k]);
+            }
+
+            for (var k in proveedoresNoFrecuentes) {
+                proveedores_.push(proveedoresNoFrecuentes[k]);
+            }
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo proveedores',
+                cantidadRegistros: proveedores_.length,
+                proveedores: proveedores_
+            });
+
+        });
+});
+
+app.post('/proveedor/consultar_proveedores_frecuentes/', async function(req, res) {
+
+    //{ proveedores: { $in: req.query.idProveedor } }
+    let hoy = new Date();
+    let proveedores_ = [];
+    Proveedor.find()
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .populate('contactos')
+        .populate({
+            path: 'red',
+            match: { comercio: req.body.idComercio }
+        })
+        .select('_id entidad red contactos')
+        .exec(async(err, proveedores) => {
+            if (err) {
+                console.log(hoy + ' La consulta de proveedores recurrentes arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: 2,
+                    message: 'La consulta de proveedores recurrentes arrojo un error',
+                    proveedores: null
+                });
+            }
+
+            if (proveedores.length == 0) {
+                console.log(hoy + ' No hay aproveedores recurrentes');
+                return res.json({
+                    ok: 1,
+                    message: 'No hay proveedores recurrentes',
+                    proveedores: null
+                });
+            }
+            // let j = 0;
+            // let k = proveedores.length;
+            // while (j < k) {
+            //     console.log(proveedores[j]);
+            //     j++;
+            // }
+
+            proveedores = proveedores.filter(function(proveedores) {
+                return proveedores.red.length != 0;
+            });
+
+            if (proveedores.length == 0) {
+                console.log(hoy + ' No hay aproveedores recurrentes');
+                return res.json({
+                    ok: 1,
+                    message: 'No hay proveedores recurrentes',
+                    proveedores: null
+                });
+            }
+
+            //tengo que ordenar la lista de proveedores frecuentes por la cantidad de pedidos realizados
+            // let i = 0;
+            // let hasta = proveedores.length;
+            // let temp = [];
+            proveedores_ = await proveedores.sort(function(a, b) {
+                return (b.red.cantidadPedidos - a.red.cantidadPedidos)
+            });
+
+            // while (i < hasta) {
+            //     i++;
+            // }
+
+            return res.json({
+                ok: 0,
+                message: 'El comercio tiene proveedores recurrentes',
+                proveedores: proveedores_
+            });
+        })
+
+});
+
+
 
 app.post('/proveedor/ingresar/', async function(req, res) {
 
