@@ -209,29 +209,6 @@ app.post('/producto/actualizar/', async function(req, res) {
 
                 console.log(hoy + ' La actualizacion de datos del producto finalizo correctamente');
             });
-            // Producto.findByIdAndUpdate(req.body.productos[i].idProducto, {
-            //         $set: {
-            //             nombreProducto: req.body.productos[i].nombre.toUpperCase(),
-            //             precioProveedor: req.body.productos[i].precioProveedor,
-            //             precioSugerido: req.body.productos[i].precioSugerido,
-            //             unidadMedida: req.body.productos[i].unidadMedida,
-            //             categoria: req.body.productos[i].categoria.toUpperCase(),
-            //             subcategoria: req.body.productos[i].subcategoria.toUpperCase(),
-            //             stock: req.body.productos[i].stock
-            //         }
-            //     },
-            //     async function(err, success) {
-            //         if (err) {
-            //             console.log(hoy + ' La funcion de actualizacion de producto devolvio un error');
-            //             console.log(hoy + ' ' + err.message);
-            //             return res.json({
-            //                 ok: false,
-            //                 message: 'La funcion de actualizacion de producto devolvio un error'
-            //             });
-            //         }
-
-            //         console.log(hoy + ' La actualizacion de datos del producto finalizo correctamente');
-            //     });
         }
         console.log(hoy + ' El proceso de actualizacion finalizo');
         res.json({
@@ -240,6 +217,74 @@ app.post('/producto/actualizar/', async function(req, res) {
         });
     }
 });
+
+app.get('/producto/obtener_productos/', async function(req, res) {
+    let hoy = new Date();
+    Proveedor.findOne({ '_id': req.query.idProveedor })
+        .populate('productos_')
+        .populate({ path: 'productos_', select: '_id precioProveedor precioSugerido categoria subcategoria imagenes videos nombreProducto codigoProveedor stock unidadMedida ' })
+        // .select('')
+        .exec((err, proveedorDB) => {
+            if (err) {
+                console.log(hoy + ' La busqueda de productos devolvio un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de productos devolvio un error',
+                    // categorias: null,
+                    productos: null
+                });
+            }
+
+            if (!proveedorDB) {
+                if (proveedorDB.productos_.lenght == 0) {
+                    console.log(hoy + ' El proveedor no tiene cargado productos');
+                    return res.json({
+                        ok: false,
+                        message: 'El proveedor no tiene cargado productos',
+                        // categorias: null,
+                        productos: null
+
+                    });
+                }
+
+            }
+
+            //ahora debo buscar las categorias y sub categorias
+
+            // let i = 0;
+            // let hasta = proveedorDB.productos_.lenght;
+            // while(i < hasta){
+
+            //     i++;
+            // }
+            // console.log(proveedorDB);
+            // console.log(proveedorDB.productos);
+            // if (!proveedorDB[0].productos)
+            //     return res.json({
+            //         ok: false,
+            //         message: 'El proveedor no tiene productos asociados'
+            //     });
+
+            let productos = proveedorDB.productos_;
+            return res.json({
+                ok: true,
+                productos
+            });
+
+        });
+});
+
+
+
+// app.post('/producto/devolver_categorias/', async function(req, res){
+
+//     let hoy = new Date();
+//     let categorias
+//     for(var i in req.body.productos){
+//         Producto.findOne({})
+//     }
+// });
 
 
 module.exports = app;

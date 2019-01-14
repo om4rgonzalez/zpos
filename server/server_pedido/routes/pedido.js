@@ -902,25 +902,6 @@ app.post('/pedido/listar_pedidos_admin/', async function(req, res) {
                     razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
                     domicilio: pedidos[cursor].comercio.entidad.domicilio
                 });
-
-
-
-
-                // //buscar alias
-                // // console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
-                // let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
-                // // console.log('La consulta de alias devolvio');
-                // // console.log(alias);
-                // if (alias.ok) {
-                //     if (alias.alias != null) {
-                //         if (alias.alias != '') {
-                //             // console.log('Asignando el alias a la razon social');
-                //             entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
-                //             // console.log('Razon social con alias: ' + entidad_.razonSocial);
-                //         }
-                //     }
-                // }
-
                 let comercio_ = new Object({
                     _id: pedidos[cursor].comercio._id,
                     entidad: entidad_,
