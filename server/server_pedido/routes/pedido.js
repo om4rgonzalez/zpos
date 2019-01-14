@@ -141,6 +141,60 @@ app.post('/pedido/nuevo_v2/', async function(req, res) {
     }
 });
 
+app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
+    let hoy = new Date();
+    let detalles = [];
+    for (var i in req.body.productos) {
+        let detallePedido = new DetallePedido({
+            producto: req.body.productos[i]._id,
+            unidadMedida: req.body.productos[i].unidadMedida,
+            cantidadPedido: req.body.productos[i].cantidad,
+            precioProveedor: req.body.productos[i].precioProveedor,
+            precioSugerido: req.body.productos[i].precioSugerido
+        });
+        detallePedido.save();
+        detalles.push(detallePedido._id);
+    }
+
+    let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
+    let ok = false;
+    console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
+    console.log(forma);
+    if (forma.ok) {
+        ok = false;
+    } else {
+        ok = true;
+    }
+
+    let pedido = new Pedido({
+        proveedor: req.body.proveedor,
+        comercio: req.body.comercio,
+        tipoEntrega: req.body.tipoEntrega,
+        fechaEntrega: req.body.fechaEntrega,
+        detallePedido: detalles,
+        estadoPedido: 'PEDIDO SOLICITADO',
+        estadoTerminal: false,
+        comentario: req.body.comentario,
+        comercioPerteneceARedProveedor: ok
+    });
+    let respuestaMensaje = funciones.nuevoMensaje({
+        metodo: '/pedido/nuevo/',
+        tipoError: 0,
+        parametros: '$comercio',
+        valores: req.body.comercio,
+        buscar: 'SI',
+        esPush: true,
+        destinoEsProveedor: true,
+        destino: req.body.proveedor
+    });
+
+    pedido.save();
+    return res.json({
+        ok: true,
+        message: 'El pedido ha sido registrado'
+    });
+});
+
 
 app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
 

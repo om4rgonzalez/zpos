@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+//modelo deprecated
+
 let Schema = mongoose.Schema;
 
 let productoSchema = new Schema({
