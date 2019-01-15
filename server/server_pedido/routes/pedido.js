@@ -236,6 +236,11 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                 let cursorDetalle = 0;
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
+                    // console.log('Mostrando el valor del detalle a analizar');
+                    // console.log('Id detalle: ' + pedidos[cursor].detallePedido[cursorDetalle]._id);
+                    // console.log('Id producto: ' + pedidos[cursor].detallePedido[cursorDetalle].producto._id);
+                    // console.log(pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
+                    // console.log('Cantidad: ' + pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     cursorDetalle++;
                 }
