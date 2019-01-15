@@ -198,7 +198,7 @@ app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
 
 app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
 
-    // console.log('comercio: ' + req.query.idComercio);
+
 
     Pedido.find({ comercio: req.query.idComercio })
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
