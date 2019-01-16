@@ -57,7 +57,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
                 console.log(hoy + ' ' + errN.message);
             } else {
                 console.log(hoy + ' Pedido guardado');
-                console.log(pedido);
+                // console.log(pedido);
             }
         });
         let respuestaMensaje = funciones.nuevoMensaje({
@@ -79,74 +79,74 @@ app.post('/pedido/nuevo/', async function(req, res) {
     }
 });
 
-app.post('/pedido/nuevo_v2/', async function(req, res) {
+// app.post('/pedido/nuevo_v2/', async function(req, res) {
 
-    let usuario = aut.validarToken(req.body.token);
-    if (!usuario) {
-        return res.json({
-            ok: false,
-            message: 'Usuario no valido'
-        });
-    } else {
-        let detalles = [];
-        for (var i in req.body.productos) {
-            let detallePedido = new DetallePedido({
-                producto: req.body.productos[i]._id,
-                unidadMedida: req.body.productos[i].unidadMedida,
-                cantidadPedido: req.body.productos[i].cantidad,
-                precioProveedor: req.body.productos[i].precioProveedor,
-                precioSugerido: req.body.productos[i].precioSugerido
-            });
-            detallePedido.save();
-            detalles.push(detallePedido._id);
-        }
+//     let usuario = aut.validarToken(req.body.token);
+//     if (!usuario) {
+//         return res.json({
+//             ok: false,
+//             message: 'Usuario no valido'
+//         });
+//     } else {
+//         let detalles = [];
+//         for (var i in req.body.productos) {
+//             let detallePedido = new DetallePedido({
+//                 producto: req.body.productos[i]._id,
+//                 unidadMedida: req.body.productos[i].unidadMedida,
+//                 cantidadPedido: req.body.productos[i].cantidad,
+//                 precioProveedor: req.body.productos[i].precioProveedor,
+//                 precioSugerido: req.body.productos[i].precioSugerido
+//             });
+//             detallePedido.save();
+//             detalles.push(detallePedido._id);
+//         }
 
-        let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
-        let ok = false;
-        console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
-        console.log(forma);
-        if (forma.ok) {
-            ok = false;
-        } else {
-            ok = true;
-        }
+//         let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
+//         let ok = false;
+//         console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
+//         console.log(forma);
+//         if (forma.ok) {
+//             ok = false;
+//         } else {
+//             ok = true;
+//         }
 
-        let pedido = new Pedido({
-            proveedor: req.body.proveedor,
-            comercio: req.body.comercio,
-            tipoEntrega: req.body.tipoEntrega,
-            fechaEntrega: req.body.fechaEntrega,
-            detallePedido: detalles,
-            estadoPedido: 'PEDIDO SOLICITADO',
-            estadoTerminal: false,
-            comentario: req.body.comentario,
-            comercioPerteneceARedProveedor: ok
-        });
-        let respuestaMensaje = funciones.nuevoMensaje({
-            metodo: '/pedido/nuevo/',
-            tipoError: 0,
-            parametros: '$comercio',
-            valores: req.body.comercio,
-            buscar: 'SI',
-            esPush: true,
-            destinoEsProveedor: true,
-            destino: req.body.proveedor
-        });
+//         let pedido = new Pedido({
+//             proveedor: req.body.proveedor,
+//             comercio: req.body.comercio,
+//             tipoEntrega: req.body.tipoEntrega,
+//             fechaEntrega: req.body.fechaEntrega,
+//             detallePedido: detalles,
+//             estadoPedido: 'PEDIDO SOLICITADO',
+//             estadoTerminal: false,
+//             comentario: req.body.comentario,
+//             comercioPerteneceARedProveedor: ok
+//         });
+//         let respuestaMensaje = funciones.nuevoMensaje({
+//             metodo: '/pedido/nuevo/',
+//             tipoError: 0,
+//             parametros: '$comercio',
+//             valores: req.body.comercio,
+//             buscar: 'SI',
+//             esPush: true,
+//             destinoEsProveedor: true,
+//             destino: req.body.proveedor
+//         });
 
-        pedido.save();
-        return res.json({
-            ok: true,
-            message: 'El pedido ha sido registrado'
-        });
-    }
-});
+//         pedido.save();
+//         return res.json({
+//             ok: true,
+//             message: 'El pedido ha sido registrado'
+//         });
+//     }
+// });
 
 app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
     let hoy = new Date();
     let detalles = [];
     for (var i in req.body.productos) {
         let detallePedido = new DetallePedido({
-            producto: req.body.productos[i]._id,
+            producto_: req.body.productos[i]._id,
             unidadMedida: req.body.productos[i].unidadMedida,
             cantidadPedido: req.body.productos[i].cantidad,
             precioProveedor: req.body.productos[i].precioProveedor,
@@ -158,8 +158,8 @@ app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
 
     let forma = await funciones.verificarExistenciaProveedorEnRedProveedor(req.body.proveedor, req.body.comercio);
     let ok = false;
-    console.log('La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
-    console.log(forma);
+    console.log(hoy + ' La revision del proveedor en la red del comercio devolvio: ' + forma.ok);
+    // console.log(forma);
     if (forma.ok) {
         ok = false;
     } else {
@@ -241,7 +241,93 @@ app.get('/pedido/listar_pedidos_comercio/', async function(req, res) {
                     // console.log('Id producto: ' + pedidos[cursor].detallePedido[cursorDetalle].producto._id);
                     // console.log(pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
                     // console.log('Cantidad: ' + pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
-                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    } else {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    }
+                    // totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
+                    proveedor: pedidos[cursor].proveedor,
+                    comercio: pedidos[cursor].comercio,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido,
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado,
+                    comercioPerteneceARedProveedor: pedidos[cursor].comercioPerteneceARedProveedor
+                });
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
+            res.json({
+                ok: true,
+                pedidos_array
+            })
+
+        });
+
+});
+
+app.get('/pedido/listar_pedidos_comercio_v2_stock/', async function(req, res) {
+
+    let hoy = new Date();
+    Pedido.find({ comercio: req.query.idComercio })
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
+        .sort({ fechaAlta: -1 })
+        .exec((err, pedidos) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message
+                });
+            }
+
+            if (!pedidos) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            if (pedidos.length <= 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    // console.log('Mostrando el valor del detalle a analizar');
+                    // console.log('Id detalle: ' + pedidos[cursor].detallePedido[cursorDetalle]._id);
+                    // console.log('Id producto: ' + pedidos[cursor].detallePedido[cursorDetalle].producto._id);
+                    // console.log(pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
+                    // console.log('Cantidad: ' + pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    } else {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    }
+                    // totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     cursorDetalle++;
                 }
                 let pedido = new Object({
@@ -298,6 +384,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
     // })
     .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
         .sort({ fechaAlta: -1 })
         .exec(async(err, pedidos) => {
             if (err) {
@@ -329,7 +416,144 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 let cursorDetalle = 0;
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
-                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    console.log('El detalle a analizar es');
+                    // console.log(pedidos[cursor].detallePedido[cursorDetalle]);
+                    if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        // console.log('Producto es null');
+                        // console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor);
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    } else {
+                        // console.log('Producto_ es null');
+                        // console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    }
+                    // totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    cursorDetalle++;
+                }
+                let entidad_ = new Object({
+                    _id: pedidos[cursor].comercio.entidad._id,
+                    cuit: pedidos[cursor].comercio.entidad.cuit,
+                    razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
+                    domicilio: pedidos[cursor].comercio.entidad.domicilio
+                });
+
+
+
+
+                //buscar alias
+                // console.log('Se esta por buscar el alias del comercio: ' + pedidos[cursor].comercio._id);
+                let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
+                // console.log('La consulta de alias devolvio');
+                // console.log(alias);
+                if (alias.ok) {
+                    if (alias.alias != null) {
+                        if (alias.alias != '') {
+                            // console.log('Asignando el alias a la razon social');
+                            entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                            // console.log('Razon social con alias: ' + entidad_.razonSocial);
+                        }
+                    }
+                }
+
+                let comercio_ = new Object({
+                    _id: pedidos[cursor].comercio._id,
+                    entidad: entidad_,
+                    contactos: pedidos[cursor].comercio.contactos
+                });
+
+                let pedido = new Object({
+                    idPedido: pedidos[cursor]._id,
+                    proveedor: pedidos[cursor].proveedor,
+                    //comercio: pedidos[cursor].comercio,
+                    comercio: comercio_,
+                    tipoEntrega: pedidos[cursor].tipoEntrega,
+                    fechaEntrega: pedidos[cursor].fechaEntrega,
+                    activo: pedidos[cursor].activo,
+                    estadoPedido: pedidos[cursor].estadoPedido,
+                    estadoTerminal: pedidos[cursor].estadoTerminal,
+                    comentario: pedidos[cursor].comentario,
+                    puntoVentaEntrega: pedidos[cursor].puntoVentaEntrega,
+                    totalPedido: totalPedido,
+                    detallePedido: pedidos[cursor].detallePedido,
+                    comentarioCancelado: pedidos[cursor].comentarioCancelado,
+                    comercioPerteneceARedProveedor: pedidos[cursor].comercioPerteneceARedProveedor
+                });
+
+                pedidos_array.push(pedido);
+                cursor++;
+            }
+
+            res.json({
+                ok: true,
+                pedidos_array
+            })
+
+        });
+
+});
+
+app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
+
+    let hoy = new Date();
+
+
+    Pedido.find({ proveedor: req.query.idProveedor })
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        // .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+        .populate({
+            path: 'comercio',
+            select: 'entidad contactos',
+            populate: {
+                path: 'contactos',
+                match: { tipoContacto: "Telefono Celular" }
+            }
+        })
+
+    // .populate({
+    //     path: 'rol',
+    //     match: { precedencia: { $gt: idRol } }
+    // })
+    .populate('detallePedido')
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
+        .sort({ fechaAlta: -1 })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                return res.json({
+                    ok: false,
+                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message
+                });
+            }
+
+            if (!pedidos) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            if (pedidos.length <= 0) {
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para mostrar'
+                });
+            }
+
+            let hasta = pedidos.length;
+            let cursor = 0;
+            let pedidos_array = [];
+            while (cursor < hasta) {
+                let tamanioDetalle = pedidos[cursor].detallePedido.length;
+                let cursorDetalle = 0;
+                let totalPedido = 0;
+                while (cursorDetalle < tamanioDetalle) {
+                    if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    } else {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    }
+
                     cursorDetalle++;
                 }
                 let entidad_ = new Object({
@@ -428,7 +652,12 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
                 let cursorDetalle = 0;
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
-                    totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    } else {
+                        totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
+                    }
+                    // totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     cursorDetalle++;
                 }
 
@@ -526,8 +755,8 @@ app.post('/pedido/aceptar/', async function(req, res) {
             });
 
             //verifico si el comercio pertenece a la red del proveedor
-            console.log('verifico si el comercio pertenece a la red del proveedor');
-            console.log(pedido.comercioPerteneceARedProveedor);
+            console.log(hoy + ' verifico si el comercio pertenece a la red del proveedor');
+            console.log(hoy + ' ' + pedido.comercioPerteneceARedProveedor);
             if (!pedido.comercioPerteneceARedProveedor) {
                 //debo agregar el comercio a la red del proveedor
                 let alias = new Alias({
@@ -572,7 +801,7 @@ app.post('/pedido/aceptar/', async function(req, res) {
                             let idAlias = proveedor_.red[i]._id;
                             // console.log('Alias a buscar: ' + idAlias);
                             if (proveedor_.red[i].comercio == pedido.comercio.toString().trim()) {
-                                console.log('Comercio encontrado');
+                                console.log(hoy + ' Comercio encontrado');
                                 Alias.findOne({ _id: proveedor_.red[i]._id })
                                     .exec(async(errA, alias_) => {
                                         if (errA) {

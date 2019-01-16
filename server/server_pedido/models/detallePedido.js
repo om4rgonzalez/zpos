@@ -6,6 +6,10 @@ let detallePedidoSchema = new Schema({
 
         producto: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'Producto'
+        },
+        producto_: {
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Producto_'
         },
         nombreProducto: {
