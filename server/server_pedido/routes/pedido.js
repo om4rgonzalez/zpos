@@ -627,6 +627,7 @@ app.get('/pedido/listar_pedidos_pendientes/', async function(req, res) {
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
         .where({ estadoPedido: 'PEDIDO SOLICITADO' })
         .sort({ fechaAlta: -1 })
         .exec(async(err, pedidos) => {
