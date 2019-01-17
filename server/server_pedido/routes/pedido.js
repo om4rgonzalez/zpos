@@ -549,8 +549,12 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
                     if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
+                        console.log('Producto es null');
+                        console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor);
                         totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     } else {
+                        console.log('Producto_ es null');
+                        console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
                         totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     }
 
