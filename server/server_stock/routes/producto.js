@@ -299,36 +299,36 @@ app.post('/producto/reducir_stock/', async function(req, res) {
                     });
                 }
 
-                if ((producto.stock > 0) || (producto.stock < req.body.valor)) {
+                // if ((producto.stock > 0) || (producto.stock < req.body.valor)) {
 
-                    let nuevoStock = producto.stock - req.body.valor;
-                    Producto.findOneAndUpdate({ _id: req.body.idProducto }, {
-                            $set: {
-                                stock: nuevoStock
-                            }
-                        },
-                        async function(errU, exito) {
-                            if (errU) {
-                                console.log(hoy + ' La actulizacion del stock fallo');
-                                console.log(hoy + ' ' + errU.message);
-                                return res.json({
-                                    ok: false,
-                                    message: 'La actulizacion del stock fallo'
-                                });
-                            }
-
-                            res.json({
-                                ok: true,
-                                message: 'Actualizacion completada'
+                let nuevoStock = producto.stock - req.body.valor;
+                Producto.findOneAndUpdate({ _id: req.body.idProducto }, {
+                        $set: {
+                            stock: nuevoStock
+                        }
+                    },
+                    async function(errU, exito) {
+                        if (errU) {
+                            console.log(hoy + ' La actulizacion del stock fallo');
+                            console.log(hoy + ' ' + errU.message);
+                            return res.json({
+                                ok: false,
+                                message: 'La actulizacion del stock fallo'
                             });
+                        }
+
+                        res.json({
+                            ok: true,
+                            message: 'Actualizacion completada'
                         });
-                } else {
-                    console.log(hoy + ' El producto no tiene stock suficiente para decrementar');
-                    return res.json({
-                        ok: false,
-                        message: 'El producto no tiene stock suficiente para decrementar'
                     });
-                }
+                // } else {
+                //     console.log(hoy + ' El producto no tiene stock suficiente para decrementar');
+                //     return res.json({
+                //         ok: false,
+                //         message: 'El producto no tiene stock suficiente para decrementar'
+                //     });
+                // }
 
             });
 
