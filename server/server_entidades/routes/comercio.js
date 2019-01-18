@@ -408,7 +408,8 @@ app.post('/comercio/ingresar/', async function(req, res) {
 app.post('/comercio/login/', async function(req, res) {
     let hoy = new Date();
     console.log(hoy + ' Parametros recibidos en el login comercio');
-    console.log(hoy + ' ' + req.body);
+    console.log(hoy + ' Usuario: ' + req.body.nombreUsuario);
+    console.log(hoy + ' Clave: ' + req.body.nombreUsuario);
 
     let usuario_ = new Object({
         nombreUsuario: req.body.nombreUsuario,
