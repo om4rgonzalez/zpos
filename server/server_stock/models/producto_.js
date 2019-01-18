@@ -5,7 +5,8 @@ let Schema = mongoose.Schema;
 let productoSchema = new Schema({
 
         codigoProveedor: {
-            type: String
+            type: String,
+            default: '0'
         },
         nombreProducto: {
             type: String,
