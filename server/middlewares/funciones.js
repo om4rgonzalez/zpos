@@ -485,6 +485,17 @@ let buscarProveedoresFrecuentes = async(idComercio) => {
     return resp.data;
 };
 
+let actualizarStock = async(idProducto, valor) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/producto/reducir_stock/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        idProducto: idProducto,
+        valor: valor
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -512,5 +523,6 @@ module.exports = {
     verificarExistenciaComercio,
     verificarExistenciaProveedor,
     verificarExistenciaInivitacion,
-    buscarProveedoresFrecuentes
+    buscarProveedoresFrecuentes,
+    actualizarStock
 }

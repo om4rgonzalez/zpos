@@ -858,6 +858,21 @@ app.post('/pedido/aceptar/', async function(req, res) {
                     });
             }
 
+            //actualizo el stock del producto
+            let limite = pedido.detallePedido.length;
+            let t = 0;
+            while (t < limite) {
+                DetallePedido.findOne({ _id: pedido.detallePedido[t] })
+                    .exec(async(errD, ex) => {
+                        // console.log('Se va a actualizar el siguiente producto: ' + ex.producto_);
+                        // console.log('Con la cantidad: ' + ex.cantidadPedido);
+                        funciones.actualizarStock(ex.producto_, ex.cantidadPedido);
+                    });
+                // console.log();
+
+
+                t++;
+            }
             res.json({
                 ok: true,
                 message: 'El pedido fue aceptado'

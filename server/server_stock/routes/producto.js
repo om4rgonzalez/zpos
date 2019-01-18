@@ -276,6 +276,72 @@ app.get('/producto/obtener_productos/', async function(req, res) {
 });
 
 
+app.post('/producto/reducir_stock/', async function(req, res) {
+
+    let hoy = new Date();
+    try {
+        Producto.findOne({ _id: req.body.idProducto })
+            .exec(async(err, producto) => {
+                if (err) {
+                    console.log(hoy + ' La busqueda de producto para actualizar el stock fallo');
+                    console.log(err.message + ' ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'La busqueda de producto para actualizar el stock fallo'
+                    });
+                }
+                if (producto == null) {
+                    console.log(hoy + ' La busqueda de un producto para su actualizacion no devolvio resultado');
+                    console.log(hoy + ' Id buscado: ' + req.body.idProducto);
+                    return res.json({
+                        ok: false,
+                        message: 'La busqueda de un producto para su actualizacion no devolvio resultado'
+                    });
+                }
+
+                if ((producto.stock > 0) || (producto.stock < req.body.valor)) {
+
+                    let nuevoStock = producto.stock - req.body.valor;
+                    Producto.findOneAndUpdate({ _id: req.body.idProducto }, {
+                            $set: {
+                                stock: nuevoStock
+                            }
+                        },
+                        async function(errU, exito) {
+                            if (errU) {
+                                console.log(hoy + ' La actulizacion del stock fallo');
+                                console.log(hoy + ' ' + errU.message);
+                                return res.json({
+                                    ok: false,
+                                    message: 'La actulizacion del stock fallo'
+                                });
+                            }
+
+                            res.json({
+                                ok: true,
+                                message: 'Actualizacion completada'
+                            });
+                        });
+                } else {
+                    console.log(hoy + ' El producto no tiene stock suficiente para decrementar');
+                    return res.json({
+                        ok: false,
+                        message: 'El producto no tiene stock suficiente para decrementar'
+                    });
+                }
+
+            });
+
+    } catch (e) {
+        console.log(hoy + ' Fallo la ejecucion de una rutina');
+        console.log(hoy + ' ' + e.message);
+        return res.json({
+            ok: false,
+            message: 'Fallo la ejecucion de una rutina'
+        });
+    }
+})
+
 
 // app.post('/producto/devolver_categorias/', async function(req, res){
 
