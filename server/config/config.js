@@ -25,16 +25,24 @@ if (process.env.NODE_ENV == 'prod') {
 }
 
 let urlImagenProducto;
+let urlImagenProveedor;
 
 if (process.env.NODE_ENV == 'prod') {
     urlImagenProducto = 'C:\\xampp\\htdocs\\imagenes_productos\\';
+    urlImagenProveedor = 'C:\\xampp\\htdocs\\imagenes_proveedor\\';
 } else {
-    urlImagenProducto = '/home/marcelo/imagenes_productos/'
+    urlImagenProducto = '/home/marcelo/imagenes_productos/';
+    urlImagenProveedor = '/home/marcelo/imagenes_proveedor/';
 }
 
 process.env.UrlImagen = urlImagen;
 
 process.env.UrlImagenProducto = urlImagenProducto;
+
+process.env.UrlImagenProveedor = urlImagenProveedor;
+
+
+
 
 
 

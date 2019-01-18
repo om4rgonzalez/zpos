@@ -50,7 +50,15 @@ let proveedorSchema = new Schema({
         cargoConfiguracion: {
             type: Boolean,
             default: false
-        }
+        },
+        imagenes: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Imagen_Proveedor'
+        }],
+        videos: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Video_Proveedor'
+        }]
     }
 
 );

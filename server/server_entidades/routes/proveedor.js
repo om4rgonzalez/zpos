@@ -11,6 +11,8 @@ const Comercio = require('../models/comercio');
 const Contacto = require('../../server_contacto/models/contacto');
 const Login = require('../../server_usuario/models/login');
 const Sesion = require('../../server_usuario/models/sesion');
+const ImagenProveedor = require('../models/imagenProveedor');
+const VideoProveedor = require('../models/videoProveedor');
 
 
 app.post('/proveedor/nuevo/', async function(req, res) {
@@ -319,7 +321,9 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
             path: 'red',
             match: { comercio: { $ne: req.body.idComercio } }
         })
-        .select('_id entidad red contactos')
+        .populate('imagenes')
+        .populate('videos')
+        .select('_id entidad red contactos imagenes videos')
         .exec(async(err, proveedores) => {
 
             if (err) {
@@ -378,7 +382,9 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                         esFrecuente: false,
                         entidad: proveedores[i].entidad,
                         red: proveedores[i].red,
-                        contactos: proveedores[i].contactos
+                        contactos: proveedores[i].contactos,
+                        imagenes: proveedores[i].imagenes,
+                        videos: proveedores[i].videos
                     };
                     proveedoresNoFrecuentes.push(p);
                 }
@@ -415,7 +421,9 @@ app.post('/proveedor/consultar_proveedores_frecuentes/', async function(req, res
             path: 'red',
             match: { comercio: req.body.idComercio }
         })
-        .select('_id entidad red contactos')
+        .populate('imagenes')
+        .populate('videos')
+        .select('_id entidad red contactos imagenes videos')
         .exec(async(err, proveedores) => {
             if (err) {
                 console.log(hoy + ' La consulta de proveedores recurrentes arrojo un error');
@@ -862,5 +870,102 @@ app.post('/proveedor/existe/', async function(req, res) {
         });
 });
 
+
+app.post('/proveedor/cargar_imagenes/', async function(req, res) {
+    let hoy = new Date();
+    for (var i in req.body.imagenes) {
+        hoy = new Date();
+        let imagenProveedor = new ImagenProveedor({
+            formato: req.body.imagenes[i].extension
+        });
+
+        if (req.body.imagenes[i].extension == 'png' || req.body.imagenes[i].extension == 'jpg' || req.body.imagenes[i].extension == 'jpeg') {
+            console.log(hoy + ' Paso la validacion de formato de imagen');
+            var target_path = process.env.UrlImagenProveedor + imagenProveedor._id + '.' + req.body.imagenes[i].extension; // hacia donde subiremos nuestro archivo dentro de nuestro servidor
+            console.log(hoy + ' Path Destino: ' + target_path);
+            await fs.writeFile(target_path, new Buffer(req.body.imagenes[i].imagen, "base64"), async function(err) {
+                //Escribimos el archivo
+
+                if (err) {
+                    console.log(hoy + ' La subida del archivo produjo un error: ' + err.message);
+                    return {
+                        ok: false,
+                        message: 'La subida del archivo produjo un error'
+                    };
+                }
+                console.log(hoy + ' La imagen se termino de mover');
+                imagenProveedor.url = 'http://www.bintelligence.net/imagenes_proveedor/' + imagenProveedor._id + '.' + req.body.imagenes[i].extension;
+                imagenProveedor.nombre = imagenProveedor._id;
+
+                console.log(hoy + ' Se esta por guardar el registro de la imagen');
+                try {
+                    imagenProveedor.save((error, imagen_) => {
+                        if (error) {
+                            console.log(hoy + ' El alta de la imagen produjo un error: ' + error.message);
+
+                            return res.json({
+                                ok: false,
+                                message: 'El alta de la publicidad produjo un error: ' + error.message
+                            });
+                        }
+                        console.log(hoy + 'Imagen guardada');
+                    });
+                } catch (e) {
+                    console.log('Salida por el catch: ' + e.message);
+                }
+            });
+        }
+    }
+    console.log(hoy + ' Termino el proceso');
+    res.json({
+        ok: true,
+        message: 'Las imagenes se cargaron correctamente'
+    });
+});
+
+
+app.post('/proveedor/subir_video/', async function(req, res) {
+    let hoy = new Date();
+    for (var i in req.body.videos) {
+        let video = new VideoProveedor({
+            titulo: req.body.videos[i].titulo,
+            canal: req.body.videos[i].canal,
+            url: req.body.videos[i].url
+        });
+
+        video.save(async(err, ok) => {
+            if (err) {
+                console.log(hoy + ' El alta de video arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'El alta de video produjo un error'
+                });
+            }
+
+            //agrego el video a la lista del proveedor
+            Proveedor.findOneAndUpdate({ _id: req.body.idProveedor }, {
+                $push: {
+                    videos: video._id
+                }
+            }, async function(errA, okA) {
+                if (errA) {
+                    console.log(hoy + ' La actualizacion del proveedor para agregar una imagen produjo un error');
+                    console.log(hoy + ' Video que fallo: ' + ok.url);
+                    console.log(hoy + ' ' + errA.message);
+                    return res.json({
+                        ok: false,
+                        message: 'El proceso de subir un video del proveedor fallo. Video errone: ' + ok.url
+                    });
+                }
+            });
+        });
+    }
+
+    res.json({
+        ok: true,
+        message: 'Proceso finalizado con exito'
+    });
+});
 
 module.exports = app;
