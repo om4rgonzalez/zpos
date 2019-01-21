@@ -289,23 +289,30 @@ app.get('/pedido/listar_pedidos_comercio_v2_stock/', async function(req, res) {
         .sort({ fechaAlta: -1 })
         .exec((err, pedidos) => {
             if (err) {
+                console.log(hoy + ' La busqueda de pedidos de un comercio devolvio un error');
+                console.log(hoy + ' ' + err.message);
                 return res.json({
                     ok: false,
-                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message
+                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message,
+                    pedidos: null
                 });
             }
 
             if (!pedidos) {
+                console.log(hoy + ' No hay pedidos para filtrar');
                 return res.json({
                     ok: false,
-                    message: 'No hay pedidos para mostrar'
+                    message: 'No hay pedidos para mostrar',
+                    pedidos: null
                 });
             }
 
             if (pedidos.length <= 0) {
+                console.log(hoy + ' No hay pedidos para filtrar');
                 return res.json({
                     ok: false,
-                    message: 'No hay pedidos para mostrar'
+                    message: 'No hay pedidos para mostrar',
+                    pedidos: null
                 });
             }
 
@@ -352,7 +359,8 @@ app.get('/pedido/listar_pedidos_comercio_v2_stock/', async function(req, res) {
 
             res.json({
                 ok: true,
-                pedidos_array
+                message: 'Pedidos encontrados',
+                pedidos: pedidos_array
             })
 
         });
@@ -363,7 +371,7 @@ app.get('/pedido/listar_pedidos_comercio_v2_stock/', async function(req, res) {
 app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
 
     // console.log('comercio: ' + req.query.idComercio);
-
+    let hoy = new Date();
 
     Pedido.find({ proveedor: req.query.idProveedor })
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
@@ -388,23 +396,30 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
         .sort({ fechaAlta: -1 })
         .exec(async(err, pedidos) => {
             if (err) {
+                console.log(hoy + ' La busqueda de pedidos de un proveedor devolvio un error');
+                console.log(hoy + ' ' + err.message);
                 return res.json({
                     ok: false,
-                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message
+                    message: 'No se puede devolver la lista de pedidos. Error: ' + err.message,
+                    pedidos: null
                 });
             }
 
             if (!pedidos) {
+                console.log(hoy + ' No hay pedidos para el proveedor');
                 return res.json({
                     ok: false,
-                    message: 'No hay pedidos para mostrar'
+                    message: 'No hay pedidos para mostrar',
+                    pedidos: null
                 });
             }
 
             if (pedidos.length <= 0) {
+                console.log(hoy + ' No hay pedidos para el proveedor');
                 return res.json({
                     ok: false,
-                    message: 'No hay pedidos para mostrar'
+                    message: 'No hay pedidos para mostrar',
+                    pedidos: null
                 });
             }
 
@@ -416,7 +431,7 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
                 let cursorDetalle = 0;
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
-                    console.log('El detalle a analizar es');
+                    // console.log('El detalle a analizar es');
                     // console.log(pedidos[cursor].detallePedido[cursorDetalle]);
                     if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
                         // console.log('Producto es null');
@@ -485,8 +500,9 @@ app.get('/pedido/listar_pedidos_proveedor/', async function(req, res) {
 
             res.json({
                 ok: true,
-                pedidos_array
-            })
+                message: 'Pedidos encontrados',
+                pedidos: pedidos_array
+            });
 
         });
 
@@ -548,13 +564,15 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
                 let cursorDetalle = 0;
                 let totalPedido = 0;
                 while (cursorDetalle < tamanioDetalle) {
+                    // console.log('Id de detalle a analizar: ' + pedidos[cursor].detallePedido[cursorDetalle]._id);
                     if (pedidos[cursor].detallePedido[cursorDetalle].producto == null) {
-                        console.log('Producto es null');
-                        console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor);
+
+                        // console.log('Producto es null');
+                        // console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor);
                         totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto_.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     } else {
-                        console.log('Producto_ es null');
-                        console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
+                        // console.log('Producto_ es null');
+                        // console.log('Entonces, el importe a sumar es ' + pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor);
                         totalPedido = totalPedido + (pedidos[cursor].detallePedido[cursorDetalle].producto.precioProveedor * pedidos[cursor].detallePedido[cursorDetalle].cantidadPedido);
                     }
 
