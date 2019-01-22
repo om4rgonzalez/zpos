@@ -1333,6 +1333,96 @@ app.post('/pedido/resumen_admin/', async function(req, res) {
         });
 });
 
+app.post('/pedido/comercios_que_piden/', async function(req, res) {
+    let hoy = new Date();
+    Pedido.find({})
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                console.log(hoy + ' La consulta de comercios que hacen pedidos arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de comercios que hacen pedidos arrojo un error',
+                    comercios: null
+                });
+            }
+
+            if (pedidos.length == 0) {
+                console.log(hoy + ' No hay pedidos para analizar');
+                return res.json({
+                    ok: false,
+                    message: 'No hay pedidos para analizar',
+                    comercios: null
+                });
+            }
+
+            let i = 0;
+            let hasta = pedidos.length;
+            //primero armo el vector de comercios
+            let comercios_ = [];
+            while (i < hasta) {
+                if (comercios_.length == 0) {
+                    comercios_.push(pedidos[i].comercio);
+                } else {
+                    //busco en el vector
+                    let h = comercios_.length;
+                    let j = 0;
+                    let yaEsta = false;
+                    while (j < h) {
+                        if (pedidos[i].comercio._id == comercios_[j]._id) {
+                            // console.log('El comercio ya esta cargado en el vector');
+                            yaEsta = true;
+                            break;
+                        }
+                        j++;
+                    }
+                    if (!yaEsta) {
+                        //el comercio no esta cargado en el vector, lo agrego
+                        comercios_.push(pedidos[i].comercio);
+                    }
+                }
+                i++;
+            }
+            //ya tengo el vector de comercios, ahora tengo que ver las cantidades
+            i = 0;
+            let h = comercios_.length;
+            let vComercios = [];
+            while (i < h) {
+                let j = 0;
+                let cantidad = 0;
+                while (j < hasta) {
+                    if (comercios_[i]._id == pedidos[j].comercio._id) {
+                        cantidad++;
+                    }
+
+                    j++;
+                }
+                let final = {
+                    comercio: comercios_[i].entidad.razonSocial,
+                    cuit: comercios_[i].entidad.cuit,
+                    cantidadPedidos: cantidad
+                };
+                vComercios.push(final);
+                i++;
+            }
+
+
+
+            return res.json({
+                ok: true,
+                message: 'Comercios encontrados',
+                comercios: vComercios
+            });
+        })
+
+
+
+});
+
 
 
 
