@@ -282,8 +282,16 @@ app.get('/pedido/listar_pedidos_comercio_v2_stock/', async function(req, res) {
 
     let hoy = new Date();
     Pedido.find({ comercio: req.query.idComercio })
-        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'proveedor', select: 'entidad, contactos', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({
+            path: 'proveedor',
+            select: 'entidad contactos',
+            populate: {
+                path: 'contactos',
+                match: { tipoContacto: "Telefono Celular" }
+            }
+        })
         .populate('detallePedido')
         .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
         .sort({ fechaAlta: -1 })
@@ -578,6 +586,7 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
 
                     cursorDetalle++;
                 }
+                console.log('EL pedido a analizar es: ' + pedidos[cursor]._id);
                 let entidad_ = new Object({
                     _id: pedidos[cursor].comercio.entidad._id,
                     cuit: pedidos[cursor].comercio.entidad.cuit,
