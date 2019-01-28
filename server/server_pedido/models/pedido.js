@@ -56,6 +56,14 @@ let pedidoSchema = new Schema({
         fechaCambioEstado: {
             type: Date,
             default: Date.now
+        },
+        tipoCostoEntrega: {
+            type: String,
+            default: 'SIN COSTO'
+        },
+        costoEntrega: {
+            type: Number,
+            default: 0
         }
     }
 

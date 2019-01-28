@@ -63,5 +63,4 @@ let proveedorSchema = new Schema({
 
 );
 
-
 module.exports = mongoose.model('Proveedor', proveedorSchema);
