@@ -592,6 +592,8 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
                     cuit: pedidos[cursor].comercio.entidad.cuit,
                     razonSocial: pedidos[cursor].comercio.entidad.razonSocial,
                     domicilio: pedidos[cursor].comercio.entidad.domicilio
+                        // alias: '-',
+                        // idAlias: '-'
                 });
 
 
@@ -602,11 +604,17 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
                 let alias = await funciones.buscarAlias(req.query.idProveedor, pedidos[cursor].comercio._id);
                 // console.log('La consulta de alias devolvio');
                 // console.log(alias);
+                let alias_ = '';
+                let idAlias_ = ';'
                 if (alias.ok) {
                     if (alias.alias != null) {
                         if (alias.alias != '') {
+                            alias_ = alias.alias;
+                            idAlias_ = alias.idAlias;
                             // console.log('Asignando el alias a la razon social');
-                            entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                            // entidad_.razonSocial = pedidos[cursor].comercio.entidad.razonSocial + '(' + alias.alias + ')';
+                            // entidad_.alias = alias.alias;
+                            // entidad_.idAlias = alias.idAlias
                             // console.log('Razon social con alias: ' + entidad_.razonSocial);
                         }
                     }
@@ -615,7 +623,9 @@ app.get('/pedido/listar_pedidos_proveedor_v2_stock/', async function(req, res) {
                 let comercio_ = new Object({
                     _id: pedidos[cursor].comercio._id,
                     entidad: entidad_,
-                    contactos: pedidos[cursor].comercio.contactos
+                    contactos: pedidos[cursor].comercio.contactos,
+                    alias: alias_,
+                    idAlias: idAlias_
                 });
 
                 let pedido = new Object({

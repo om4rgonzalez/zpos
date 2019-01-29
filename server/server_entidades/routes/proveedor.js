@@ -705,7 +705,8 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
                 return res.json({
                     ok: false,
                     message: 'La busqueda de proveedor para buscar un alias devolvio un error',
-                    alias: null
+                    alias: null,
+                    idAlias: null
                 });
             }
 
@@ -714,13 +715,15 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
                 return res.json({
                     ok: false,
                     message: 'La busqueda de proveedor para buscar el alias no devolvio resultados',
-                    alias: null
+                    alias: null,
+                    idAlias: null
                 });
             }
 
             let i = 0;
             let hasta = proveedor.red.length;
             let alias = '';
+            let idAlias = '';
             // console.log('Buscando alias para el comercio: ' + req.body.idComercio);
             while (i < hasta) {
                 // console.log('Comparando');
@@ -730,6 +733,7 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
                 // console.log('Parametro de comparacion: ' + proveedor.red[i].comercio);
                 if (req.body.idComercio == proveedor.red[i].comercio) {
                     alias = proveedor.red[i].alias;
+                    idAlias = proveedor.red[i]._id;
                     break;
                 }
                 i++;
@@ -739,7 +743,8 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
             res.json({
                 ok: true,
                 message: 'Alias encontrado',
-                alias: alias
+                alias: alias,
+                idAlias: idAlias
             });
         });
 });
