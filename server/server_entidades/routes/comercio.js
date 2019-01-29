@@ -592,10 +592,12 @@ app.post('/comercio/login/', async function(req, res) {
                         });
                 } else {
                     // console.log(comercioDB);
+                    // console.log('El usuario es de un comercio');
                     entidad_.idEntidad = comercioDB[0]._id;
                     entidad_.cuit = comercioDB[0].entidad.cuit;
                     entidad_.razonSocial = comercioDB[0].entidad.razonSocial;
                     entidad_.actividadPrincipal = comercioDB[0].entidad.actividadPrincipal;
+
 
                     //busco el login del usuario
                     let ok = true;
@@ -681,7 +683,7 @@ app.post('/comercio/login/', async function(req, res) {
                         usuario,
                         tiposEntrega: null,
                         primerLogin: primerLogin,
-                        cargoConfiguracion: false
+                        cargoConfiguracion: comercioDB[0].cargoConfiguracion
                     });
                 }
             });
