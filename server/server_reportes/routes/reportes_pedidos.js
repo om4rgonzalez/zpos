@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 
-const Pedido = require('../models/pedido');
+const Pedido = require('../../server_pedido/models/pedido');
 const funciones = require('../../middlewares/funciones');
-const DetallePedido = require('../models/detallePedido');
+const DetallePedido = require('../../server_pedido/models/detallePedido');
 const Alias = require('../../server_entidades/models/alias');
 const Proveedor = require('../../server_entidades/models/proveedor');
 
@@ -48,6 +48,7 @@ app.post('/pedido/listar_pedidos_admin/', async function(req, res) {
             let hasta = pedidos.length;
             let cursor = 0;
             let pedidos_array = [];
+
             while (cursor < hasta) {
                 let tamanioDetalle = pedidos[cursor].detallePedido.length;
                 let cursorDetalle = 0;
@@ -244,9 +245,131 @@ app.post('/pedido/comercios_que_piden/', async function(req, res) {
                 comercios: vComercios
             });
         })
+});
+
+app.post('/reportes/resumen_estadistico/', async function(req, res) {
+    let hoy = new Date();
+
+    Pedido.find({ proveedor: req.body.idProveedor })
+        .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                console.log(hoy + ' La consulta principal del resumen estadistico arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta principal del resumen estadistico arrojo un error',
+                    estadisticas: null
+                });
+            }
+
+            let hasta = pedidos.length;
+            if (hasta == 0) {
+                console.log(hoy + ' El proveedor no tiene pedidos para analizar');
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no tiene pedidos para analizar',
+                    estadisticas: null
+                });
+            }
+
+            let i = 0;
+            let pedidos_ = [];
+            let montoTotalPedidos = 0.0;
+            let cantidadPedidosAceptados = 0;
+            let cantidadPedidosRechazados = 0;
+            let cantidadPedidosInformados = 0;
+            let estadisticas = [];
+            let estadisticas_ = {
+                montoTotalPedidos: 0,
+                cantidadTotalPedidos: 0,
+                cantidadPedidosAceptados: 0,
+                cantidadPedidosRechazados: 0,
+                cantidadPedidosInformados: 0,
+                montoPromedioPorPedido: 0,
+                productosPedidos: 0,
+                clientesQuePidieron: 0,
+                promedioPedidosPorCliente: 0.0,
+                pedidosPorDia: null,
+                totalClientes: 0,
+                nuevosClientes: 0,
+                clientesFieles: 0,
+                clientesNoFieles: 0,
+                totalProductos: 0,
+                productosMasPedidos: 0,
+                productosMenosPedidos: 0
+            }
+            console.log('Hay ' + hasta + ' pedidos para analizar');
+            while (i < hasta) {
+                let dia = await pedidos[i].fechaAlta.getDate();
+
+
+                let mes = await pedidos[i].fechaAlta.getMonth();
+                mes++;
+                if (mes > 12)
+                    mes = 1;
+
+                let anio = await pedidos[i].fechaAlta.getFullYear();
+                if (dia.toString().length == 1) {
+                    dia = '0' + dia;
+                }
+                if (mes.toString().length == 1) {
+                    mes = '0' + mes;
+                }
+                let fechaNum = anio.toString() + mes.toString() + dia.toString();
+                // console.log('Fecha a analizar: ' + fechaNum);
+                // console.log('Fecha inicio: ' + req.body.anioInicio + req.body.mesInicio + req.body.diaInicio);
+                // console.log('Fecha Fin: ' + req.body.anioFin + req.body.mesFin + req.body.diaFin);
+                if ((parseInt(req.body.anioInicio + req.body.mesInicio + req.body.diaInicio, 10) <= parseInt(fechaNum, 10)) && (parseInt(anio + mes + dia, 10) <= parseInt(req.body.anioFin + req.body.mesFin + req.body.diaFin, 10))) {
+                    //la fecha del pedido cumple con la condicion
+                    pedidos_.push(pedidos[i]);
+                    if (pedidos[i].estadoPedido == 'PEDIDO SOLICITADO') {
+                        cantidadPedidosInformados++;
+                    }
+
+                    if (pedidos[i].estadoPedido == 'RECHAZADO') {
+                        cantidadPedidosRechazados++;
+                    }
+
+                    if (pedidos[i].estadoPedido == 'ACEPTADO') {
+                        cantidadPedidosAceptados++;
+                        console.log('Calculando el monto total de pedidos');
+
+                        let j = 0;
+                        let h = pedidos[i].detallePedido.length;
+                        while (j < h) {
+                            console.log('');
+                            console.log('Cantidad: ' + pedidos[i].detallePedido[j].cantidadPedido);
+                            console.log('Precio unitario: ' + pedidos[i].detallePedido[j].precioProveedor);
+                            montoTotalPedidos = montoTotalPedidos + (pedidos[i].detallePedido[j].cantidadPedido * pedidos[i].detallePedido[j].precioProveedor);
+                            j++;
+                        }
+                    }
+
+
+                }
+                i++;
+            }
+            estadisticas_.montoTotalPedidos = montoTotalPedidos;
+            estadisticas_.cantidadTotalPedidos = pedidos_.length;
+            estadisticas_.cantidadPedidosAceptados = cantidadPedidosAceptados;
+            estadisticas_.cantidadPedidosInformados = cantidadPedidosInformados;
+            estadisticas_.cantidadPedidosRechazados = cantidadPedidosRechazados;
+            if (cantidadPedidosAceptados != 0)
+                estadisticas_.montoPromedioPorPedido = (montoTotalPedidos / cantidadPedidosAceptados);
 
 
 
+
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo estadisticas',
+                estadisticas: estadisticas_
+            });
+        });
 });
 
 

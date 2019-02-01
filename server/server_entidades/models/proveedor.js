@@ -58,6 +58,10 @@ let proveedorSchema = new Schema({
         videos: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Video_Proveedor'
+        }],
+        cobertura: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Cobertura'
         }]
     }
 

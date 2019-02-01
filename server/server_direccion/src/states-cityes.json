@@ -2,11 +2,13 @@
     "iso_31662": "AR-Y",
     "provincia": "Jujuy",
     "capital": "San Salvador de Jujuy",
-    "localidad": [
-        "San Salvador",
-        "Palpala",
-        "Perico",
-        "San Pedro"
-
-    ]
+    "localidades": [{
+        "localidad": "San Salvador",
+        "barrios": [
+            "Almirante Brown",
+            "San Pedrito",
+            "Santa Rita",
+            "Malvinas"
+        ]
+    }]
 }]
