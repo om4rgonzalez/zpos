@@ -496,6 +496,16 @@ let actualizarStock = async(idProducto, valor) => {
     return resp.data;
 };
 
+let devolverProductosDePedidos = async(pedidos) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/reportes/cantidad_productos_en_pedidos/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        pedidos: pedidos
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -524,5 +534,6 @@ module.exports = {
     verificarExistenciaProveedor,
     verificarExistenciaInivitacion,
     buscarProveedoresFrecuentes,
-    actualizarStock
+    actualizarStock,
+    devolverProductosDePedidos
 }

@@ -283,25 +283,28 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
             let cantidadPedidosInformados = 0;
             let estadisticas = [];
             let estadisticas_ = {
-                montoTotalPedidos: 0,
-                cantidadTotalPedidos: 0,
-                cantidadPedidosAceptados: 0,
-                cantidadPedidosRechazados: 0,
-                cantidadPedidosInformados: 0,
-                montoPromedioPorPedido: 0,
-                productosPedidos: 0,
-                clientesQuePidieron: 0,
-                promedioPedidosPorCliente: 0.0,
-                pedidosPorDia: null,
-                totalClientes: 0,
-                nuevosClientes: 0,
-                clientesFieles: 0,
-                clientesNoFieles: 0,
-                totalProductos: 0,
-                productosMasPedidos: 0,
-                productosMenosPedidos: 0
-            }
-            console.log('Hay ' + hasta + ' pedidos para analizar');
+                    montoTotalPedidos: 0,
+                    cantidadTotalPedidos: 0,
+                    cantidadPedidosAceptados: 0,
+                    cantidadPedidosRechazados: 0,
+                    cantidadPedidosInformados: 0,
+                    montoPromedioPorPedido: 0,
+                    productosPedidos: 0,
+                    productosMasPedidos: 0,
+                    productosMenosPedidos: 0,
+                    rankingProductos: [],
+                    clientesQuePidieron: 0,
+                    promedioPedidosPorCliente: 0.0,
+                    pedidosPorDia: null,
+                    totalClientes: 0,
+                    nuevosClientes: 0,
+                    clientesFieles: 0,
+                    clientesNoFieles: 0
+                }
+                ///////////////SECCION DE ARMADO DE ARRAY DE PEDIDOS Y ANALISIS DE DATOS BASICOS   
+            console.log(hoy + ' Armando el array de pedidos');
+            // console.log('Hay ' + hasta + ' pedidos para analizar');
+
             while (i < hasta) {
                 let dia = await pedidos[i].fechaAlta.getDate();
 
@@ -335,14 +338,14 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
 
                     if (pedidos[i].estadoPedido == 'ACEPTADO') {
                         cantidadPedidosAceptados++;
-                        console.log('Calculando el monto total de pedidos');
+                        // console.log('Calculando el monto total de pedidos');
 
                         let j = 0;
                         let h = pedidos[i].detallePedido.length;
                         while (j < h) {
-                            console.log('');
-                            console.log('Cantidad: ' + pedidos[i].detallePedido[j].cantidadPedido);
-                            console.log('Precio unitario: ' + pedidos[i].detallePedido[j].precioProveedor);
+                            // console.log('');
+                            // console.log('Cantidad: ' + pedidos[i].detallePedido[j].cantidadPedido);
+                            // console.log('Precio unitario: ' + pedidos[i].detallePedido[j].precioProveedor);
                             montoTotalPedidos = montoTotalPedidos + (pedidos[i].detallePedido[j].cantidadPedido * pedidos[i].detallePedido[j].precioProveedor);
                             j++;
                         }
@@ -360,11 +363,17 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
             if (cantidadPedidosAceptados != 0)
                 estadisticas_.montoPromedioPorPedido = (montoTotalPedidos / cantidadPedidosAceptados);
 
+            ///////////////SECCION DE ANALISIS DE PRODUCTOS QUE FIGURAN EN LOS PEDIDOS/////////////////
+            console.log(hoy + ' Llamando a la funcion para armar el ranking de productos');
+            let r = await funciones.devolverProductosDePedidos(pedidos_);
+            // console.log('La funcion devolvio');
+            // console.log(r);
+            estadisticas_.productosPedidos = r.productos.length;
+            estadisticas_.rankingProductos = r.productos;
 
 
 
-
-            res.json({
+            return res.json({
                 ok: true,
                 message: 'Devolviendo estadisticas',
                 estadisticas: estadisticas_
