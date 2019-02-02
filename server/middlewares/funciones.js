@@ -4,7 +4,7 @@ const fs = require('fs');
 
 
 
-let nuevaEntidad = async(entidad, domicilio) => {
+let nuevaEntidad = async(entidad) => {
 
     // console.log('Entidad recibida');
     // console.log(entidad);
@@ -12,17 +12,17 @@ let nuevaEntidad = async(entidad, domicilio) => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/entidad/nueva_/';
     // console.log('URL a conectarse: ' + URL);
     let resp = await axios.post(URL, {
-        pais: domicilio.pais,
-        provincia: domicilio.provincia,
-        localidad: domicilio.localidad,
-        barrio: domicilio.barrio,
-        calle: domicilio.calle,
-        numeroCasa: domicilio.numeroCasa,
-        piso: domicilio.piso,
-        numeroDepartamento: domicilio.numeroDepartamento,
-        latitud: domicilio.latitud,
-        longitud: domicilio.longitud,
-        codigoPostal: domicilio.codigoPostal,
+        // pais: domicilio.pais,
+        // provincia: domicilio.provincia,
+        // localidad: domicilio.localidad,
+        // barrio: domicilio.barrio,
+        // calle: domicilio.calle,
+        // numeroCasa: domicilio.numeroCasa,
+        // piso: domicilio.piso,
+        // numeroDepartamento: domicilio.numeroDepartamento,
+        // latitud: domicilio.latitud,
+        // longitud: domicilio.longitud,
+        // codigoPostal: domicilio.codigoPostal,
         idEntidad: entidad._id,
         cuit: entidad.cuit,
         razonSocial: entidad.razonSocial,

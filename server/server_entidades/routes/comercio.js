@@ -19,19 +19,22 @@ app.post('/comercio/nuevo/', async function(req, res) {
     //tengo que generar la entidad y el domicilio. Pasarle esa info al metodo de funciones
     //y generar los id en ese momento (solo el _id de entidad se genera aqui)
     var usuarios = [];
-    let domicilio = {
-        pais: req.body.domicilio.pais,
-        provincia: req.body.domicilio.provincia,
-        localidad: req.body.domicilio.localidad,
-        barrio: req.body.domicilio.barrio,
-        calle: req.body.domicilio.calle,
-        numeroCasa: req.body.domicilio.numeroCasa,
-        piso: req.body.domicilio.piso,
-        numeroDepartamento: req.body.domicilio.numeroDepartamento,
-        latitud: req.body.domicilio.latitud,
-        longitud: req.body.domicilio.longitud,
-        codigoPostal: req.body.domicilio.codigoPostal
-    };
+    if (req.body.domicilio) {
+        let domicilio = {
+            pais: req.body.domicilio.pais,
+            provincia: req.body.domicilio.provincia,
+            localidad: req.body.domicilio.localidad,
+            barrio: req.body.domicilio.barrio,
+            calle: req.body.domicilio.calle,
+            numeroCasa: req.body.domicilio.numeroCasa,
+            piso: req.body.domicilio.piso,
+            numeroDepartamento: req.body.domicilio.numeroDepartamento,
+            latitud: req.body.domicilio.latitud,
+            longitud: req.body.domicilio.longitud,
+            codigoPostal: req.body.domicilio.codigoPostal
+        };
+    }
+
 
     let entidad = Entidad({
         cuit: req.body.entidad.cuit,
@@ -44,7 +47,7 @@ app.post('/comercio/nuevo/', async function(req, res) {
 
     // console.log(entidad);
     try {
-        let respuestaEntidad = await funciones.nuevaEntidad(entidad, domicilio);
+        let respuestaEntidad = await funciones.nuevaEntidad(entidad);
         // console.log('Entidad creada');
         if (respuestaEntidad.ok) {
             let comercio = new Comercio({
