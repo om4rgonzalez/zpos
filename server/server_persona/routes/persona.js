@@ -26,7 +26,7 @@ app.get('/persona', function(req, res) {
             // console.log("Se encontro el dni " + req.query.dni);
             res.json({
                 ok: true,
-                personaDB
+                personaDB: personaDB[0]
             });
 
         });
@@ -156,15 +156,16 @@ app.post('/persona/nueva/', function(req, res) {
                     res.json({
                         ok: true,
                         message: 'Alta completa',
-                        PersonaDB: PersonaDB
+                        PersonaDB: PersonaDB._id
                     });
                 });
             } else {
                 console.log("La persona ya esta cargada");
+                console.log('Devolviendo el id ' + exito[0]._id);
                 return res.json({
                     ok: true,
                     message: 'La persona ya figura en la base de datos',
-                    PersonaDB: exito[0]
+                    PersonaDB: exito[0]._id
                 });
             }
         });

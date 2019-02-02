@@ -48,10 +48,11 @@ app.post('/comercio/nuevo/', async function(req, res) {
     // console.log(entidad);
     try {
         let respuestaEntidad = await funciones.nuevaEntidad(entidad);
-        // console.log('Entidad creada');
+        console.log('El alta de entidad devolvio Ok: ' + respuestaEntidad.ok);
+        console.log('El alta de entidad devolvio el id de entidad ' + respuestaEntidad._id);
         if (respuestaEntidad.ok) {
             let comercio = new Comercio({
-                entidad: respuestaEntidad.entidadDB
+                entidad: respuestaEntidad._id
             });
             if (req.body.contactos) {
                 // console.log('Hay contactos para guardar');

@@ -34,7 +34,8 @@ let nuevaEntidad = async(entidad) => {
 
     return {
         ok: true,
-        domicilio: resp.data.entidadDB.domicilio
+        domicilio: resp.data.entidadDB.domicilio,
+        _id: resp.data.entidadDB._id
     }
 
 };
@@ -116,9 +117,7 @@ let nuevaPersona = async(persona) => {
     // console.log('termino la ejecucion del axios');
     // console.log('Respuesta del servicio: ' + resp.contactoDB._id);
 
-    return {
-        ok: true
-    }
+    return resp.data;
 
 };
 

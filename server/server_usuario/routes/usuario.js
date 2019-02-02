@@ -453,6 +453,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
     var contactos = [];
     var idPersona;
 
+
     // console.log("Id de persona: " + req.body.persona._id);
     if (req.body.idPersona == '0') {
 
@@ -466,9 +467,12 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
 
             let respPersona = await funciones.nuevaPersona(persona);
             // console.log("Ya se dio de alta la persona");
-            if (respPersona.ok)
-                idPersona = persona._id;
-            else
+            console.log('La funcion para dar de alta una persona devolvio. Ok: ' + respPersona.ok);
+            console.log('La funcion para dar de alta una persona devolvio id de persona ' + respPersona.PersonaDB);
+            if (respPersona.ok) {
+                idPersona = respPersona.PersonaDB;
+                console.log('Ya se asigno el id de persona');
+            } else
                 avanzar = false;
 
 
@@ -480,7 +484,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
 
     if (avanzar) {
         if (req.body.contactos) {
-            // console.log("genero los contactos");
+            console.log("genero los contactos");
             for (var i in req.body.contactos) {
                 // console.log(req.body.contactos[i]);
 
@@ -493,7 +497,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
                     email: req.body.contactos[i].email
                 });
                 try {
-                    // console.log("Doy de alta los contactos");
+                    console.log("Doy de alta los contactos");
                     let respuesta = await funciones.nuevoContacto(contacto);
                     if (respuesta.ok) {
                         contactos.push(contacto._id);
@@ -501,8 +505,8 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
 
                     // console.log('array de contactos antes de asignarselo al cliente: ' + contactos);
                 } catch (e) {
-                    // console.log('Error al guardar el contacto: ' + contacto);
-                    // console.log('Error de guardado: ' + e);
+                    console.log('Error al guardar el contacto: ' + contacto);
+                    console.log('Error de guardado: ' + e);
                     contactoGuardado = false;
                 }
             }
@@ -513,7 +517,7 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
 
             //por ultimo, doy de alta al usuario
             // console.log(contactos);
-            // console.log("Ahora genero el usuario");
+            console.log("Ahora genero el usuario");
             let usuario = new Usuario({
                 _id: req.body._id,
                 persona: idPersona,
@@ -521,16 +525,18 @@ app.post('/usuario/nuevo_usuario_arranque/', async function(req, res) {
                 clave: bcrypt.hashSync(objeto.clave, 10),
                 rol: objeto.rol
             });
-            // console.log('estos son los id de contacto que le voy cargar al cliente: ' + contactos);
+            console.log('estos son los id de contacto que le voy cargar al cliente: ' + contactos);
             if (req.body.contactos) {
                 for (var i in contactos) {
-                    // console.log('el cliente tiene este contacto: ' + contactos[i]);
+                    console.log('el cliente tiene este contacto: ' + contactos[i]);
                     usuario.contactos.push(contactos[i]);
                 }
             }
-            // console.log("Doy de alta al usuario");
+            console.log("Doy de alta al usuario");
             usuario.save((err, usuarioDB) => {
                 if (err) {
+                    console.log('El alta de usuario genero un error.');
+                    console.log(err.message);
                     return res.status(400).json({
                         ok: false,
                         err
