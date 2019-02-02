@@ -124,7 +124,7 @@ app.post('/entidad/nueva_/', async function(req, res) {
                             res.json({
                                 ok: true,
                                 message: 'Alta de entidad completa',
-                                entidadDB
+                                entidadDB: entidad._id
                             });
                         });
                     } else {
@@ -132,7 +132,7 @@ app.post('/entidad/nueva_/', async function(req, res) {
                         res.json({
                             ok: true,
                             message: 'La entidad ya figura en la base de datos',
-                            entidadDB: exito[0]
+                            entidadDB: exito[0]._id
                         });
                     }
                 });

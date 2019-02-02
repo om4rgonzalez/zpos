@@ -12,7 +12,6 @@ let nuevaEntidad = async(entidad, domicilio) => {
     let URL = process.env.URL_SERVICE + process.env.PORT + '/entidad/nueva_/';
     // console.log('URL a conectarse: ' + URL);
     let resp = await axios.post(URL, {
-
         pais: domicilio.pais,
         provincia: domicilio.provincia,
         localidad: domicilio.localidad,

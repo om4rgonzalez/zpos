@@ -48,7 +48,7 @@ app.post('/comercio/nuevo/', async function(req, res) {
         // console.log('Entidad creada');
         if (respuestaEntidad.ok) {
             let comercio = new Comercio({
-                entidad: entidad._id
+                entidad: respuestaEntidad.entidadDB
             });
             if (req.body.contactos) {
                 // console.log('Hay contactos para guardar');
@@ -593,6 +593,7 @@ app.post('/comercio/login/', async function(req, res) {
                 } else {
                     // console.log(comercioDB);
                     // console.log('El usuario es de un comercio');
+                    // console.log('Comercio a analizar: ' + comercioDB[0]._id);
                     entidad_.idEntidad = comercioDB[0]._id;
                     entidad_.cuit = comercioDB[0].entidad.cuit;
                     entidad_.razonSocial = comercioDB[0].entidad.razonSocial;
