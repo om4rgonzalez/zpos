@@ -13,6 +13,7 @@ const Login = require('../../server_usuario/models/login');
 const Sesion = require('../../server_usuario/models/sesion');
 const ImagenProveedor = require('../models/imagenProveedor');
 const VideoProveedor = require('../models/videoProveedor');
+const Cobertura = require('../models/cobertura');
 
 
 app.post('/proveedor/nuevo/', async function(req, res) {
@@ -22,11 +23,11 @@ app.post('/proveedor/nuevo/', async function(req, res) {
     var usuarios = [];
     var contactoGuardado = true;
     let domicilio = {
-        pais: req.body.domicilio.pais,
-        provincia: req.body.domicilio.provincia,
-        localidad: req.body.domicilio.localidad,
-        barrio: req.body.domicilio.barrio,
-        calle: req.body.domicilio.calle,
+        pais: req.body.domicilio.pais.toUpperCase(),
+        provincia: req.body.domicilio.provincia.toUpperCase(),
+        localidad: req.body.domicilio.localidad.toUpperCase(),
+        barrio: req.body.domicilio.barrio.toUpperCase(),
+        calle: req.body.domicilio.calle.toUpperCase(),
         numeroCasa: req.body.domicilio.numeroCasa,
         piso: req.body.domicilio.piso,
         numeroDepartamento: req.body.domicilio.numeroDepartamento,
@@ -37,9 +38,9 @@ app.post('/proveedor/nuevo/', async function(req, res) {
 
     let entidad = Entidad({
         cuit: req.body.entidad.cuit,
-        razonSocial: req.body.entidad.razonSocial,
-        actividadPrincipal: req.body.entidad.actividadPrincipal,
-        tipoPersoneria: req.body.entidad.tipoPersoneria
+        razonSocial: req.body.entidad.razonSocial.toUpperCase(),
+        actividadPrincipal: req.body.entidad.actividadPrincipal.toUpperCase(),
+        tipoPersoneria: req.body.entidad.tipoPersoneria.toUpperCase()
     });
 
     // console.log('Entidad antes de ser enviada a la funcion');
@@ -1120,6 +1121,114 @@ app.post('/proveedor/subir_video/', async function(req, res) {
         ok: true,
         message: 'Proceso finalizado con exito'
     });
+});
+
+//////////////// MANEJO DE CONFIGURACION DE PROVEEDORES ////////////////
+
+app.post('/proveedor/agregar_cobertura/', async function(req, res) {
+    console.log('Llega la peticion');
+    let hoy = new Date();
+    if (req.body.coberturas) {
+        console.log('Hay coberturas');
+        try {
+            // let cobertura = new Cobertura();
+            for (var i in req.body.coberturas) {
+                //genero el objeto
+                let cobertura = new Cobertura({
+                    nombreZona: req.body.coberturas[i].nombreZona
+                });
+                if (req.body.coberturas[i].provincias) {
+                    console.log('Hay provincias para analizar');
+                    let provincias = [];
+                    for (var j in req.body.coberturas[i].provincias) {
+
+                        let provincia = {
+                            provincia: req.body.coberturas[i].provincias[j].provincia,
+                            localidades: []
+                        };
+                        if (req.body.coberturas[i].provincias[j].localidades) {
+                            for (var k in req.body.coberturas[i].provincias[j].localidades) {
+                                let localidad = {
+                                    localidad: req.body.coberturas[i].provincias[j].localidades[k].localidad,
+                                    barrios: []
+                                };
+                                if (req.body.coberturas[i].provincias[j].localidades[k].barrios) {
+                                    for (var l in req.body.coberturas[i].provincias[j].localidades[k].barrios) {
+                                        let barrio = {
+                                            barrio: req.body.coberturas[i].provincias[j].localidades[k].barrios[l].barrio,
+                                            entregaADomicilio: req.body.coberturas[i].provincias[j].localidades[k].barrios[l].entregaADomicilio,
+                                            costoEntrega: req.body.coberturas[i].provincias[j].localidades[k].barrios[l].costoEntrega
+                                        };
+                                        localidad.barrios.push(barrio);
+                                    }
+                                    provincia.localidades.push(localidad);
+                                } else {
+                                    //no hay barrios, no se puede continuar con el proceso
+                                    return res.json({
+                                        ok: false,
+                                        message: 'El area de cobertura esta incompleta. Faltan los barrios'
+                                    });
+                                }
+                            }
+                            provincias.push(provincia);
+                        } else {
+                            //no hay localidades, no se puede continuar con el proceso
+                            return res.json({
+                                ok: false,
+                                message: 'El area de cobertura esta incompleta. Faltan las localidades'
+                            });
+                        }
+                    }
+                    cobertura.provincias = provincias;
+                    //termino la carga del objeto, resta darle de alta
+                    cobertura.save();
+                    Proveedor.findOneAndUpdate({ _id: req.body.idProveedor }, {
+                            $push: {
+                                cobertura: cobertura._id
+                            }
+                        },
+                        function(err, success) {
+                            if (err) {
+                                console.log('Fallo la ejecucion del proceso de asignacion de cobertura al proveedor');
+                                console.log(err.message);
+                            } else {
+                                console.log('La cobertura se agrego correctamente');
+                            }
+                        });
+                } else {
+                    //no hay provincias, no se puede continuar con el proceso
+                    console.log('No hay provincias para analizar');
+                    return res.json({
+                        ok: false,
+                        message: 'El area de cobertura esta incompleta. Faltan la o las provincias'
+                    });
+                }
+            }
+
+            //aqui debo cargar la cobertura en el proveedor
+
+
+            res.json({
+                ok: true,
+                message: 'Proceso de definicion de cobertura terminado'
+            });
+        } catch (e) {
+            console.log('Fallo un metodo en el try');
+            console.log(e.message);
+            console.log(e.stack);
+            return res.json({
+                ok: false,
+                message: 'Fallo en la ejecucion del proceso.Salida controlada'
+            });
+        }
+    } else {
+        //no hay coberturas, no se puede continuar con el proceso
+        console.log('No hay datos de cobertura para procesar');
+        return res.json({
+            ok: false,
+            message: 'No hay datos para armar la cobertura'
+        });
+    }
 });
 
 module.exports = app;

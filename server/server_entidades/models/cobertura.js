@@ -14,7 +14,8 @@ let coberturaSchema = new Schema({
             localidad: String,
             barrios: [{
                 barrio: String,
-                costoEntrega: Number
+                costoEntrega: Number,
+                entregaADomicilio: Boolean
             }]
         }]
     }]
