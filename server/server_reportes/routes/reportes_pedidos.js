@@ -294,6 +294,7 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
                     productosMenosPedidos: 0,
                     rankingProductos: [],
                     clientesQuePidieron: 0,
+                    rankingClientes: [],
                     promedioPedidosPorCliente: 0.0,
                     pedidosPorDia: null,
                     totalClientes: 0,
@@ -371,7 +372,12 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
             estadisticas_.productosPedidos = r.productos.length;
             estadisticas_.rankingProductos = r.productos;
 
-
+            //////////// SECCION DE ANALISIS DE CLIENTES /////////////////////
+            console.log(hoy + ' Llamando a la funcion para armar el ranking de clientes');
+            let c = await funciones.devolverRankingClientes(pedidos_);
+            estadisticas_.clientesQuePidieron = c.cantidadClientes;
+            estadisticas_.rankingClientes = c.ranking;
+            estadisticas_.promedioPedidosPorCliente = c.pedidosPorCliente;
 
             return res.json({
                 ok: true,

@@ -504,6 +504,16 @@ let devolverProductosDePedidos = async(pedidos) => {
     return resp.data;
 };
 
+let devolverRankingClientes = async(pedidos) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/reportes/ranking_clientes/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        pedidos: pedidos
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -533,5 +543,6 @@ module.exports = {
     verificarExistenciaInivitacion,
     buscarProveedoresFrecuentes,
     actualizarStock,
-    devolverProductosDePedidos
+    devolverProductosDePedidos,
+    devolverRankingClientes
 }

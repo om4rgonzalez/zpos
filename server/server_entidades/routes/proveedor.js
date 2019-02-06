@@ -48,7 +48,8 @@ app.post('/proveedor/nuevo/', async function(req, res) {
     // console.log(entidad);
     try {
         let respuestaEntidad = await funciones.nuevaEntidad(entidad, domicilio);
-        // console.log('Entidad creada');
+        console.log('Entidad creada');
+        console.log('Id de entidad: ' + respuestaEntidad);
         if (respuestaEntidad.ok) {
             //doy de alta al punto de venta
             let puntoVenta = new PuntoVenta({
@@ -59,7 +60,7 @@ app.post('/proveedor/nuevo/', async function(req, res) {
             if (respuestaPunto.ok) {
                 // console.log('Punto de venta creado');
                 let proveedor = new Proveedor({
-                    entidad: entidad._id
+                    entidad: respuestaEntidad._id
                 });
 
                 proveedor.puntosVenta.push(puntoVenta._id);

@@ -64,6 +64,10 @@ let pedidoSchema = new Schema({
     costoEntrega: {
         type: Number,
         default: 0
+    },
+    montoTotalPedido: {
+        type: Number,
+        default: 0
     }
 });
 

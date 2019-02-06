@@ -24,6 +24,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
                 unidadMedida: req.body.productos[i].unidadMedida,
                 cantidadPedido: req.body.productos[i].cantidad,
             });
+
             detallePedido.save();
             detalles.push(detallePedido._id);
         }
@@ -144,6 +145,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
 app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
     let hoy = new Date();
     let detalles = [];
+    let montoTotalPedido = 0.0;
     for (var i in req.body.productos) {
         let detallePedido = new DetallePedido({
             producto_: req.body.productos[i]._id,
@@ -152,6 +154,7 @@ app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
             precioProveedor: req.body.productos[i].precioProveedor,
             precioSugerido: req.body.productos[i].precioSugerido
         });
+        montoTotalPedido = montoTotalPedido + (req.body.productos[i].cantidad + req.body.productos[i].precioProveedor);
         detallePedido.save();
         detalles.push(detallePedido._id);
     }
@@ -175,7 +178,8 @@ app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
         estadoPedido: 'PEDIDO SOLICITADO',
         estadoTerminal: false,
         comentario: req.body.comentario,
-        comercioPerteneceARedProveedor: ok
+        comercioPerteneceARedProveedor: ok,
+        montoTotalPedido: montoTotalPedido
     });
     let respuestaMensaje = funciones.nuevoMensaje({
         metodo: '/pedido/nuevo/',
