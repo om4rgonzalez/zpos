@@ -514,6 +514,17 @@ let devolverRankingClientes = async(pedidos) => {
     return resp.data;
 };
 
+let nuevaCobertura = async(cobertura, idProveedor) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/agregar_cobertura/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        coberturas: cobertura,
+        idProveedor: idProveedor
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -544,5 +555,6 @@ module.exports = {
     buscarProveedoresFrecuentes,
     actualizarStock,
     devolverProductosDePedidos,
-    devolverRankingClientes
+    devolverRankingClientes,
+    nuevaCobertura
 }

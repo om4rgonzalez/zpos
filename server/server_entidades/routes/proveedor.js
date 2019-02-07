@@ -1232,4 +1232,82 @@ app.post('/proveedor/agregar_cobertura/', async function(req, res) {
     }
 });
 
+app.get('/proveedor/devolver_cobertura/', async function(req, res) {
+
+    let hoy = new Date();
+    Proveedor.findOne({ _id: req.query.idProveedor })
+        .populate('cobertura')
+        .exec(async(err, proveedores) => {
+            if (err) {
+                console.log(hoy + ' La busqueda de proveedores para devolver la cobertura arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de proveedores para devolver la cobertura arrojo un error',
+                    cobertura: null
+                });
+            }
+
+            if (proveedores == null) {
+                console.log(hoy + ' No se encontraron proveedores con el id ' + req.query.idProveedor);
+                return res.json({
+                    ok: false,
+                    message: 'No se encontraron proveedores',
+                    cobertura: null
+                });
+            }
+
+            if (proveedores.cobertura == null) {
+                console.log(hoy + ' El proveedor no tiene definida un area de cobertura');
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no tiene definida un area de cobertura',
+                    cobertura: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Proveedor encontrado',
+                cobertura: proveedores.cobertura
+            });
+        })
+});
+
+///El proceso de actualizacion de cobertura va a quitar la zona completa y va a agregar la zona modificada
+app.post('/proveedor/modificar_cobertura/', async function(req, res) {
+
+    let hoy = new Date();
+    // Favorite.update({ cn: req.params.name }, { $pullAll: { uid: [req.params.deleteUid] } })
+    Proveedor.findOneAndUpdate({ _id: req.body.idProveedor }, {
+            $pullAll: {
+                cobertura: req.body.coberturasAModificar
+            }
+        },
+        async function(err, ok) {
+            if (err) {
+                console.log(hoy + ' El proceso de actualizacion de datos provoco un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'El proceso de actualizacion de cobertura produjo un error'
+                });
+            } else {
+                //todo salio ok, ahora tengo que dar de alta la nueva cobertura si es que existe
+                if (req.body.nuevasCoberturas) {
+                    console.log('Hay nuevas coberturas para agregar');
+                    //hay nuevas coberturas, tengo que agregarlas
+                    funciones.nuevaCobertura(req.body.nuevasCoberturas, req.body.idProveedor);
+                } else {
+                    console.log('No hay nuevas coberturas a agregar');
+                }
+            }
+            res.json({
+                ok: true,
+                message: 'Proceso de actualizacion finalizo correctamente'
+            });
+        });
+
+});
+
 module.exports = app;
