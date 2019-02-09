@@ -354,7 +354,7 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
             // });
 
             let direccionComercio_ = '';
-
+            console.log('El comercio del que necesito la direccion es: ' + req.body.idComercio);
             let direccion = await funciones.devolverDomicilioComercio(req.body.idComercio);
             if (direccion.ok) {
                 direccionComercio_ = direccion.domicilio.toUpperCase();
