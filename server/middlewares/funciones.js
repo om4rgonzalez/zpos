@@ -525,6 +525,35 @@ let nuevaCobertura = async(cobertura, idProveedor) => {
     return resp.data;
 };
 
+let obtenerIndice = async() => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/producto/generar_indice/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {});
+
+    return resp.data;
+};
+
+let devolverDomicilioComercio = async(idComercio) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/comercio/obtener_direccion/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        idComercio: idComercio
+    });
+
+    return resp.data;
+};
+
+let verficiarComercioEnCoberturaProveedor = async(direccionComercio, idProveedor) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/cobertura/verificar_cobertura_a_comercio/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        direccionComercio: direccionComercio,
+        idProveedor: idProveedor
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -556,5 +585,8 @@ module.exports = {
     actualizarStock,
     devolverProductosDePedidos,
     devolverRankingClientes,
-    nuevaCobertura
+    nuevaCobertura,
+    obtenerIndice,
+    devolverDomicilioComercio,
+    verficiarComercioEnCoberturaProveedor
 }

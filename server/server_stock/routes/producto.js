@@ -7,6 +7,8 @@ const HistoriaPrecioSugerido = require('../models/historiaCambioPrecioSugerido')
 const ImagenProducto = require('../models/imagenProducto');
 const VideoProducto = require('../models/videoProducto');
 const fs = require('fs');
+const funciones = require('../../middlewares/funciones');
+const Empaques = require('../src/empaque.json');
 
 
 app.post('/producto/nuevo/', async function(req, res) {
@@ -16,15 +18,28 @@ app.post('/producto/nuevo/', async function(req, res) {
             for (var i in req.body.productos) {
 
                 let producto = new Producto({
-                    codigoProveedor: req.body.productos[i].codigoProveedor,
                     nombreProducto: req.body.productos[i].nombreProducto.toUpperCase(),
                     precioProveedor: req.body.productos[i].precioProveedor,
                     precioSugerido: req.body.productos[i].precioSugerido,
                     categoria: req.body.productos[i].categoria.toUpperCase(),
                     subcategoria: req.body.productos[i].subcategoria.toUpperCase(),
-                    stock: req.body.productos[i].stock,
-                    unidadMedida: req.body.productos[i].unidadMedida.toUpperCase()
+                    unidadMedida: req.body.productos[i].unidadMedida.toUpperCase(),
+                    detalleProducto: req.body.productos[i].detalleProducto,
+                    empaque: req.body.productos[i].empaque,
+                    unidadesPorEmpaque: req.body.productos[i].unidadesPorEmpaque
                 });
+
+                if (req.body.productos[i].stock == -1) {
+                    producto.stock = 100000000;
+                } else {
+                    producto.stock = req.body.productos[i].stock;
+                }
+                if (req.body.productos[i].codigoProveedor == 0) {
+                    //debo obtener el indice para este producto sin codigo
+                    producto.codigoProveedor = await funciones.obtenerIndice();
+                } else {
+                    producto.codigoProveedor = req.body.productos[i].codigoProveedor;
+                }
                 productos_.push(producto._id);
 
                 //guardo la historia del precio
@@ -73,6 +88,10 @@ app.post('/producto/nuevo/', async function(req, res) {
     }
 });
 
+
+app.get('/producto/obtener_tipos_empaque/', async function(req, res) {
+    res.json(Empaques);
+})
 
 app.post('/producto/cargar_imagenes/', async function(req, res) {
     let hoy = new Date();

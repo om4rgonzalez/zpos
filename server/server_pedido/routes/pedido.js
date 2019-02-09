@@ -142,6 +142,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
 //     }
 // });
 
+
 app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
     let hoy = new Date();
     let detalles = [];

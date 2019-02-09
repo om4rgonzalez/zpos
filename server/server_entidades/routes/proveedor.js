@@ -230,6 +230,7 @@ app.get('/proveedor/obtener_productos/', async function(req, res) {
         });
 });
 
+//En este metodo debo contemplar que el proveedor tenga cobertura en la zona del comercio
 app.get('/proveedor/listar_todos/', async function(req, res) {
 
     Proveedor.find({}, 'tiposEntrega entidad _id')
@@ -352,6 +353,20 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
             //     return proveedores.red.length != 0;
             // });
 
+            let direccionComercio_ = '';
+
+            let direccion = await funciones.devolverDomicilioComercio(req.body.idComercio);
+            if (direccion.ok) {
+                direccionComercio_ = direccion.domicilio.toUpperCase();
+            } else {
+                return res.json({
+                    ok: false,
+                    message: 'Comercio no valido',
+                    cantidadRegistros: 0,
+                    proveedores: null
+                });
+            }
+
             let proveedoresNoFrecuentes = [];
             let proveedoresFrecuentes = [];
             let proveedores_ = [];
@@ -359,13 +374,29 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
             if (respuestaFrecuentes.ok == 0) {
                 //la funcion devolvio proveedores frecuentes
                 for (var j in respuestaFrecuentes.proveedores) {
+                    let v_ = await funciones.verficiarComercioEnCoberturaProveedor(direccionComercio_, respuestaFrecuentes.proveedores[j]._id);
                     respuestaFrecuentes.proveedores[j].esFrecuente = true;
+                    respuestaFrecuentes.proveedores[j].tieneCobertura = false;
+                    respuestaFrecuentes.proveedores[j].envioADomicilio = false;
+                    respuestaFrecuentes.proveedores[j].costoEnvioADomicilio = 0.0;
+
+
+                    if (v_.tieneCobertura) {
+                        respuestaFrecuentes.proveedores[j].tieneCobertura = true;
+                        respuestaFrecuentes.proveedores[j].envioADomicilio = v_.tieneEnvioADomicilio;
+                        respuestaFrecuentes.proveedores[j].costoEnvioADomicilio = v_.costoEnvioADomicilio;
+                    }
                     proveedoresFrecuentes.push(respuestaFrecuentes.proveedores[j]);
                 }
             }
 
-            let i = 0;
+            //antes de armar el array con proveedores no frecuentes, debo filtrar a aquellos que se encuentran en 
+            //la zona de cobertura
+
+            let proveedores_F = [];
             let hasta = proveedores.length;
+            let i = 0;
+
             // console.log('Hay ' + hasta + ' elementos');
             while (i < hasta) {
                 //reviso que el comercio no sea frecuente
@@ -379,16 +410,24 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                 if (!pertenece) {
                     // console.log('');
                     // console.log(hoy + ' Agregando el proveedor: ' + proveedores[i].entidad.razonSocial);
-                    let p = {
-                        _id: proveedores[i]._id,
-                        esFrecuente: false,
-                        entidad: proveedores[i].entidad,
-                        red: proveedores[i].red,
-                        contactos: proveedores[i].contactos,
-                        imagenes: proveedores[i].imagenes,
-                        videos: proveedores[i].videos
-                    };
-                    proveedoresNoFrecuentes.push(p);
+                    //chequeo que se encuentre en la zona de cobertura
+                    let v = await funciones.verficiarComercioEnCoberturaProveedor(direccionComercio_, proveedores[i]._id);
+                    if (v.tieneCobertura) {
+                        //el comercio tiene la cobertura del proveedor
+                        let p = {
+                            _id: proveedores[i]._id,
+                            esFrecuente: false,
+                            entidad: proveedores[i].entidad,
+                            red: proveedores[i].red,
+                            contactos: proveedores[i].contactos,
+                            imagenes: proveedores[i].imagenes,
+                            videos: proveedores[i].videos,
+                            tieneCobertura: v.tieneCobertura,
+                            envioADomicilio: v.tieneEnvioADomicilio,
+                            costoEnvioADomicilio: v.costoEnvioADomicilio
+                        };
+                        proveedoresNoFrecuentes.push(p);
+                    }
                 }
                 i++;
             }

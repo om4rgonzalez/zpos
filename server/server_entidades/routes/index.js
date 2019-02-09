@@ -9,6 +9,7 @@ app.use(require('./puntoVenta'));
 app.use(require('./comercio'));
 app.use(require('./invitacion'));
 app.use(require('./alias'));
+app.use(require('./cobertura'));
 
 
 

@@ -1050,5 +1050,38 @@ app.post('/comercio/cargar_configuracion/', async function(req, res) {
 });
 
 
+app.post('/comercio/obtener_direccion/', async function(req, res) {
+    let hoy = new Date();
+    Comercio.findOne({ _id: req.body.idComercio })
+        .populate({ path: 'entidad', populate: { path: 'domicilio' } })
+        .exec(async(err, comercio) => {
+            if (err) {
+                console.log(hoy + ' La busqueda de comercio para devolver el domicilio provoco un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de comercio para devolver el domicilio provoco un error',
+                    domicilio: null
+                });
+            }
+
+            if (comercio == null) {
+                console.log(hoy + ' La busqueda de comercio para devolver la direccion no produjo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de comercio para devolver la direccion no produjo resultados',
+                    domicilio: null
+                });
+            } else {
+                return res.json({
+                    ok: true,
+                    message: 'Devolviendo resultados',
+                    domicilio: comercio.entidad.domicilio.provincia + '-' + comercio.entidad.domicilio.localidad + '-' + comercio.entidad.domicilio.barrio
+                });
+            }
+        });
+
+});
+
 
 module.exports = app;
