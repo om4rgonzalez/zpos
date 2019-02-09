@@ -1067,6 +1067,7 @@ app.post('/comercio/obtener_direccion/', async function(req, res) {
 
             if (comercio == null) {
                 console.log(hoy + ' La busqueda de comercio para devolver la direccion no produjo resultados');
+                console.log(hoy + ' Id Comercio buscado: ' + req.body.idComercio);
                 return res.json({
                     ok: false,
                     message: 'La busqueda de comercio para devolver la direccion no produjo resultados',
