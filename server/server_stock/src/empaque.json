@@ -9,5 +9,11 @@
     },
     {
         "empaque": "UNIDAD"
+    },
+    {
+        "empaque": "ATADO"
+    },
+    {
+        "empaque": "CAJA"
     }
 ]

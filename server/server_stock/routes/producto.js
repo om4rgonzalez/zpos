@@ -241,7 +241,7 @@ app.get('/producto/obtener_productos/', async function(req, res) {
     let hoy = new Date();
     Proveedor.findOne({ '_id': req.query.idProveedor })
         .populate('productos_')
-        .populate({ path: 'productos_', select: '_id precioProveedor precioSugerido categoria subcategoria imagenes videos nombreProducto codigoProveedor stock unidadMedida ' })
+        .populate({ path: 'productos_', select: '_id precioProveedor precioSugerido categoria subcategoria imagenes videos nombreProducto codigoProveedor stock empaque unidadesPorEmpaque unidadMedida' })
         // .select('')
         .exec((err, proveedorDB) => {
             if (err) {
@@ -269,21 +269,7 @@ app.get('/producto/obtener_productos/', async function(req, res) {
 
             }
 
-            //ahora debo buscar las categorias y sub categorias
 
-            // let i = 0;
-            // let hasta = proveedorDB.productos_.lenght;
-            // while(i < hasta){
-
-            //     i++;
-            // }
-            // console.log(proveedorDB);
-            // console.log(proveedorDB.productos);
-            // if (!proveedorDB[0].productos)
-            //     return res.json({
-            //         ok: false,
-            //         message: 'El proveedor no tiene productos asociados'
-            //     });
 
             let productos = proveedorDB.productos_;
             return res.json({
@@ -361,15 +347,6 @@ app.post('/producto/reducir_stock/', async function(req, res) {
     }
 })
 
-
-// app.post('/producto/devolver_categorias/', async function(req, res){
-
-//     let hoy = new Date();
-//     let categorias
-//     for(var i in req.body.productos){
-//         Producto.findOne({})
-//     }
-// });
 
 
 module.exports = app;
