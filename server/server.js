@@ -48,7 +48,13 @@ app.use(require('./server_reportes/server_reportes'));
 
 mongoose.connect(process.env.URLDB, { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
+
     console.log('Base de datos ONLINE');
+    if (process.env.NODE_ENV == 'prod') {
+        console.log('Corriendo en produccion.');
+    } else {
+        console.log('Corriendo en testing');
+    }
 });
 
 app.listen(process.env.PORT, () => {

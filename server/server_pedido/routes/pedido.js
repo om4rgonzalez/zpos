@@ -182,6 +182,11 @@ app.post('/pedido/nuevo_v3_stock/', async function(req, res) {
         comercioPerteneceARedProveedor: ok,
         montoTotalPedido: montoTotalPedido
     });
+    if (req.body.tipoEntrega == 'ENVIO A DOMICILIO') {
+        pedido.costoEntrega = req.body.costoEnvio;
+    } else {
+        pedido.costoEntrega = 0.0;
+    }
     let respuestaMensaje = funciones.nuevoMensaje({
         metodo: '/pedido/nuevo/',
         tipoError: 0,
