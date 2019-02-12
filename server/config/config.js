@@ -11,7 +11,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev;'
 //base de datos
 let urlDB;
 if (process.env.NODE_ENV == 'prod') {
-    urlDB = 'mongodb://localhost:3301/zpos';
+    urlDB = 'mongodb://bitbi:Bintelligence123!:3301/zpos';
 } else {
     urlDB = 'mongodb://sa:Bintech123@ds139331.mlab.com:39331/zpos'
 }
