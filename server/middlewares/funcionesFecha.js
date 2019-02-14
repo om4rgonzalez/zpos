@@ -33,6 +33,7 @@ let calcularFechaEntrega = async(periodos, fecha) => {
             fecha.setDate(fecha.getDate() + diferencia);
             console.log('Fecha de entrega: ' + fecha);
             return {
+                ok: true,
                 fechaEntrega: fecha
             }
         }

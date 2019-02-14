@@ -1454,7 +1454,68 @@ app.post('/proveedor/consultar_periodos_entrega/', async function(req, res) {
                 periodos: proveedor.periodosEntrega
             });
         });
-})
+});
+
+app.post('/proveedor/consultar_posible_fecha_entrega/', async function(req, res) {
+
+    let hoy = new Date();
+    Proveedor.findOne({ _id: req.body.idProveedor })
+        .populate('periodosEntrega')
+        .exec(async(err, proveedor) => {
+            if (err) {
+                console.log(hoy + ' La consulta de un proveedor para devolver una fecha de entrega produjo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de un proveedor para devolver una fecha de entrega produjo un error',
+                    fechaEntrega: null
+                });
+            }
+            if (proveedor == null) {
+                console.log(hoy + ' La busqueda de un proveedor para devolver la fecha de entrega no produjo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'Proveedor no encontrado',
+                    fechaEntrega: null
+                });
+            }
+
+            if (proveedor.periodosEntrega.length == 0) {
+                console.log(hoy + ' El proveedor no definio periodo de entrega');
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no definio fecha de entrega',
+                    fechaEntrega: 'Pongase en contacto con el proveedor para coordina la fecha de entrega'
+                });
+            }
+
+            let dia = req.body.dia;
+            if (dia.length == 1) {
+                dia = '0' + dia;
+            }
+            let mes = req.body.mes;
+            if (mes.length == 1) {
+                mes = '0' + mes;
+            }
+            let anio = req.body.anio;
+            let fecha = new Date(mes + '/' + dia + '/' + anio);
+            let fecha_ = await funcionesFecha.calcularFechaEntrega(proveedor.periodosEntrega, fecha);
+            if (fecha_.ok) {
+                return res.json({
+                    ok: true,
+                    message: 'Devolviendo fecha',
+                    fechaEntrega: fecha_.fechaEntrega
+                });
+            } else {
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no definio fecha de entrega',
+                    fechaEntrega: 'Pongase en contacto con el proveedor para coordina la fecha de entrega'
+                });
+            }
+
+        });
+});
 
 
 module.exports = app;
