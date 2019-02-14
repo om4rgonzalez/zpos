@@ -21,7 +21,7 @@ let pedidoSchema = new Schema({
         required: true
     },
     fechaEntrega: {
-        type: Date,
+        type: String,
         required: true
     },
     detallePedido: [{
