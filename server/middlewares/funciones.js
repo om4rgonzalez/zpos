@@ -554,6 +554,16 @@ let verficiarComercioEnCoberturaProveedor = async(direccionComercio, idProveedor
     return resp.data;
 };
 
+let devolverPeriodosDeEntrega = async(idProveedor) => {
+    let URL = process.env.URL_SERVICE + process.env.PORT + '/proveedor/consultar_periodos_entrega/';
+    // console.log('URL de acceso a nuevo mensaje: ' + URL);
+    let resp = await axios.post(URL, {
+        idProveedor: idProveedor
+    });
+
+    return resp.data;
+};
+
 module.exports = {
     nuevoDetalle,
     nuevoDomicilio,
@@ -588,5 +598,6 @@ module.exports = {
     nuevaCobertura,
     obtenerIndice,
     devolverDomicilioComercio,
-    verficiarComercioEnCoberturaProveedor
+    verficiarComercioEnCoberturaProveedor,
+    devolverPeriodosDeEntrega
 }

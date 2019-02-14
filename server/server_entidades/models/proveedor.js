@@ -62,6 +62,10 @@ let proveedorSchema = new Schema({
         cobertura: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Cobertura'
+        }],
+        periodosEntrega: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'PeriodoEntrega'
         }]
     }
 

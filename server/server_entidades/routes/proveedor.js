@@ -3,6 +3,7 @@ const app = express();
 
 const Entidad = require('../models/entidad');
 const funciones = require('../../middlewares/funciones');
+const funcionesFecha = require('../../middlewares/funcionesFecha');
 const Proveedor = require('../models/proveedor');
 const PuntoVenta = require('../models/puntoVenta');
 const Usuario = require('../../server_usuario/models/usuario');
@@ -14,6 +15,7 @@ const Sesion = require('../../server_usuario/models/sesion');
 const ImagenProveedor = require('../models/imagenProveedor');
 const VideoProveedor = require('../models/videoProveedor');
 const Cobertura = require('../models/cobertura');
+const Periodo = require('../models/periodoEntrega');
 
 
 app.post('/proveedor/nuevo/', async function(req, res) {
@@ -326,7 +328,8 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
         })
         .populate('imagenes')
         .populate('videos')
-        .select('_id entidad red contactos imagenes videos')
+        .populate('periodosEntrega')
+        .select('_id entidad red contactos imagenes videos periodosEntrega')
         .exec(async(err, proveedores) => {
 
             if (err) {
@@ -375,9 +378,18 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                 //la funcion devolvio proveedores frecuentes
                 for (var j in respuestaFrecuentes.proveedores) {
                     let v_ = await funciones.verficiarComercioEnCoberturaProveedor(direccionComercio_, respuestaFrecuentes.proveedores[j]._id);
+                    let v_periodos = await funciones.devolverPeriodosDeEntrega(respuestaFrecuentes.proveedores[j]._id);
+                    if (v_periodos.ok) {
+                        let fechaEntrega_ = await funcionesFecha.calcularFechaEntrega(v_periodos.periodos, new Date());
+                        respuestaFrecuentes.proveedores[j].fechaEntrega = fechaEntrega_.fechaEntrega;
+                    } else {
+                        respuestaFrecuentes.proveedores[j].fechaEntrega = 'Fecha de entrega a confirmar por el proveedor'
+                    }
+
                     respuestaFrecuentes.proveedores[j].esFrecuente = true;
                     respuestaFrecuentes.proveedores[j].tieneCobertura = false;
                     respuestaFrecuentes.proveedores[j].envioADomicilio = false;
+                    _
                     respuestaFrecuentes.proveedores[j].costoEnvioADomicilio = 0.0;
 
 
@@ -412,6 +424,13 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                     // console.log(hoy + ' Agregando el proveedor: ' + proveedores[i].entidad.razonSocial);
                     //chequeo que se encuentre en la zona de cobertura
                     let v = await funciones.verficiarComercioEnCoberturaProveedor(direccionComercio_, proveedores[i]._id);
+                    let fechaEntrega = '';
+                    if (proveedores[i].periodosEntrega.length > 0) {
+                        let _fechaEntrega = await funcionesFecha.calcularFechaEntrega(proveedores[i].periodosEntrega, new Date());
+                        fechaEntrega = _fechaEntrega.fechaEntrega;
+                    } else {
+                        fechaEntrega = 'Fecha de entrega a confirmar por el proveedor';
+                    }
                     if (v.tieneCobertura) {
                         //el comercio tiene la cobertura del proveedor
                         let p = {
@@ -424,7 +443,8 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                             videos: proveedores[i].videos,
                             tieneCobertura: v.tieneCobertura,
                             envioADomicilio: v.tieneEnvioADomicilio,
-                            costoEnvioADomicilio: v.costoEnvioADomicilio
+                            costoEnvioADomicilio: v.costoEnvioADomicilio,
+                            fechaEntrega: fechaEntrega
                         };
                         proveedoresNoFrecuentes.push(p);
                     }
@@ -464,6 +484,7 @@ app.post('/proveedor/consultar_proveedores_frecuentes/', async function(req, res
         })
         .populate('imagenes')
         .populate('videos')
+        .populate('periodosEntrega')
         .select('_id entidad red contactos imagenes videos')
         .exec(async(err, proveedores) => {
             if (err) {
@@ -505,16 +526,11 @@ app.post('/proveedor/consultar_proveedores_frecuentes/', async function(req, res
             }
 
             //tengo que ordenar la lista de proveedores frecuentes por la cantidad de pedidos realizados
-            // let i = 0;
-            // let hasta = proveedores.length;
+
             // let temp = [];
             proveedores_ = await proveedores.sort(function(a, b) {
                 return (b.red.cantidadPedidos - a.red.cantidadPedidos)
             });
-
-            // while (i < hasta) {
-            //     i++;
-            // }
 
             return res.json({
                 ok: 0,
@@ -1348,5 +1364,89 @@ app.post('/proveedor/modificar_cobertura/', async function(req, res) {
         });
 
 });
+
+
+app.post('/proveedor/agregar_periodo_entrega/', async function(req, res) {
+
+    let hoy = new Date('02/14/2019');
+
+    if (req.body.periodos) {
+        for (var i in req.body.periodos) {
+            let periodo = new Periodo({
+                tipoPeriodo: req.body.periodos[i].tipoPeriodo,
+                diaFijo: req.body.periodos[i].diaFijo
+            });
+            periodo.save(async(err, ok) => {
+                if (err) {
+                    console.log(hoy + ' El proceso de guardar el periodo arrojo un error');
+                    console.log(hoy + ' ' + err.message);
+                    return res.json({
+                        ok: false,
+                        message: 'El proceso de guardar un periodo de entrega produjo un error'
+                    });
+                }
+                //periodo guardado, lo agrego al array en el proveedor
+                Proveedor.findOneAndUpdate({ _id: req.body.idProveedor }, {
+                        $push: {
+                            periodosEntrega: periodo._id
+                        }
+                    },
+                    async function(err1, ok) {
+                        if (err1) {
+                            console.log(hoy + ' El proceso para insertar el periodo en el proveedor provoco un error');
+                            console.log(hoy + ' ' + err1.message);
+                            return res.json({
+                                ok: false,
+                                message: 'El proceso para insertar el periodo en el proveedor provoco un error'
+                            });
+                        }
+                    });
+            })
+        }
+    } else {
+        console.log(hoy + ' No hay periodos a agregar al proveedor ' + req.body.idProveedor);
+        return res.json({
+            ok: false,
+            message: 'No hay periodos para asignar al proveedor'
+        });
+    }
+
+    return res.json({
+        ok: true,
+        message: 'El proceso finalizo con exito'
+    });
+
+});
+app.post('/proveedor/consultar_periodos_entrega/', async function(req, res) {
+    let hoy = new Date();
+    Proveedor.findOne({ _id: req.body.idProveedor })
+        .populate('periodosEntrega')
+        .exec(async(err, proveedor) => {
+            if (err) {
+                console.log(hoy + ' La busqueda de un proveedor para devolver los periodos de entrega arrojo un error');
+                console.log(hoy + ' ' + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de un proveedor para devolver los periodos de entrega arrojo un error',
+                    periodos: null
+                });
+            }
+            if (proveedor == null) {
+                console.log(hoy + ' La busqueda de un proveedor para devolver sus periodos de entrega no arrojo resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La busqueda de un proveedor para devolver sus periodos de entrega no arrojo resultados',
+                    periodos: null
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo periodos',
+                periodos: proveedor.periodosEntrega
+            });
+        });
+})
+
 
 module.exports = app;
