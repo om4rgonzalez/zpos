@@ -31,7 +31,7 @@ app.post('/reportes/cantidad_productos_en_pedidos/', async function(req, res) {
                 // console.log(req.body.pedidos[i].detallePedido[j]);
                 let producto = {
                     nombre: req.body.pedidos[i].detallePedido[j].producto_.nombreProducto,
-                    unidadMedida: req.body.pedidos[i].detallePedido[j].unidadMedida,
+                    empaque: req.body.pedidos[i].detallePedido[j].empaque,
                     cantidad: req.body.pedidos[i].detallePedido[j].cantidadPedido
                 }
                 productos.push(producto);
@@ -48,7 +48,7 @@ app.post('/reportes/cantidad_productos_en_pedidos/', async function(req, res) {
                     //el producto no esta cargado, tengo que agregarlo
                     let producto = {
                         nombre: req.body.pedidos[i].detallePedido[j].producto_.nombreProducto,
-                        unidadMedida: req.body.pedidos[i].detallePedido[j].unidadMedida,
+                        empaque: req.body.pedidos[i].detallePedido[j].empaque,
                         cantidad: req.body.pedidos[i].detallePedido[j].cantidadPedido
                     }
                     productos.push(producto);

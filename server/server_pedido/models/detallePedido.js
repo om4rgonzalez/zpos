@@ -4,10 +4,6 @@ let Schema = mongoose.Schema;
 
 let detallePedidoSchema = new Schema({
 
-        producto: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Producto'
-        },
         producto_: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Producto_'
@@ -23,7 +19,7 @@ let detallePedidoSchema = new Schema({
             type: Number,
             default: 0
         },
-        unidadMedida: {
+        empaque: {
             type: String
         },
         cantidadPedido: {

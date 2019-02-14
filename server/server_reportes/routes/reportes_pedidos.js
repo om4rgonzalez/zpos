@@ -16,7 +16,7 @@ app.post('/pedido/listar_pedidos_admin/', async function(req, res) {
         .populate({ path: 'proveedor', select: 'entidad', populate: { path: 'entidad' } })
         .populate({ path: 'comercio', select: '_id entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
         .populate('detallePedido')
-        .populate({ path: 'detallePedido', populate: { path: 'producto' } })
+        .populate({ path: 'detallePedido', populate: { path: 'producto_' } })
         .sort({ fechaAlta: -1 })
         .exec(async(err, pedidos) => {
             if (err) {
@@ -367,8 +367,6 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
             ///////////////SECCION DE ANALISIS DE PRODUCTOS QUE FIGURAN EN LOS PEDIDOS/////////////////
             console.log(hoy + ' Llamando a la funcion para armar el ranking de productos');
             let r = await funciones.devolverProductosDePedidos(pedidos_);
-            // console.log('La funcion devolvio');
-            // console.log(r);
             estadisticas_.productosPedidos = r.productos.length;
             estadisticas_.rankingProductos = r.productos;
 

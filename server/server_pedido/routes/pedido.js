@@ -21,7 +21,7 @@ app.post('/pedido/nuevo/', async function(req, res) {
         for (var i in req.body.productos) {
             let detallePedido = new DetallePedido({
                 producto: req.body.productos[i]._id,
-                unidadMedida: req.body.productos[i].unidadMedida,
+                empaque: req.body.productos[i].empaque,
                 cantidadPedido: req.body.productos[i].cantidad,
             });
 
