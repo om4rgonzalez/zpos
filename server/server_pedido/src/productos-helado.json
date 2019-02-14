@@ -3,153 +3,278 @@
     "subcategoria": "HELADOS",
     "productos": [{
             "nombreProducto": "PALITO DE AGUA FRUTILLA X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "100",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "PALITO DE AGUA NARANJA X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "100",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "PALITO DE AGUA LIMÓN X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "100",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "PALITO DE CREMA AMERICANA X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "115",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "PALITO DE CREMA DE FRUTILLA X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "115",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "PALITO BOMBÓN X 20 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "155",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 20,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "ALMENDRADO X 8 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 8,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "CASATTA X 8 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 8,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "BOMBÓN ESCOCÉS X 8 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "115",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 8,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "BOMBÓN SUIZO X 8 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "110",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 8,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "VÍA BOM X 8 UNIDADES",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "95",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "CAJA",
+            "unidadesPorEmpaque": 8,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "DELICIA X UNIDAD",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "95",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "UNIDAD",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "TORTA HELADA DE CHOCOLATE",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "150",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "UNIDAD",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "TORTA HELADA VIA BANA",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "UNIDAD",
             "precioProveedor": "150",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "UNIDAD",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO AMERICANA",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO CHOCOLATE",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO DULCE DE LECHE GRANIZADO",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO FRUTILLA",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO GRANIZADO",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO LIMÓN",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 1 LITRO MASCARPONE",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "80",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 1,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 3 LITROS N°1: CHOCOLATE, AMERICANA, DULCE DE LECHE",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "170",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 3,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 3 LITROS N°2: DULCE DE LECHE GRANIZADO, AMERICANA Y FRUTILLA",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "170",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 3,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 3 LITROS N° 3: GRANIZADO, FRUTILLA Y VAINILLA",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "170",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 3,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         },
         {
             "nombreProducto": "POTE DE 3 LITROS N° 4: VAINILLA, DULCE DE LECHE GRANIZADO Y CHOCOLATE",
-            "unidadMedida": " UNIDAD",
+            "unidadMedida": "LITRO",
             "precioProveedor": "170",
-            "precioSugerido": "0"
+            "precioSugerido": "0",
+            "empaque": "POTE",
+            "unidadesPorEmpaque": 3,
+            "stock": 1000,
+            "categoria": "HELADO",
+            "subcategoria": "HELADOS"
         }
     ]
 }]
