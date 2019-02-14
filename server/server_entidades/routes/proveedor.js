@@ -389,7 +389,6 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                     respuestaFrecuentes.proveedores[j].esFrecuente = true;
                     respuestaFrecuentes.proveedores[j].tieneCobertura = false;
                     respuestaFrecuentes.proveedores[j].envioADomicilio = false;
-                    _
                     respuestaFrecuentes.proveedores[j].costoEnvioADomicilio = 0.0;
 
 
@@ -1436,6 +1435,15 @@ app.post('/proveedor/consultar_periodos_entrega/', async function(req, res) {
                 return res.json({
                     ok: false,
                     message: 'La busqueda de un proveedor para devolver sus periodos de entrega no arrojo resultados',
+                    periodos: null
+                });
+            }
+
+            if (proveedor.periodosEntrega.length == 0) {
+                console.log(hoy + ' El proveedor no definio un periodo de entrega');
+                return res.json({
+                    ok: false,
+                    message: 'El proveedor no definio un periodo de entrega',
                     periodos: null
                 });
             }
