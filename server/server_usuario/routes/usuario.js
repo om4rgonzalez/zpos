@@ -601,7 +601,7 @@ app.post('/usuario/cambiar_clave/', async function(req, res) {
     }
 });
 
-app.post('/usuario/blanquear_claves', async function(req, res) {
+app.post('/usuario/blanquear_claves/', async function(req, res) {
 
     let terminado = true;
     let usuario = await aut.validarToken(req.body.token);
