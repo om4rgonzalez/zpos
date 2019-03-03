@@ -20,7 +20,7 @@ if (process.env.NODE_ENV == 'prod') {
 let urlImagen;
 
 if (process.env.NODE_ENV == 'prod') {
-    urlImagen = '/var/www/imagenes_publicidad/';
+    urlImagen = '/var/www/html/imagenes_publicidad/';
 } else {
     urlImagen = '/home/marcelo/img/'
 }
@@ -29,8 +29,8 @@ let urlImagenProducto;
 let urlImagenProveedor;
 
 if (process.env.NODE_ENV == 'prod') {
-    urlImagenProducto = '/var/www/imagenes_productos/';
-    urlImagenProveedor = '/var/www/imagenes_proveedor/';
+    urlImagenProducto = '/var/www/html/imagenes_productos/';
+    urlImagenProveedor = '/var/www/html/imagenes_proveedor/';
 } else {
     urlImagenProducto = '/home/marcelo/imagenes_productos/';
     urlImagenProveedor = '/home/marcelo/imagenes_proveedor/';
