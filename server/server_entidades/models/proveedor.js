@@ -51,6 +51,10 @@ let proveedorSchema = new Schema({
             type: Boolean,
             default: false
         },
+        logo: {
+            type: String,
+            default: '-'
+        },
         imagenes: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Imagen_Proveedor'

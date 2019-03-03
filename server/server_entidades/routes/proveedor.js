@@ -16,6 +16,7 @@ const ImagenProveedor = require('../models/imagenProveedor');
 const VideoProveedor = require('../models/videoProveedor');
 const Cobertura = require('../models/cobertura');
 const Periodo = require('../models/periodoEntrega');
+const fs = require('fs');
 
 
 app.post('/proveedor/nuevo/', async function(req, res) {
@@ -1515,6 +1516,61 @@ app.post('/proveedor/consultar_posible_fecha_entrega/', async function(req, res)
             }
 
         });
+});
+
+app.post('/proveedor/cargar_logo_proveedor/', async function(req, res) {
+    let hoy = new Date();
+    let urlImagen = '';
+    if (req.body.imagen) {
+        hoy = new Date();
+
+
+        if (req.body.imagen.extension == 'png' || req.body.imagen.extension == 'jpg' || req.body.imagen.extension == 'jpeg') {
+            console.log(hoy + ' Paso la validacion de formato de imagen');
+            var target_path = process.env.UrlImagenProveedor + req.body.idProveedor + '_logo.' + req.body.imagen.extension; // hacia donde subiremos nuestro archivo dentro de nuestro servidor
+            console.log(hoy + ' Path Destino: ' + target_path);
+            await fs.writeFile(target_path, new Buffer(req.body.imagen.imagen, "base64"), async function(err) {
+                //Escribimos el archivo
+
+                if (err) {
+                    console.log(hoy + ' La subida del archivo produjo un error: ' + err.message);
+                    return {
+                        ok: false,
+                        message: 'La subida del archivo produjo un error'
+                    };
+                }
+                console.log(hoy + ' La imagen se termino de mover');
+                urlImagen = 'http://www.bintelligence.net/imagenes_proveedor/' + req.body.idProveedor + '_logo.' + req.body.imagen.extension;
+                // imagenProveedor.nombre = imagenProveedor._id;
+
+                console.log(hoy + ' Se esta por guardar el registro de la imagen');
+                try {
+                    Proveedor.findOneAndUpdate({ _id: req.body.idProveedor }, {
+                        $set: {
+                            logo: urlImagen
+                        }
+                    }, async function(errA, okA) {
+                        if (errA) {
+                            console.log(hoy + ' La actualizacion del proveedor para agregar una imagen del logo');
+                            console.log(hoy + ' ' + errA.message);
+                            return res.json({
+                                ok: false,
+                                message: 'El proceso de subir el logo del proveedor fallo.'
+                            });
+                        }
+                    });
+
+                } catch (e) {
+                    console.log('Salida por el catch: ' + e.message);
+                }
+            });
+        }
+    }
+    console.log(hoy + ' Termino el proceso');
+    res.json({
+        ok: true,
+        message: 'El logo se cargo correctamente.'
+    });
 });
 
 
