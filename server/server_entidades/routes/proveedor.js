@@ -330,7 +330,7 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
         .populate('imagenes')
         .populate('videos')
         .populate('periodosEntrega')
-        .select('_id entidad red contactos imagenes videos periodosEntrega')
+        .select('_id entidad red contactos imagenes videos periodosEntrega logo')
         .exec(async(err, proveedores) => {
 
             if (err) {
@@ -444,7 +444,8 @@ app.post('/proveedor/listar_todos_/', async function(req, res) {
                             tieneCobertura: v.tieneCobertura,
                             envioADomicilio: v.tieneEnvioADomicilio,
                             costoEnvioADomicilio: v.costoEnvioADomicilio,
-                            fechaEntrega: fechaEntrega
+                            fechaEntrega: fechaEntrega,
+                            logo: proveedores[i].logo
                         };
                         proveedoresNoFrecuentes.push(p);
                     }
@@ -485,7 +486,7 @@ app.post('/proveedor/consultar_proveedores_frecuentes/', async function(req, res
         .populate('imagenes')
         .populate('videos')
         .populate('periodosEntrega')
-        .select('_id entidad red contactos imagenes videos')
+        .select('_id entidad red contactos imagenes videos periodosEntrega logo')
         .exec(async(err, proveedores) => {
             if (err) {
                 console.log(hoy + ' La consulta de proveedores recurrentes arrojo un error');
@@ -807,95 +808,6 @@ app.post('/proveedor/buscar_alias/', async function(req, res) {
 });
 
 
-// app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res) {
-
-//     Comercio.find({ proveedores: { $in: req.query.idProveedor } })
-//         .populate({ path: 'entidad', populate: { path: 'domicilio' } })
-//         .populate('contactos')
-//         // .where({proveedores: $in})
-//         .exec(async(err, comercios) => {
-//             if (err) {
-//                 console.log('La busqueda de comercios para devolver todos los que tiene un proveedor devolvio un error');
-//                 console.log(err.message);
-//                 return res.json({
-//                     ok: false,
-//                     message: 'La busqueda de comercios para devolver todos los que tiene un proveedor devolvio un error',
-//                     comercios: null
-//                 });
-//             }
-
-//             if (comercios.length == 0) {
-//                 console.log('La busqueda de comercios para devolver todos los que tiene un proveedor no devolvio resultados');
-//                 return res.json({
-//                     ok: false,
-//                     message: 'La busqueda de comercios para devolver todos los que tiene un proveedor no devolvio resultados',
-//                     comercios: null
-//                 });
-//             }
-
-//             let i = 0;
-//             let hasta = comercios.length;
-//             let comercios_ = [];
-
-//             while (i < hasta) {
-//                 //buscar alias
-//                 // console.log('Se esta por buscar el alias del comercio: ' + comercios[i]._id);
-//                 let alias = await funciones.buscarAlias(req.query.idProveedor, comercios[i]._id);
-//                 // console.log('La consulta de alias devolvio');
-//                 // console.log(alias);
-//                 let alias_ = '-';
-//                 if (alias.ok) {
-//                     if (alias.alias != null) {
-//                         if (alias.alias != '') {
-//                             alias_ = alias.alias;
-//                         }
-//                     }
-//                 }
-//                 // console.log('Cargando el alias: ' + comercios[i].alias);
-//                 comercios_.push({
-//                     vende: comercios[i].vende,
-//                     primerLogin: comercios[i].primerLogin,
-//                     aceptoTerminoProveedor: comercios[i].aceptoTerminoProveedor,
-//                     aceptoTerminosVendedor: comercios[i].aceptoTerminosVendedor,
-//                     horarioAtencion: comercios[i].horarioAtencion,
-//                     contactos: comercios[i].contactos,
-//                     _id: comercios[i]._id,
-//                     fechaAlta: comercios[i].fechaAlta,
-//                     entidad: comercios[i].entidad,
-//                     alias: alias_
-//                 });
-//                 // comercios_.push(comercios[i]);
-
-//                 i++;
-//             }
-
-//             // console.log('Busqueda de alias finalizada, el array de comercios vale');
-//             // i = 0;
-//             // hasta = comercios_.length;
-//             // while (i < hasta) {
-//             //     console.log(comercios_[i].alias);
-//             //     i++;
-//             // }
-
-//             // console.log(comercios_);
-
-//             res.json({
-//                 ok: true,
-//                 message: 'Comercios encontrados',
-//                 comercios: comercios_
-//             });
-
-//             // res.json({
-//             //     ok: true,
-//             //     message: 'Comercios encontrados',
-//             //     comercios
-//             // });
-
-//         });
-
-
-
-// });
 
 app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res) {
     let hoy = new Date();
@@ -957,93 +869,6 @@ app.get('/proveedor/consultar_comercios_de_proveedor/', async function(req, res)
                 comercios: proveedores[0].red
             });
         });
-
-    // Comercio.find({ proveedores: { $in: req.query.idProveedor } })
-    //     .populate({ path: 'entidad', populate: { path: 'domicilio' } })
-    //     .populate('contactos')
-    //     // .where({proveedores: $in})
-    //     .exec(async(err, comercios) => {
-    //         if (err) {
-    //             console.log('La busqueda de comercios para devolver todos los que tiene un proveedor devolvio un error');
-    //             console.log(err.message);
-    //             return res.json({
-    //                 ok: false,
-    //                 message: 'La busqueda de comercios para devolver todos los que tiene un proveedor devolvio un error',
-    //                 comercios: null
-    //             });
-    //         }
-
-    //         if (comercios.length == 0) {
-    //             console.log('La busqueda de comercios para devolver todos los que tiene un proveedor no devolvio resultados');
-    //             return res.json({
-    //                 ok: false,
-    //                 message: 'La busqueda de comercios para devolver todos los que tiene un proveedor no devolvio resultados',
-    //                 comercios: null
-    //             });
-    //         }
-
-    //         let i = 0;
-    //         let hasta = comercios.length;
-    //         let comercios_ = [];
-
-    //         while (i < hasta) {
-    //             //buscar alias
-    //             // console.log('Se esta por buscar el alias del comercio: ' + comercios[i]._id);
-    //             let alias = await funciones.buscarAlias(req.query.idProveedor, comercios[i]._id);
-    //             // console.log('La consulta de alias devolvio');
-    //             // console.log(alias);
-    //             let alias_ = '-';
-    //             if (alias.ok) {
-    //                 if (alias.alias != null) {
-    //                     if (alias.alias != '') {
-    //                         alias_ = alias.alias;
-    //                     }
-    //                 }
-    //             }
-    //             // console.log('Cargando el alias: ' + comercios[i].alias);
-    //             comercios_.push({
-    //                 vende: comercios[i].vende,
-    //                 primerLogin: comercios[i].primerLogin,
-    //                 aceptoTerminoProveedor: comercios[i].aceptoTerminoProveedor,
-    //                 aceptoTerminosVendedor: comercios[i].aceptoTerminosVendedor,
-    //                 horarioAtencion: comercios[i].horarioAtencion,
-    //                 contactos: comercios[i].contactos,
-    //                 _id: comercios[i]._id,
-    //                 fechaAlta: comercios[i].fechaAlta,
-    //                 entidad: comercios[i].entidad,
-    //                 alias: alias_
-    //             });
-    //             // comercios_.push(comercios[i]);
-
-    //             i++;
-    //         }
-
-    //         // console.log('Busqueda de alias finalizada, el array de comercios vale');
-    //         // i = 0;
-    //         // hasta = comercios_.length;
-    //         // while (i < hasta) {
-    //         //     console.log(comercios_[i].alias);
-    //         //     i++;
-    //         // }
-
-    //         // console.log(comercios_);
-
-    //         res.json({
-    //             ok: true,
-    //             message: 'Comercios encontrados',
-    //             comercios: comercios_
-    //         });
-
-    //         // res.json({
-    //         //     ok: true,
-    //         //     message: 'Comercios encontrados',
-    //         //     comercios
-    //         // });
-
-    // });
-
-
-
 });
 
 app.post('/proveedor/existe/', async function(req, res) {
@@ -1368,7 +1193,7 @@ app.post('/proveedor/modificar_cobertura/', async function(req, res) {
 
 app.post('/proveedor/agregar_periodo_entrega/', async function(req, res) {
 
-    let hoy = new Date('02/14/2019');
+    let hoy = new Date();
 
     if (req.body.periodos) {
         for (var i in req.body.periodos) {

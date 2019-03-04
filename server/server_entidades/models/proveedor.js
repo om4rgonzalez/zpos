@@ -16,9 +16,6 @@ let proveedorSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Producto'
         }],
-        tiposEntrega: [{
-            type: String
-        }],
         usuarios: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Usuario'
@@ -66,6 +63,9 @@ let proveedorSchema = new Schema({
         cobertura: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Cobertura'
+        }],
+        tiposEntrega: [{
+            type: String
         }],
         periodosEntrega: [{
             type: mongoose.Schema.Types.ObjectId,
