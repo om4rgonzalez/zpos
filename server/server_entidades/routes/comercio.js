@@ -469,7 +469,7 @@ app.post('/comercio/login/', async function(req, res) {
 
                     ////////////////////////////////////////
 
-                    Proveedor.find({}, 'tiposEntrega entidad _id')
+                    Proveedor.find({}, 'tiposEntrega entidad _id logo')
                         .populate('entidad')
                         .where('usuarios').in(usuario._id)
                         .exec(async(errP, proveedorDB) => {
