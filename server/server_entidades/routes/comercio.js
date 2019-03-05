@@ -459,7 +459,8 @@ app.post('/comercio/login/', async function(req, res) {
                         usuario: null,
                         tiposEntrega: null,
                         primerLogin: primerLogin,
-                        cargoConfiguracion: false
+                        cargoConfiguracion: false,
+                        logo: null
                     });
                 }
 
@@ -483,7 +484,8 @@ app.post('/comercio/login/', async function(req, res) {
                                     usuario: null,
                                     tiposEntrega: null,
                                     primerLogin: primerLogin,
-                                    cargoConfiguracion: false
+                                    cargoConfiguracion: false,
+                                    logo: null
                                 });
                             }
 
@@ -497,7 +499,8 @@ app.post('/comercio/login/', async function(req, res) {
                                     usuario: null,
                                     tiposEntrega: null,
                                     primerLogin: primerLogin,
-                                    cargoConfiguracion: false
+                                    cargoConfiguracion: false,
+                                    logo: null
                                 });
                             }
                             // console.log('Los proveedores que se encontraron con ese usuario son:');
@@ -590,7 +593,8 @@ app.post('/comercio/login/', async function(req, res) {
                                 usuario,
                                 tiposEntrega: proveedorDB[0].tiposEntrega,
                                 primerLogin: primerLogin,
-                                cargoConfiguracion: true
+                                cargoConfiguracion: true,
+                                logo: proveedorDB[0].logo
                             });
 
                         });
@@ -688,7 +692,8 @@ app.post('/comercio/login/', async function(req, res) {
                         usuario,
                         tiposEntrega: null,
                         primerLogin: primerLogin,
-                        cargoConfiguracion: comercioDB[0].cargoConfiguracion
+                        cargoConfiguracion: comercioDB[0].cargoConfiguracion,
+                        logo: null
                     });
                 }
             });
@@ -701,7 +706,8 @@ app.post('/comercio/login/', async function(req, res) {
             usuario: null,
             tiposEntrega: null,
             primerLogin: primerLogin,
-            cargoConfiguracion: false
+            cargoConfiguracion: false,
+            logo: null
         });
 
     }
@@ -799,50 +805,7 @@ app.post('/comercio/existe/', async function(req, res) {
 });
 
 
-// app.post('/comercio/cargar_conf_domicilio/', async function(req, res) {
 
-
-
-
-
-
-
-//     // Comercio.find({ '_id': req.body.comercio })
-//     //     // .where('proveedores').in(req.body.proveedor)
-//     //     .exec((err, comerciosDB) => {
-//     //         if (err) {
-//     //             return res.json({
-//     //                 ok: false,
-//     //                 message: 'La busqueda arrojo un error: Error: ' + err.message
-//     //             });
-//     //         }
-
-//     //         if (!comerciosDB) {
-//     //             return res.json({
-//     //                 ok: false,
-//     //                 message: 'El comercio no tiene al proveedor en su red'
-//     //             });
-//     //         }
-//     //         for (var i in comerciosDB[0].proveedores) {
-//     //             if (comerciosDB[0].proveedores[i] == req.body.proveedor)
-//     //                 return res.json({
-//     //                     ok: true,
-//     //                     message: 'El proveedor forma parte de la red del comercio'
-//     //                 });
-
-//     //         }
-//     //         // console.log('proveedores:');
-//     //         // console.log(comerciosDB);
-//     //         // // console.log('_id comercio: ' + comerciosDB[0]._id);
-//     //         // // console.log(comerciosDB[0].proveedores)
-
-//     //         res.json({
-//     //             ok: false,
-//     //             message: 'El comercio no tiene al proveedor en su red'
-//     //         });
-
-//     //     });
-// });
 
 app.post('/comercio/buscar_por_nombre/', async function(req, res) {
 

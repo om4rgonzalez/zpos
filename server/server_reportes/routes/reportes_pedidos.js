@@ -385,6 +385,73 @@ app.post('/reportes/resumen_estadistico/', async function(req, res) {
         });
 });
 
+app.post('/reportes/pedidos_aceptados/', async function(req, res) {
+
+    let hoy = new Date();
+    Pedido.find({ proveedor: req.body.idProveedor })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+        .populate({ path: 'detallePedido', select: '_id activo cantidadPedido', populate: { path: 'producto_', select: '_id  precioProveedor categoria subcategoria nombreProducto empaque unidadesPorEmpaque unidadMedida' } })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                console.log(hoy + ' La consulta de pedidos aceptados devolvio un error');
+                console.log(hoy + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de pedidos aceptados devolvio un error',
+                    pedidos: null
+                });
+            }
+
+            if (pedidos.length == 0) {
+                console.log(hoy + ' La consulta de pedidos aceptados no devolvio resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de pedidos aceptados no devolvio resultados',
+                    pedidos: null
+                });
+            }
+
+            let i = 0;
+            let hasta = pedidos.length;
+            let pedidos_ = [];
+            while (i < hasta) {
+                // console.log('Armando el array de pedidos');
+                let j = 0;
+                let h = pedidos[i].detallePedido.length;
+                let pedido_ = {
+                    idPedido: pedidos[i]._id,
+                    comercio: pedidos[i].comercio,
+                    detalle: []
+                };
+                while (j < h) {
+                    let k = 0;
+                    // console.log('Mostrando el detalle de un pedido');
+                    // console.log(pedidos[i].detallePedido[j]);
+                    let detalle_ = {
+                        idDetalle: pedidos[i].detallePedido[j]._id,
+                        idProducto: pedidos[i].detallePedido[j].producto_._id,
+                        precioProveedor: pedidos[i].detallePedido[j].producto_.precioProveedor,
+                        categoria: pedidos[i].detallePedido[j].producto_.categoria,
+                        subcategoria: pedidos[i].detallePedido[j].producto_.subcategoria,
+                        nombreProducto: pedidos[i].detallePedido[j].producto_.nombreProducto,
+                        empaque: pedidos[i].detallePedido[j].producto_.empaque,
+                        unpeidadesPorEmpaque: pedidos[i].detallePedido[j].producto_.unidadesPorEmpaque,
+                        unidadMedida: pedidos[i].detallePedido[j].producto_.unidadMedida
+                    }
+                    pedido_.detalle.push(detalle_);
+                    j++;
+                }
+                i++;
+                pedidos_.push(pedido_);
+            }
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo pedidos',
+                pedidos: pedidos_
+            });
+        });
+});
 
 
 module.exports = app;
