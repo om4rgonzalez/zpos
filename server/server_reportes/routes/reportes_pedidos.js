@@ -391,6 +391,7 @@ app.post('/reportes/pedidos_aceptados/', async function(req, res) {
     Pedido.find({ proveedor: req.body.idProveedor })
         .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
         .populate({ path: 'detallePedido', select: '_id activo cantidadPedido', populate: { path: 'producto_', select: '_id  precioProveedor categoria subcategoria nombreProducto empaque unidadesPorEmpaque unidadMedida' } })
+        .where({ estadoPedido: 'ACEPTADO' })
         .exec(async(err, pedidos) => {
             if (err) {
                 console.log(hoy + ' La consulta de pedidos aceptados devolvio un error');
@@ -420,7 +421,15 @@ app.post('/reportes/pedidos_aceptados/', async function(req, res) {
                 let h = pedidos[i].detallePedido.length;
                 let pedido_ = {
                     idPedido: pedidos[i]._id,
-                    comercio: pedidos[i].comercio,
+                    comercio: pedidos[i].comercio.entidad.razonSocial,
+                    cuit: pedidos[i].comercio.entidad.cuit,
+                    pais: pedidos[i].comercio.entidad.domicilio.pais,
+                    provincia: pedidos[i].comercio.entidad.domicilio.provincia,
+                    localidad: pedidos[i].comercio.entidad.domicilio.localidad,
+                    barrio: pedidos[i].comercio.entidad.domicilio.barrio,
+                    calle: pedidos[i].comercio.entidad.domicilio.calle,
+                    numeroCasa: pedidos[i].comercio.entidad.domicilio.numeroCasa,
+                    codigoPostal: pedidos[i].comercio.entidad.domicilio.codigoPostal,
                     detalle: []
                 };
                 while (j < h) {
@@ -435,8 +444,9 @@ app.post('/reportes/pedidos_aceptados/', async function(req, res) {
                         subcategoria: pedidos[i].detallePedido[j].producto_.subcategoria,
                         nombreProducto: pedidos[i].detallePedido[j].producto_.nombreProducto,
                         empaque: pedidos[i].detallePedido[j].producto_.empaque,
-                        unpeidadesPorEmpaque: pedidos[i].detallePedido[j].producto_.unidadesPorEmpaque,
-                        unidadMedida: pedidos[i].detallePedido[j].producto_.unidadMedida
+                        unidadesPorEmpaque: pedidos[i].detallePedido[j].producto_.unidadesPorEmpaque,
+                        unidadMedida: pedidos[i].detallePedido[j].producto_.unidadMedida,
+                        cantidadPedida: pedidos[i].detallePedido[j].cantidadPedido
                     }
                     pedido_.detalle.push(detalle_);
                     j++;
@@ -453,5 +463,93 @@ app.post('/reportes/pedidos_aceptados/', async function(req, res) {
         });
 });
 
+
+app.post('/reportes/resumen_para_proveedor/', async function(req, res) {
+    let hoy = new Date();
+    Pedido.find({ proveedor: req.body.idProveedor })
+        .populate({ path: 'comercio', select: 'entidad', populate: { path: 'entidad', populate: { path: 'domicilio' } } })
+        .populate({ path: 'detallePedido', select: '_id activo cantidadPedido', populate: { path: 'producto_', select: '_id  precioProveedor categoria subcategoria nombreProducto empaque unidadesPorEmpaque unidadMedida' } })
+        .where({ estadoPedido: 'ACEPTADO' })
+        .exec(async(err, pedidos) => {
+            if (err) {
+                console.log(hoy + ' La consulta de detalles de pedidos para enviar al proveedor devolvio un error');
+                console.log(hoy + err.message);
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de detalles de pedidos para enviar al proveedor devolvio un error',
+                    pedidos: null
+                });
+            }
+
+            if (pedidos.length == 0) {
+                console.log(hoy + ' La consulta de detalles de pedidos para enviar al proveedor no devolvio resultados');
+                return res.json({
+                    ok: false,
+                    message: 'La consulta de detalles de pedidos para enviar al proveedor no devolvio resultados',
+                    pedidos: null
+                });
+            }
+
+            let i = 0;
+            let hasta = pedidos.length;
+            let pedidos_ = [];
+            while (i < hasta) {
+                let j = 0;
+                let h = pedidos[i].detallePedido.length;
+                while (j < h) {
+                    if ((i == 0) && (j == 0)) {
+                        //primer elemento
+                        let pedido_ = {
+                            idProducto: pedidos[i].detallePedido[j].producto_._id,
+                            // precioProveedor: pedidos[i].detallePedido[j].producto_.precioProveedor,
+                            categoria: pedidos[i].detallePedido[j].producto_.categoria,
+                            subcategoria: pedidos[i].detallePedido[j].producto_.subcategoria,
+                            nombreProducto: pedidos[i].detallePedido[j].producto_.nombreProducto,
+                            empaque: pedidos[i].detallePedido[j].producto_.empaque,
+                            unidadesPorEmpaque: pedidos[i].detallePedido[j].producto_.unidadesPorEmpaque,
+                            unidadMedida: pedidos[i].detallePedido[j].producto_.unidadMedida,
+                            cantidadPedida: pedidos[i].detallePedido[j].cantidadPedido
+                        }
+                        pedidos_.push(pedido_);
+                    } else {
+                        //ya hay elementos cargados. Debo verificar si ya existe e incrementar la cantidad pedida
+                        let k = 0;
+                        let hh = pedidos_.length;
+                        let nuevo = true;
+                        while (k < hh) {
+                            if (pedidos_[k].idProducto == pedidos[i].detallePedido[j].producto_._id) {
+                                //es el mismo producto, incremento la cantidad pedida
+                                pedidos_[k].cantidadPedida = pedidos_[k].cantidadPedida + pedidos[i].detallePedido[j].cantidadPedido;
+                                nuevo = false;
+                            }
+                            k++;
+                        }
+                        if (nuevo) {
+                            let pedido_ = {
+                                idProducto: pedidos[i].detallePedido[j].producto_._id,
+                                // precioProveedor: pedidos[i].detallePedido[j].producto_.precioProveedor,
+                                categoria: pedidos[i].detallePedido[j].producto_.categoria,
+                                subcategoria: pedidos[i].detallePedido[j].producto_.subcategoria,
+                                nombreProducto: pedidos[i].detallePedido[j].producto_.nombreProducto,
+                                empaque: pedidos[i].detallePedido[j].producto_.empaque,
+                                unidadesPorEmpaque: pedidos[i].detallePedido[j].producto_.unidadesPorEmpaque,
+                                unidadMedida: pedidos[i].detallePedido[j].producto_.unidadMedida,
+                                cantidadPedida: pedidos[i].detallePedido[j].cantidadPedido
+                            }
+                            pedidos_.push(pedido_);
+                        }
+                    }
+                    j++;
+                }
+                i++;
+            }
+
+            res.json({
+                ok: true,
+                message: 'Devolviendo resumen de pedidos',
+                pedidos: pedidos_
+            });
+        });
+});
 
 module.exports = app;
