@@ -12,6 +12,7 @@ const Empaques = require('../src/empaque.json');
 
 
 app.post('/producto/nuevo/', async function(req, res) {
+    let hoy = new Date();
     let productos_ = [];
     if (req.body.productos) {
         try {
@@ -36,13 +37,41 @@ app.post('/producto/nuevo/', async function(req, res) {
                 }
                 if (req.body.productos[i].codigoProveedor == 0) {
                     //debo obtener el indice para este producto sin codigo
-                    producto.codigoProveedor = await funciones.obtenerIndice();
+                    hoy = new Date();
+                    let dia = await hoy.getDate();
+
+
+                    let mes = await hoy.getMonth();
+                    mes++;
+                    if (mes > 12)
+                        mes = 1;
+
+                    let anio = await hoy.getFullYear();
+                    let hora = await hoy.getUTCHours();
+                    let minuto = await hoy.getUTCMinutes();
+                    let segundos = await hoy.getUTCSeconds();
+                    let milisegundos = await hoy.getUTCMilliseconds();
+
+                    if (dia.toString().length == 1) {
+                        dia = '0' + dia;
+                    }
+                    if (mes.toString().length == 1) {
+                        mes = '0' + mes;
+                    }
+                    let fechaNum = anio.toString() + mes.toString() + dia.toString() + hora.toString() + minuto.toString() + segundos.toString() + milisegundos.toString();
+                    console.log('Producto sin id proveedor: ' + req.body.productos[i].nombreProducto.toUpperCase());
+                    console.log('El id a asignar es: ' + fechaNum);
+                    producto.codigoProveedor = fechaNum;
+                    // producto.codigoProveedor = await funciones.obtenerIndice();
                 } else {
                     producto.codigoProveedor = req.body.productos[i].codigoProveedor;
                 }
                 productos_.push(producto._id);
 
                 //guardo la historia del precio
+                // console.log('Estoy por guardar la historia del precio proveedor');
+                // console.log('Producto a guardar el precio: ' + req.body.productos[i].nombreProducto);
+                // console.log('Precio a guardar: ' + req.body.productos[i].precioProveedor);
                 let historiaCambioPrecioProveedor = new HistoriaPrecioProveedor({
                     precio: req.body.productos[i].precioProveedor
                 });
@@ -71,6 +100,9 @@ app.post('/producto/nuevo/', async function(req, res) {
                     });
             }
         } catch (e) {
+            console.log('Salto un error en el catch.');
+            console.log(e.message);
+
             return res.json({
                 ok: false,
                 message: 'Fallo la ejecucion de una funcion durante el guardado de un producto',
