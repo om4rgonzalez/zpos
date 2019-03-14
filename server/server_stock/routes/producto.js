@@ -52,6 +52,7 @@ app.post('/producto/nuevo/', async function(req, res) {
                     let segundos = await hoy.getUTCSeconds();
                     let milisegundos = await hoy.getUTCMilliseconds();
 
+
                     if (dia.toString().length == 1) {
                         dia = '0' + dia;
                     }
@@ -260,6 +261,7 @@ app.post('/producto/actualizar/', async function(req, res) {
 
                 console.log(hoy + ' La actualizacion de datos del producto finalizo correctamente');
             });
+            i++;
         }
         console.log(hoy + ' El proceso de actualizacion finalizo');
         res.json({
